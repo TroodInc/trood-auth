@@ -1,0 +1,7 @@
+*.sqlite3
+.pytest_cache
+*.pyc
+.idea/
+.pytest_cache
+media/
+

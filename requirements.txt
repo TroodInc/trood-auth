@@ -1,0 +1,12 @@
+Django==1.11.5
+django-cors-headers==2.1.0
+djangorestframework==3.6.4
+ecdsa==0.13
+future==0.16.0
+gunicorn==19.7.1
+pyasn1==0.3.4
+pycrypto==2.6.1
+python-jose==1.4.0
+pytz==2017.2
+rsa==3.4.2
+six==1.10.0
