@@ -15,7 +15,6 @@ from t_auth.api.serializers import PermissionSerializer, AccountSerializer
 from t_auth.api.models import AccountPermission, Account
 
 
-
 class ActionViewSet(viewsets.ViewSet):
     """
     Provides external API /action method
@@ -33,11 +32,7 @@ class UserViewSet(viewsets.ViewSet):
     permission_classes = (PublicEndpoint,)
 
     def retrieve(self, request, pk=None):
-        u_obj = Account.objects.get(id__exact=pk)
-        return Response(AccountSerializer(u_obj).data)
-
-    def list(self, request):
-        pass
+        return Response(AccountSerializer(Account.objects.get(id__exact=pk)).data)
 
 
 class PermissionViewSet(viewsets.ViewSet):

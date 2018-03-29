@@ -46,16 +46,6 @@ class LoginViewSet(BaseViewSet):
         return Response(self.pack_json(data), status=response_code)
 
 
-class TwoFactorViewSet(BaseViewSet):
-    """
-    Provides external API /check_2fa method
-    """
-    permission_classes = (PublicEndpoint,)
-
-    def create(self, request):
-        return Response(self.not_implemented())
-
-
 class RegistrationViewSet(BaseViewSet):
     """
     Provides external API /register method
@@ -74,6 +64,16 @@ class RegistrationViewSet(BaseViewSet):
         role = self.get_role()
         account = AccountFactory.factory(login=login, password=password, role=role)
         return Response(AccountSerializer(account).data)
+
+
+class TwoFactorViewSet(BaseViewSet):
+    """
+    Provides external API /check_2fa method
+    """
+    permission_classes = (PublicEndpoint,)
+
+    def create(self, request):
+        return Response(self.not_implemented())
 
 
 class AuthViewSet(BaseViewSet):
