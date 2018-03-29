@@ -9,3 +9,5 @@ deployment/postgres
 .fromgit
 .coverage
 htmlcov
+
+.env
