@@ -35,4 +35,3 @@ def test_creates_account_with_permissions(client: Client):
     decoded_response = response.json()
     assert_that(decoded_response['data']['status'], equal_to(OBJECT_STATUS['active']))
     assert_that(decoded_response['data']['id'], instance_of(int))
-    assert_that(decoded_response['data']['permissions'], has_length(1))

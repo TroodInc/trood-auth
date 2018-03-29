@@ -12,7 +12,7 @@ def test_returns_account_data_with_valid_token(client: Client):
     account_data = {
         'token': account.pwd_hash
     }
-    response = client.post(reverse('api:auth-list'), data=account_data)
+    response = client.post(reverse('api:check-token-list'), data=account_data)
     decoded_response = response.json()
     assert_that(decoded_response['data']['id'], equal_to(account.id))
 
@@ -22,6 +22,6 @@ def test_does_not_return_account_data_with_invalid_token(client: Client):
     account_data = {
         'token': 'wrong_token'
     }
-    response = client.post(reverse('api:auth-list'), data=account_data)
+    response = client.post(reverse('api:check-token-list'), data=account_data)
     decoded_response = response.json()
     assert_that(decoded_response['status'], equal_to('FAIL'))
