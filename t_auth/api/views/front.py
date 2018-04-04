@@ -97,7 +97,7 @@ class PermissionViewSet(viewsets.ViewSet):
         return Response(AccountPermissionSerializer(AccountPermission.objects.order_by('endpoint'), many=True).data)
 
 
-class CheckTokenViewSet(BaseViewSet):
+class VerifyTokenViewSet(BaseViewSet):
     """
     Provides external API /auth method
     """

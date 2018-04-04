@@ -10,7 +10,7 @@ from t_auth.api import views as api_views
 router = routers.DefaultRouter()
 
 router.register(r'login', api_views.LoginViewSet, base_name='login')
-router.register(r'check-token', api_views.CheckTokenViewSet, base_name='check-token')
+router.register(r'verify-token', api_views.VerifyTokenViewSet, base_name='verify-token')
 router.register(r'register', api_views.RegistrationViewSet, base_name='register')
 router.register(r'account', api_views.AccountViewSet, base_name='account')
 router.register(r'account/permissions', t_auth.api.views.front.AccountPermissionsViewSet,
