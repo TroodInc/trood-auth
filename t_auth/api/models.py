@@ -8,7 +8,7 @@ import hashlib
 
 from django.db import models
 
-from .constants import OBJECT_STATUS, PERMISSION_TARGET
+from .constants import OBJECT_STATUS, OBJECT_PERMISSION
 
 
 class Endpoint(models.Model):
@@ -21,12 +21,7 @@ class AccountPermission(models.Model):
     """
     endpoint = models.ForeignKey(Endpoint)
     method = models.CharField(max_length=32, null=False)
-
-    # use this permission for all objects or only for the objects
-    # that are created by this user or
-    target_objects = models.SmallIntegerField(
-        choices=((x[1], x[0]) for x in PERMISSION_TARGET.items())
-    )
+    object_permission = models.SmallIntegerField(choices=OBJECT_PERMISSION.CHOICES)
 
 
 class AccountRole(models.Model):
@@ -37,9 +32,7 @@ class AccountRole(models.Model):
     name = models.CharField(max_length=128, null=False)
     permissions = models.ManyToManyField(AccountPermission)
 
-    status = models.SmallIntegerField(
-        choices=((x[1], x[0]) for x in OBJECT_STATUS.items())
-    )
+    status = models.SmallIntegerField(choices=OBJECT_STATUS.CHOICES)
 
 
 class Account(models.Model):
@@ -55,9 +48,7 @@ class Account(models.Model):
     permissions = models.ManyToManyField(AccountPermission)
 
     created = models.DateTimeField(auto_now=True)
-    status = models.SmallIntegerField(
-        choices=((x[1], x[0]) for x in OBJECT_STATUS.items())
-    )
+    status = models.SmallIntegerField(choices=OBJECT_STATUS.CHOICES)
 
     @classmethod
     def check_session(cls, session_code):
@@ -67,7 +58,7 @@ class Account(models.Model):
         sess, signed_str = session_code.split('.')
 
         my_user = Account.objects.get(
-            status__exact=OBJECT_STATUS['active'],
+            status__exact=OBJECT_STATUS.ACTIVE,
             current_session__exact=sess
         )
 

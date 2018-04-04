@@ -15,7 +15,7 @@ def test_creates_account(client: Client):
     }
     response = client.post(reverse('api:register-list'), data=account_data)
     decoded_response = response.json()
-    assert_that(decoded_response['data']['status'], equal_to(OBJECT_STATUS['active']))
+    assert_that(decoded_response['data']['status'], equal_to(OBJECT_STATUS.ACTIVE))
     assert_that(decoded_response['data']['id'], instance_of(int))
 
 
@@ -33,5 +33,5 @@ def test_creates_account_with_permissions(client: Client):
 
     response = client.post(reverse('api:register-list'), data=account_data)
     decoded_response = response.json()
-    assert_that(decoded_response['data']['status'], equal_to(OBJECT_STATUS['active']))
+    assert_that(decoded_response['data']['status'], equal_to(OBJECT_STATUS.ACTIVE))
     assert_that(decoded_response['data']['id'], instance_of(int))

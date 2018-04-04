@@ -6,14 +6,16 @@ Object serializers
 """
 from rest_framework import serializers
 
+from t_auth.api.constants import OBJECT_PERMISSION
 from t_auth.api.models import AccountPermission
+from t_auth.core.utils import ChoicesField
 
 
 class AccountPermissionSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     endpoint = serializers.SlugRelatedField(read_only=True, slug_field='url')
     method = serializers.CharField()
-    target_objects = serializers.IntegerField()
+    object_permission = ChoicesField(choices=OBJECT_PERMISSION.CHOICES)
 
     class Meta:
         model = AccountPermission
@@ -21,7 +23,7 @@ class AccountPermissionSerializer(serializers.ModelSerializer):
             'id',
             'endpoint',
             'method',
-            'target_objects'
+            'object_permission'
         )
 
 

@@ -31,7 +31,7 @@ class LoginViewSet(BaseViewSet):
         response_code = status.HTTP_200_OK
         try:
             account = Account.objects.get(
-                status__exact=OBJECT_STATUS['active'],
+                status__exact=OBJECT_STATUS.ACTIVE,
                 login__exact=login
             )
 

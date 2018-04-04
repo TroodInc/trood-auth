@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'rest_framework',
 
     't_auth.api',
-    't_auth.key_storage',
     't_auth.core'
 ]
 

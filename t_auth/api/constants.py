@@ -4,14 +4,27 @@ Auth Service Backend
 
 Constants
 """
-PERMISSION_TARGET = {
-    'own_objects': 1,
-    'child_objects': 2,
-    'all_objects': 128
-}
 
-OBJECT_STATUS = {
-    'active': 1,
-    'disabled': 2,
-    'deleted': 128
-}
+
+class OBJECT_PERMISSION:
+    OWN_OBJECTS = 1
+    CHILD_OBJECTS = 2
+    ALL_OBJECTS = 128
+
+    CHOICES = (
+        (OWN_OBJECTS, 'own_objects'),
+        (CHILD_OBJECTS, 'child_objects'),
+        (ALL_OBJECTS, 'all_objects')
+    )
+
+
+class OBJECT_STATUS:
+    ACTIVE = 1
+    DISABLED = 2
+    DELETED = 128
+
+    CHOICES = (
+        (ACTIVE, 'active'),
+        (DISABLED, 'disabled'),
+        (DELETED, 'deleted')
+    )

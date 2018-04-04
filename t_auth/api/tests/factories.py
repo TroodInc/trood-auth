@@ -2,7 +2,7 @@ import uuid
 
 import factory
 
-from t_auth.api.constants import OBJECT_STATUS, PERMISSION_TARGET
+from t_auth.api.constants import OBJECT_STATUS, OBJECT_PERMISSION
 from t_auth.api.domain.factories import AccountFactory as DomainAccountFactory
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, AccountPermission, AccountRole, Endpoint
@@ -14,7 +14,7 @@ class AccountFactory(factory.DjangoModelFactory):
 
     unique_token = ''
     current_session = ''
-    status = OBJECT_STATUS['active']
+    status = OBJECT_STATUS.ACTIVE
 
     @factory.post_generation
     def pwd_hash(self, create, extracted, **kwargs):
@@ -38,7 +38,7 @@ class EndpointFactory(factory.DjangoModelFactory):
 class AccountPermissionFactory(factory.DjangoModelFactory):
     endpoint = factory.SubFactory(EndpointFactory)
     method = factory.Sequence(lambda n: 'method#{}'.format(n))
-    target_objects = PERMISSION_TARGET['own_objects']
+    object_permission = OBJECT_PERMISSION.OWN_OBJECTS
 
     class Meta:
         model = AccountPermission
@@ -46,7 +46,7 @@ class AccountPermissionFactory(factory.DjangoModelFactory):
 
 class AccountRoleFactory(factory.DjangoModelFactory):
     name = factory.Sequence(lambda n: 'Role#{}'.format(n))
-    status = OBJECT_STATUS['active']
+    status = OBJECT_STATUS.ACTIVE
 
     class Meta:
         model = AccountRole

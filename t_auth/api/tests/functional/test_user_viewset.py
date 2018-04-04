@@ -3,7 +3,7 @@ from django.test import Client
 from hamcrest import *
 from rest_framework.reverse import reverse
 
-from t_auth.api.tests.factories import AccountFactory, AccountPermissionFactory
+from t_auth.api.tests.factories import AccountFactory
 
 
 @pytest.mark.django_db
