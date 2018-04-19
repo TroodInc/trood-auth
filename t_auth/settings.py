@@ -12,119 +12,138 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+from configurations import Configuration
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=y3scd+v+70xtpter(4#2^%fp3f6n^lt_*&gi9cnq0j)p7o@67'
+class BaseConfiguration(Configuration):
+    # Quick-start development settings - unsuitable for production
+    # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# TODO: TEST MODE ONLY
-DEBUG = True
-ALLOWED_HOSTS = ['*', ]
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = '=y3scd+v+70xtpter(4#2^%fp3f6n^lt_*&gi9cnq0j)p7o@67'
 
-# Application definition
+    # TODO: TEST MODE ONLY
+    DEBUG = True
+    ALLOWED_HOSTS = ['*', ]
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'corsheaders',
+    # Application definition
 
-    'rest_framework',
+    INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'corsheaders',
 
-    't_auth.api',
-    't_auth.core'
-]
+        'rest_framework',
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-]
+        't_auth.api',
+        't_auth.core'
+    ]
 
-ROOT_URLCONF = 't_auth.urls'
+    MIDDLEWARE = [
+        'django.middleware.security.SecurityMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'corsheaders.middleware.CorsMiddleware',
+    ]
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+    ROOT_URLCONF = 't_auth.urls'
+
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            },
         },
-    },
-]
+    ]
 
-WSGI_APPLICATION = 't_auth.wsgi.application'
+    WSGI_APPLICATION = 't_auth.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+    # Database
+    # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
 
-# Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+    # Password validation
+    # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+    AUTH_PASSWORD_VALIDATORS = [
+        {
+            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        },
+    ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
+    # Internationalization
+    # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+    LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+    TIME_ZONE = 'UTC'
 
-USE_I18N = True
+    USE_I18N = True
 
-USE_L10N = True
+    USE_L10N = True
 
-USE_TZ = True
+    USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
+    STATIC_URL = '/static/'
 
-# CROSS-ORIGIN STUFF
-CORS_ORIGIN_ALLOW_ALL = True
+    # CROSS-ORIGIN STUFF
+    CORS_ORIGIN_ALLOW_ALL = True
 
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        't_auth.api.renderers.AuthJsonRenderer',
-    ),
-    'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
-}
+    REST_FRAMEWORK = {
+        'DEFAULT_RENDERER_CLASSES': (
+            't_auth.api.renderers.AuthJsonRenderer',
+        ),
+        'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
+    }
+
+
+try:
+    from custom_configuration import CustomConfiguration
+except ImportError:
+    class CustomConfiguration:
+        pass
+
+
+class Development(BaseConfiguration):
+    pass
+
+
+class Staging(CustomConfiguration, BaseConfiguration):
+    pass
