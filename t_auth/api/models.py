@@ -40,7 +40,7 @@ class Account(models.Model):
     One account in our system
     """
     login = models.CharField(max_length=64, null=False, unique=True)
-    pwd_hash = models.CharField(max_length=64, null=False)
+    pwd_hash = models.CharField(max_length=128, null=False)
 
     unique_token = models.CharField(max_length=128, null=False)
     current_session = models.CharField(max_length=128, null=False)
