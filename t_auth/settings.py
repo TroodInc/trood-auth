@@ -147,3 +147,7 @@ class Development(BaseConfiguration):
 
 class Staging(CustomConfiguration, BaseConfiguration):
     DEBUG = False
+
+
+class Production(CustomConfiguration, BaseConfiguration):
+    DEBUG = False
