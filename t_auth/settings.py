@@ -146,4 +146,4 @@ class Development(BaseConfiguration):
 
 
 class Staging(CustomConfiguration, BaseConfiguration):
-    pass
+    DEBUG = False
