@@ -82,11 +82,8 @@ class BaseConfiguration(Configuration):
 
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'authorization',
-            'HOST': 'authorization',
-            'USER': 'authorization',
-            'PASSWORD': 'authorization',
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
         }
     }
 
@@ -146,19 +143,6 @@ except ImportError:
 
 class Development(BaseConfiguration):
     pass
-
-
-class Staging(CustomConfiguration, BaseConfiguration):
-    DEBUG = False
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'authorization',
-            'HOST': 'authorization_postgres',
-            'USER': 'authorization',
-            'PASSWORD': 'authorization',
-        }
-    }
 
 
 class Production(CustomConfiguration, BaseConfiguration):
