@@ -6,6 +6,8 @@ services:
       context: ../
       dockerfile: deployment/Dockerfile
     container_name: ${COMPOSE_PROJECT_NAME}.authorization
+    volumes:
+      - ../:/home/src
     environment:
       DJANGO_CONFIGURATION: Production
     networks:
