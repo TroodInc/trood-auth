@@ -2,9 +2,9 @@ version: "2"
 
 services:
   authorization:
-    image: registry.getbino.com/${COMPOSE_PROJECT_NAME}/authorization:latest
     build:
-      context: ./
+      context: ../
+      dockerfile: deployment/Dockerfile
     container_name: ${COMPOSE_PROJECT_NAME}.authorization
     environment:
       DJANGO_CONFIGURATION: Production

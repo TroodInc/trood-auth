@@ -5,6 +5,7 @@
 .pytest_cache
 media/
 
+deployment/postgres
 .fromgit
 .coverage
 htmlcov

@@ -1,6 +1,6 @@
 FROM python:3
 
-ENV APPDIR=/home/t_auth
+ENV APPDIR=/home/src
 ENV PYTHONPATH=$PYTHONPATH:$APPDIR
 
 RUN apt-get update && \
@@ -8,7 +8,6 @@ RUN apt-get update && \
 
 ADD ./ $APPDIR/
 RUN pip install -r $APPDIR/requirements.txt
-
 
 EXPOSE 8000
 CMD /usr/local/bin/gunicorn -b 0.0.0.0:8000 t_auth.wsgi:application
