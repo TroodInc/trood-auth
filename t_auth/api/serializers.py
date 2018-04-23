@@ -72,4 +72,5 @@ class AccountSerializer(serializers.ModelSerializer):
 class AccountRoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountRole
-        fields = ('name', 'status', 'permissions')
+        fields = ('id', 'name', 'status', 'permissions')
+        read_only_fields = ('permissions', )
