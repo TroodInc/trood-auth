@@ -5,12 +5,14 @@ Auth Service Backend
 Administrative endpoints (user and permission lists, actions on users
 and permissions)
 """
+
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from t_auth.api.permissions import PublicEndpoint
-from t_auth.api.serializers import AccountSerializer
-from t_auth.api.models import Account
+from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer
+from t_auth.api.models import Account, AccountRole, Token
 
 
 class ActionViewSet(viewsets.ViewSet):
@@ -19,17 +21,35 @@ class ActionViewSet(viewsets.ViewSet):
     """
     permission_classes = (PublicEndpoint,)
 
+    def list(self, request):
+        return Response(request.user.__dict__)
+
     def create(self, request):
         return Response({'fa': 'action'})
 
 
-class AccountViewSet(viewsets.ViewSet):
+class AccountRoleViewSet(viewsets.ModelViewSet):
     """
-    Provides external API /user method
+    Provides CRUD for AccountRole
     """
-    permission_classes = (PublicEndpoint,)
+    queryset = AccountRole.objects.all()
+    serializer_class = AccountRoleSerializer
+    permission_classes = (IsAuthenticated, )
 
-    def retrieve(self, request, pk=None):
-        return Response(AccountSerializer(Account.objects.get(id__exact=pk)).data)
+
+class AccountViewSet(viewsets.ModelViewSet):
+    """
+    Provides CRUD for Account
+    """
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def perform_update(self, serializer):
+        acc = serializer.save()
+
+        if 'password' in serializer.initial_data:
+            Token.objects.filter(account=acc).delete()
+
 
 

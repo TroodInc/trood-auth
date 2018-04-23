@@ -7,10 +7,6 @@ from t_auth.api.models import Account, AccountRole
 
 
 class AccountFactory:
-    @classmethod
-    def _assign_permissions(cls, account: Account, role: AccountRole):
-        for permission in role.permissions.all():
-            account.permissions.add(permission)
 
     @classmethod
     def _create_token(cls):
@@ -21,15 +17,12 @@ class AccountFactory:
         return hashlib.sha256(target_str.encode('utf-8')).hexdigest()
 
     @classmethod
-    def factory(cls, login, password, role=None):
+    def factory(cls, login, password, status=OBJECT_STATUS.ACTIVE, role=None):
         account = Account()
         account.login = login
         account.unique_token = cls._create_token()
         account.pwd_hash = AuthenticationService.get_password_hash(password, account.unique_token)
-        account.status = OBJECT_STATUS.ACTIVE
+        account.status = status
         account.save()
-
-        if role:
-            cls._assign_permissions(account, role)
 
         return account

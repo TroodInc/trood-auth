@@ -7,15 +7,17 @@ Public endpoints (login/logout, authentication, two-factor login, registration)
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status, viewsets
 from rest_framework.exceptions import AuthenticationFailed, NotAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from t_auth.api.constants import OBJECT_STATUS
 from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
-from t_auth.api.models import Account, AccountRole, AccountPermission
+from t_auth.api.models import Account, AccountRole, AccountPermission, Token
 from t_auth.api.permissions import PublicEndpoint
-from t_auth.api.serializers import AccountSerializer, AccountPermissionSerializer
+from t_auth.api.serializers import AccountSerializer, AccountPermissionSerializer, LoginResponseSerializer
 from .base import BaseViewSet
 
 
@@ -36,8 +38,12 @@ class LoginViewSet(BaseViewSet):
             )
 
             if AuthenticationService.authenticate(account, password):
-                data = AccountSerializer(account).data
-                data['token'] = account.pwd_hash
+                data = LoginResponseSerializer(account).data
+
+                token = Token.objects.create(account=account)
+
+                data['token'] = token.token
+                data['expire'] = token.expire.strftime('%Y-%m-%dT%H-%M')
             else:
                 data = self.error_json('invalid_credentials')
                 raise AuthenticationFailed(data)
@@ -45,6 +51,18 @@ class LoginViewSet(BaseViewSet):
             data = self.error_json('invalid_credentials')
             raise AuthenticationFailed(data)
         return Response(self.pack_json(data), status=response_code)
+
+
+class LogoutView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request):
+        if request.data.get('all'):
+            Token.objects.filter(account_id=request.user.account.id).delete()
+        else:
+            Token.objects.filter(token=request.user.token.token).delete()
+
+        return Response({}, status=200)
 
 
 class RegistrationViewSet(BaseViewSet):
@@ -64,7 +82,7 @@ class RegistrationViewSet(BaseViewSet):
         password = request.data.get('password')
         role = self.get_role()
         account = AccountFactory.factory(login=login, password=password, role=role)
-        return Response(AccountSerializer(account).data)
+        return Response(LoginResponseSerializer(account).data)
 
 
 class PermissionViewSet(viewsets.ViewSet):
@@ -114,7 +132,7 @@ class VerifyTokenViewSet(BaseViewSet):
         if token:
             account = Account.objects.get(pwd_hash=token)
             if account:
-                return Response(self.pack_json(AccountSerializer(account).data))
+                return Response(self.pack_json(LoginResponseSerializer(account).data))
             else:
                 raise AuthenticationFailed()
         else:

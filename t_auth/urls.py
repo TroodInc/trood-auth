@@ -6,6 +6,7 @@ from rest_framework.documentation import include_docs_urls
 
 import t_auth.api.views.front
 from t_auth.api import views as api_views
+from t_auth.api.views.admin import AccountRoleViewSet
 
 router = routers.DefaultRouter()
 
@@ -22,7 +23,10 @@ router.register(r'permission', t_auth.api.views.front.PermissionViewSet, base_na
 router.register(r'check_2fa', api_views.TwoFactorViewSet, base_name='api_2fa')
 router.register(r'action', api_views.ActionViewSet, base_name='api_action')
 
+router.register(r'roles', AccountRoleViewSet, base_name='roles')
+
 urlpatterns = [
+    url(r'^api/v1.0/logout', api_views.front.LogoutView.as_view(), name='logout'),
     url(r'^api/v1.0/', include(router.urls, namespace='api')),
 
 ]

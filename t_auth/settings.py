@@ -126,12 +126,17 @@ class BaseConfiguration(Configuration):
     # CROSS-ORIGIN STUFF
     CORS_ORIGIN_ALLOW_ALL = True
 
-    REST_FRAMEWORK = {
-        'DEFAULT_RENDERER_CLASSES': (
-            't_auth.api.renderers.AuthJsonRenderer',
-        ),
-        'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
-    }
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        't_auth.core.authentication.TroodTokenAuthentication',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        't_auth.api.renderers.AuthJsonRenderer',
+    ),
+    'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
+}
 
 
 try:
