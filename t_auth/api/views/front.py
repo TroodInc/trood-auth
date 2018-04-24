@@ -84,44 +84,6 @@ class RegistrationViewSet(BaseViewSet):
         account = AccountFactory.factory(login=login, password=password, role=role)
         return Response(LoginResponseSerializer(account).data)
 
-
-class VerifyTokenViewSet(BaseViewSet):
-    """
-    Provides external API /auth method
-    """
-    permission_classes = (PublicEndpoint,)
-
-    def _get_account(self, token):
-        try:
-            return Account.objects.get(pwd_hash=token)
-        except:
-            return None
-
-    def create(self, request):
-        token = request.data.get('token')
-        if token:
-            account = Account.objects.get(pwd_hash=token)
-            if account:
-                return Response(self.pack_json(LoginResponseSerializer(account).data))
-            else:
-                raise AuthenticationFailed()
-        else:
-            raise NotAuthenticated()
-
-
-class AccountPermissionsViewSet(ModelViewSet):
-    serializer_class = AccountPermissionSerializer
-
-    def get_object(self):
-        return Account.objects.get(id=self.kwargs['pk'])
-
-    def get_queryset(self):
-        return self.get_object().permissions.order_by('endpoint')
-
-    def retrieve(self, request, *args, **kwargs):
-        return Response([self.serializer_class(x).data for x in self.get_queryset()])
-
-
 # ======================================================================================================================
 class TwoFactorViewSet(BaseViewSet):
     """

@@ -39,6 +39,22 @@ class LoginResponseSerializer(serializers.Serializer):
     status = serializers.IntegerField()
 
 
+class VerificationSerializer(serializers.ModelSerializer):
+    role = serializers.CharField(source='role.name')
+    permissions = AccountPermissionSerializer(source='role.permissions', many=True)
+
+    class Meta:
+        model = Account
+        fields = ('id', 'login', 'created', 'status', 'role', 'permissions')
+
+    def to_representation(self, instance):
+        obj = super(VerificationSerializer, self).to_representation(instance)
+        for p in obj['permissions']:
+            p['endpoint'] = p['endpoint']['url']
+
+        return obj
+
+
 class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:

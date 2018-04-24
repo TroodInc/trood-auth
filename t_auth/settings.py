@@ -124,7 +124,7 @@ class BaseConfiguration(Configuration):
     STATIC_URL = '/static/'
 
     # CROSS-ORIGIN STUFF
-    CORS_ORIGIN_ALLOW_ALL = True
+    # CORS_ORIGIN_ALLOW_ALL = True
 
 
 
