@@ -17,7 +17,7 @@ router.register(r'account', api_views.AccountViewSet, base_name='account')
 router.register(r'account/permissions', t_auth.api.views.front.AccountPermissionsViewSet,
                 base_name='account-permissions')
 
-router.register(r'permission', t_auth.api.views.front.PermissionViewSet, base_name='permission')
+router.register(r'permissions', t_auth.api.views.admin.PermissionViewSet, base_name='permissions')
 
 # not actually used
 router.register(r'check_2fa', api_views.TwoFactorViewSet, base_name='api_2fa')

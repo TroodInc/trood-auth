@@ -9,26 +9,14 @@ import uuid
 
 from rest_framework import serializers
 
-from t_auth.api.constants import OBJECT_PERMISSION
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import AccountPermission, AccountRole, Account
-from t_auth.core.utils import ChoicesField
 
 
 class AccountPermissionSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
-    endpoint = serializers.SlugRelatedField(read_only=True, slug_field='url')
-    method = serializers.CharField()
-    object_permission = ChoicesField(choices=OBJECT_PERMISSION.CHOICES)
-
     class Meta:
         model = AccountPermission
-        fields = (
-            'id',
-            'endpoint',
-            'method',
-            'object_permission'
-        )
+        fields = ('id', 'endpoint', 'method', 'object_permission')
 
 
 class LoginResponseSerializer(serializers.Serializer):
@@ -70,6 +58,8 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class AccountRoleSerializer(serializers.ModelSerializer):
+    permissions = AccountPermissionSerializer(many=True, read_only=True)
+
     class Meta:
         model = AccountRole
         fields = ('id', 'name', 'status', 'permissions')

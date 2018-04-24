@@ -11,8 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from t_auth.api.permissions import PublicEndpoint
-from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer
-from t_auth.api.models import Account, AccountRole, Token
+from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, AccountPermissionSerializer
+from t_auth.api.models import Account, AccountRole, Token, AccountPermission
 
 
 class ActionViewSet(viewsets.ViewSet):
@@ -51,5 +51,13 @@ class AccountViewSet(viewsets.ModelViewSet):
         if 'password' in serializer.initial_data:
             Token.objects.filter(account=acc).delete()
 
+
+class PermissionViewSet(viewsets.ModelViewSet):
+    """
+    Provides CRUD for Permissions
+    """
+    queryset = AccountPermission.objects.all()
+    serializer_class = AccountPermissionSerializer
+    permission_classes = (IsAuthenticated, )
 
 

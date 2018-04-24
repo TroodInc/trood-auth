@@ -85,36 +85,6 @@ class RegistrationViewSet(BaseViewSet):
         return Response(LoginResponseSerializer(account).data)
 
 
-class PermissionViewSet(viewsets.ViewSet):
-    """
-    Provides external API /permission method
-    """
-    permission_classes = (PublicEndpoint,)
-
-    # def create(self, request):
-    #     perm_id = request.GET.get('id', None)
-    #
-    #     endpoint = request.data.get('endpoint')
-    #     method = request.data.get('method')
-    #     target_objects = request.data.get('target_objects', False)
-    #
-    #     p_object = AccountPermission()
-    #
-    #     if perm_id:
-    #         p_object = AccountPermission.objects.get(id__exact=perm_id)
-    #
-    #     p_object.endpoint = endpoint
-    #     p_object.method = method
-    #     p_object.target_objects = target_objects
-    #
-    #     p_object.save()
-    #
-    #     return Response(PermissionSerializer(p_object).data)
-
-    def list(self, request):
-        return Response(AccountPermissionSerializer(AccountPermission.objects.order_by('endpoint'), many=True).data)
-
-
 class VerifyTokenViewSet(BaseViewSet):
     """
     Provides external API /auth method

@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase, APIClient
 
 from t_auth.api.constants import OBJECT_STATUS
 from t_auth.api.models import Token
-from t_auth.api.tests.factories import AccountFactory, AccountRoleFactory
+from t_auth.api.tests.factories import AccountFactory, AccountRoleFactory, AccountPermissionFactory
 
 
 class RoleViewSetTestCase(APITestCase):
@@ -20,7 +20,10 @@ class RoleViewSetTestCase(APITestCase):
 
     @pytest.mark.django_db
     def test_retrieve_roles_list(self):
+        permission = AccountPermissionFactory()
         role = AccountRoleFactory()
+        role.permissions.add(permission)
+        role.save()
 
         response = self.client.get(reverse('api:roles-list'), )
         decoded_response = response.json()
