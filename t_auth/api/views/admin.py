@@ -8,24 +8,19 @@ and permissions)
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
-from t_auth.api.permissions import PublicEndpoint
-from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, AccountPermissionSerializer
-from t_auth.api.models import Account, AccountRole, Token, AccountPermission
+from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, AccountPermissionSerializer, \
+    EndpointSerializer
+from t_auth.api.models import Account, AccountRole, Token, AccountPermission, Endpoint
 
 
-class ActionViewSet(viewsets.ViewSet):
+class EndpointsViewSet(viewsets.ModelViewSet):
     """
-    Provides external API /action method
+    Provides CRUD for Endpoints
     """
-    permission_classes = (PublicEndpoint,)
-
-    def list(self, request):
-        return Response(request.user.__dict__)
-
-    def create(self, request):
-        return Response({'fa': 'action'})
+    queryset = Endpoint.objects.all()
+    serializer_class = EndpointSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class AccountRoleViewSet(viewsets.ModelViewSet):

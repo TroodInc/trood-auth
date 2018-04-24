@@ -10,13 +10,25 @@ import uuid
 from rest_framework import serializers
 
 from t_auth.api.domain.services import AuthenticationService
-from t_auth.api.models import AccountPermission, AccountRole, Account
+from t_auth.api.models import AccountPermission, AccountRole, Account, Endpoint
+
+
+class EndpointSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Endpoint
+        fields = ('id', 'url', )
 
 
 class AccountPermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccountPermission
         fields = ('id', 'endpoint', 'method', 'object_permission')
+
+    def to_representation(self, instance):
+        obj = super(AccountPermissionSerializer, self).to_representation(instance)
+        obj['endpoint'] = EndpointSerializer(instance.endpoint).data
+
+        return obj
 
 
 class LoginResponseSerializer(serializers.Serializer):
@@ -53,14 +65,19 @@ class AccountSerializer(serializers.ModelSerializer):
         ret = super(AccountSerializer, self).to_representation(instance)
         ret.pop('unique_token')
         ret.pop('pwd_hash')
+        ret['role'] = AccountRoleSerializer(instance.role).data
 
         return ret
 
 
 class AccountRoleSerializer(serializers.ModelSerializer):
-    permissions = AccountPermissionSerializer(many=True, read_only=True)
-
+    permissions = serializers.PrimaryKeyRelatedField(required=False, many=True, queryset=AccountPermission.objects.all())
     class Meta:
         model = AccountRole
         fields = ('id', 'name', 'status', 'permissions')
-        read_only_fields = ('permissions', )
+
+    def to_representation(self, instance):
+        obj = super(AccountRoleSerializer, self).to_representation(instance)
+        obj['permissions'] = AccountPermissionSerializer(instance.permissions.all(), many=True).data
+
+        return obj
