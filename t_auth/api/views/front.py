@@ -56,8 +56,8 @@ class LoginViewSet(BaseViewSet):
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated, )
 
-    def get(self, request):
-        if request.data.get('all'):
+    def post(self, request):
+        if 'all' in request.data:
             Token.objects.filter(account_id=request.user.account.id).delete()
         else:
             Token.objects.filter(token=request.user.token.token).delete()
