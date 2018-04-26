@@ -6,7 +6,12 @@ Authentication models
 """
 import hashlib
 
+import datetime
+import uuid
+
 from django.db import models
+from django.utils import timezone
+from django.utils.deprecation import CallableTrue
 
 from .constants import OBJECT_STATUS, OBJECT_PERMISSION
 
@@ -46,6 +51,7 @@ class Account(models.Model):
     current_session = models.CharField(max_length=128, null=False)
 
     permissions = models.ManyToManyField(AccountPermission)
+    role = models.ForeignKey(AccountRole, null=True)
 
     created = models.DateTimeField(auto_now=True)
     status = models.SmallIntegerField(choices=OBJECT_STATUS.CHOICES)
@@ -100,3 +106,20 @@ class Account(models.Model):
         """
         my_permissions = [x.code for x in self.permissions]
         return permission_code in my_permissions and permission_code
+
+    @property
+    def is_authenticated(self):
+        return CallableTrue
+
+
+class Token(models.Model):
+    token = models.CharField(max_length=64, null=False)
+    account = models.ForeignKey(Account)
+    expire = models.DateTimeField(null=False)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if not self.id:
+            self.expire = datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(days=1)
+            self.token = uuid.uuid4().hex
+            super(Token, self).save()
