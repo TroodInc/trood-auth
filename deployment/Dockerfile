@@ -6,6 +6,8 @@ ENV PYTHONPATH=$PYTHONPATH:$APPDIR
 RUN apt-get update && \
     apt-get install gcc g++ make libffi-dev libssl-dev -y && mkdir -p $APPDIR
 
+WORKDIR $APPDIR
+
 ADD ./ $APPDIR/
 RUN pip install -r $APPDIR/requirements.txt
 
