@@ -11,3 +11,4 @@ deployment/postgres
 htmlcov
 
 .env
+.DS_Store
