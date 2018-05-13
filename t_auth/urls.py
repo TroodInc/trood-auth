@@ -7,7 +7,8 @@ from rest_framework.documentation import include_docs_urls
 import t_auth.api.views.front
 import t_auth.api.views.system
 from t_auth.api import views as api_views
-from t_auth.api.views.admin import AccountRoleViewSet
+from t_auth.api.views.admin import AccountRoleViewSet, ABACResourceViewSet, ABACActionViewSet, ABACAttributViewSet, \
+    ABACPolicyViewSet
 
 router = routers.DefaultRouter()
 
@@ -18,12 +19,18 @@ router.register(r'account', api_views.AccountViewSet, base_name='account')
 router.register(r'endpoints', t_auth.api.views.admin.EndpointsViewSet, base_name='endpoints')
 router.register(r'permissions', t_auth.api.views.admin.PermissionViewSet, base_name='permissions')
 
+router.register(r'roles', AccountRoleViewSet, base_name='roles')
+router.register(r'resources', ABACResourceViewSet, base_name='resources')
+router.register(r'actions', ABACActionViewSet, base_name='actions')
+router.register(r'attributes', ABACAttributViewSet, base_name='attributes')
+router.register(r'policies', ABACPolicyViewSet, base_name='policies')
+
 # not actually used
 router.register(r'check_2fa', api_views.TwoFactorViewSet, base_name='api_2fa')
 
-router.register(r'roles', AccountRoleViewSet, base_name='roles')
-
 urlpatterns = [
+    url(r'^api/v1.0/abac-provision', api_views.system.ABACProvisionAttributeMap.as_view(), name='provision'),
+
     url(r'^api/v1.0/logout', api_views.front.LogoutView.as_view(), name='logout'),
     url(r'^api/v1.0/verify-token', t_auth.api.views.system.VerifyTokenView.as_view(), name='verify-token'),
     url(r'^api/v1.0/password-recovery', t_auth.api.views.front.RecoveryView.as_view(), name='password-recovery'),
