@@ -12,7 +12,8 @@ from rest_framework.fields import EmailField
 
 from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
-from t_auth.api.models import AccountPermission, AccountRole, Account, Endpoint
+from t_auth.api.models import AccountPermission, AccountRole, Account, Endpoint, ABACResource, ABACAction, \
+    ABACAttribute, ABACPolicy, ABACRule
 
 
 class EndpointSerializer(serializers.ModelSerializer):
@@ -106,6 +107,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
 class AccountRoleSerializer(serializers.ModelSerializer):
     permissions = serializers.PrimaryKeyRelatedField(required=False, many=True, queryset=AccountPermission.objects.all())
+
     class Meta:
         model = AccountRole
         fields = ('id', 'name', 'status', 'permissions')
@@ -115,3 +117,70 @@ class AccountRoleSerializer(serializers.ModelSerializer):
         obj['permissions'] = AccountPermissionSerializer(instance.permissions.all(), many=True).data
 
         return obj
+
+
+class ABACActionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ABACAction
+        fields = ('id', 'name', )
+
+
+class ABACAttributeSerializer(serializers.ModelSerializer):
+    type = serializers.CharField(source="attr_type")
+
+    class Meta:
+        model = ABACAttribute
+        fields = ('id', 'name', 'type')
+
+
+class ABACResourceSerializer(serializers.ModelSerializer):
+    attributes = ABACAttributeSerializer(many=True)
+    actions = ABACActionSerializer(many=True)
+
+    class Meta:
+        model = ABACResource
+        fields = ('id', 'domain', 'comment', 'name', 'attributes', 'actions')
+
+
+class ABACRuleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ABACRule
+        fields = ('result', 'rule', )
+
+
+class ABACPolicySerializer(serializers.ModelSerializer):
+    rules = ABACRuleSerializer(many=True)
+
+    class Meta:
+        model = ABACPolicy
+        fields = ('id', 'domain', 'resource', 'action', 'rules')
+
+    def create(self, validated_data):
+        rules = validated_data.pop('rules', [])
+        policy = ABACPolicy.objects.create(**validated_data)
+
+        for rule in rules:
+            serializer = ABACRuleSerializer(data=rule)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save(policy=policy)
+
+        return policy
+
+
+class ABACPolicyMapSerializer(serializers.Serializer):
+    def to_representation(self, data):
+
+        result = {}
+
+        for policy in data:
+            if policy.resource.name not in result:
+                result[policy.resource.name] = {}
+
+            if policy.action.name not in result[policy.resource.name]:
+                result[policy.resource.name][policy.action.name] = []
+
+            result[policy.resource.name][policy.action.name] += [
+                ABACRuleSerializer(instance=rule).data for rule in policy.rules.all()
+            ]
+
+        return result

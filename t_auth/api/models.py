@@ -9,6 +9,7 @@ import hashlib
 import datetime
 import uuid
 
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
 from django.utils.deprecation import CallableTrue
@@ -133,3 +134,40 @@ class Token(models.Model):
             self.expire = datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(days=1)
             self.token = uuid.uuid4().hex
             super(Token, self).save()
+
+
+class ABACResource(models.Model):
+    domain = models.CharField(max_length=128, null=False)
+    comment = models.TextField()
+    name = models.CharField(max_length=64, null=False)
+
+
+class ABACAction(models.Model):
+    resource = models.ForeignKey(ABACResource, null=False, related_name="actions")
+    name = models.CharField(max_length=64, null=False)
+
+
+class ABACAttribute(models.Model):
+    resource = models.ForeignKey(ABACResource, null=False, related_name="attributes")
+    name = models.CharField(max_length=64, null=False)
+    attr_type = models.CharField(max_length=64, null=False)
+
+
+class ABACPolicy(models.Model):
+    domain = models.CharField(max_length=128, null=False)
+    resource = models.ForeignKey(ABACResource, null=True)
+    action = models.ForeignKey(ABACAction, null=True)
+
+
+class ABACRule(models.Model):
+    ALLOW = 'allow'
+    DENY = 'deny'
+
+    RESULT_TYPES = (
+        (ALLOW, _('Allow')),
+        (DENY, _('Deny'))
+    )
+
+    result = models.CharField(max_length=64, choices=RESULT_TYPES, null=False)
+    rule = JSONField()
+    policy = models.ForeignKey(ABACPolicy, null=True, related_name="rules")
