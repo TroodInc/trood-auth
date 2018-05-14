@@ -26,7 +26,7 @@ class TroodTokenAuthentication(BaseAuthentication):
             return None
 
         try:
-            token = Token.objects.get(token=auth[1])
+            token = Token.objects.get(token=auth[1], type=Token.AUTHORIZATION)
             user = TroodUser(token.account, token)
             return user, token.token
 

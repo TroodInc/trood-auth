@@ -7,8 +7,10 @@ Object serializers
 import hashlib
 import uuid
 
-from rest_framework import serializers
+from rest_framework import serializers, fields
+from rest_framework.fields import EmailField
 
+from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import AccountPermission, AccountRole, Account, Endpoint
 
@@ -57,7 +59,21 @@ class VerificationSerializer(serializers.ModelSerializer):
         return obj
 
 
+class RegisterSerializer(serializers.Serializer):
+    login = fields.EmailField(required=True)
+    password = fields.CharField(required=True)
+
+    def save(self, **kwargs):
+        account = AccountFactory.factory(
+            login=self.validated_data['login'],
+            password=self.validated_data['password']
+        )
+
+        return account
+
+
 class AccountSerializer(serializers.ModelSerializer):
+    login = EmailField(required=True)
 
     class Meta:
         model = Account
