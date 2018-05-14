@@ -38,7 +38,7 @@ class LoginViewSetTestCase(APITestCase):
 
         self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(token.token))
 
-        response = self.client.get(reverse('logout'), )
+        response = self.client.post(reverse('logout'), )
 
         print(response.content)
 

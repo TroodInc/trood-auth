@@ -1,6 +1,13 @@
-from rest_framework.response import Response
+from rest_framework.views import exception_handler
 
 
 def custom_exception_handler(exc, context):
-    detail = getattr(exc, 'detail', None) or exc.args[0] if hasattr(exc, 'args') else None
-    return Response({'status': 'FAIL', 'error': detail})
+    # Call REST framework's default exception handler first,
+    # to get the standard error response.
+    response = exception_handler(exc, context)
+
+    # Now add the HTTP status code to the response.
+    if response is not None:
+        response.data['response_status'] = "FAIL"
+
+    return response
