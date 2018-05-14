@@ -39,7 +39,7 @@ class AccountViewSetTestCase(APITestCase):
         role = AccountRole.objects.create(name='Test role', status=OBJECT_STATUS.ACTIVE)
         response = self.client.post(
             reverse('api:account-list'), data={
-                'login': 'test_user',
+                'login': 'test@example.com',
                 'password': 'testpassword',
                 'status': OBJECT_STATUS.ACTIVE,
                 'role': role.id

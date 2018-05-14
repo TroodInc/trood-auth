@@ -126,9 +126,19 @@ class BaseConfiguration(Configuration):
     # CROSS-ORIGIN STUFF
     # CORS_ORIGIN_ALLOW_ALL = True
 
+    RECOVERY_LINK = os.environ.get('RECOVERY_LINK')
+    FROM_EMAIL = os.environ.get('FROM_EMAIL')
+
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_PORT = os.environ.get('EMAIL_PORT')
+    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS') == 'True'
 
 
-REST_FRAMEWORK = {
+    REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         't_auth.core.authentication.TroodTokenAuthentication',
     ),
