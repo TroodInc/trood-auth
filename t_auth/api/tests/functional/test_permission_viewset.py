@@ -1,5 +1,6 @@
 import pytest
 from hamcrest import *
+from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIClient
 
@@ -49,6 +50,7 @@ class PermissionViewSetTestCase(APITestCase):
         )
         print(response.content)
         decoded_response = response.json()
+        assert_that(response.status_code, equal_to(status.HTTP_201_CREATED))
         assert_that(decoded_response['status'], equal_to('OK'))
 
     @pytest.mark.django_db

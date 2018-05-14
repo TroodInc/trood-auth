@@ -49,8 +49,10 @@ class VerificationSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         obj = super(VerificationSerializer, self).to_representation(instance)
-        for p in obj['permissions']:
-            p['endpoint'] = p['endpoint']['url']
+
+        if 'permissions' in obj.keys() and obj['permissions']:
+            for p in obj['permissions']:
+                p['endpoint'] = p['endpoint']['url']
 
         return obj
 
