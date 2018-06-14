@@ -5,15 +5,13 @@ services:
     build:
       context: ../
       dockerfile: deployment/Dockerfile
-    container_name: authorization
     environment:
       DJANGO_CONFIGURATION: Production
     networks:
-      - ${COMPOSE_PROJECT_NAME}-network
+      - test-network
 
   authorization_postgres:
     image: postgres:9.5
-    container_name: postgres.authorization
     volumes:
       - ./postgres/${CONTAINER_NAME}/data:/var/lib/postgresql/data
       - ./postgres/${CONTAINER_NAME}/conf:/etc/postgresql
@@ -25,4 +23,8 @@ services:
       POSTGRES_PASSWORD: authorization
 
     networks:
-      - ${COMPOSE_PROJECT_NAME}-network
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
