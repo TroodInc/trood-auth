@@ -11,6 +11,8 @@ WORKDIR $APPDIR
 COPY ./t_auth $APPDIR/t_auth
 COPY ./manage.py $APPDIR/
 COPY ./requirements.txt $APPDIR/
+COPY ./pytest.ini $APPDIR/
+
 RUN pip install -r $APPDIR/requirements.txt
 
 EXPOSE 8000
