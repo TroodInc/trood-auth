@@ -9,7 +9,7 @@ services:
     environment:
       DJANGO_CONFIGURATION: Production
     networks:
-      - ${COMPOSE_PROJECT_NAME}-network
+      - test-network
 
   authorization_postgres:
     image: postgres:9.5
@@ -25,4 +25,8 @@ services:
       POSTGRES_PASSWORD: authorization
 
     networks:
-      - ${COMPOSE_PROJECT_NAME}-network
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
