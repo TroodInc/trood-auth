@@ -126,7 +126,7 @@ class BaseConfiguration(Configuration):
     # CROSS-ORIGIN STUFF
     # CORS_ORIGIN_ALLOW_ALL = True
 
-    RECOVERY_LINK = os.environ.get('RECOVERY_LINK')
+    RECOVERY_LINK = os.environ.get('RECOVERY_LINK', "http://127.0.0.1/recovery?token={}")
     FROM_EMAIL = os.environ.get('FROM_EMAIL')
 
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
