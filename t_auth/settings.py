@@ -25,10 +25,7 @@ class BaseConfiguration(Configuration):
     # SECURITY WARNING: keep the secret key used in production secret!
     SECRET_KEY = '=y3scd+v+70xtpter(4#2^%fp3f6n^lt_*&gi9cnq0j)p7o@67'
 
-    # TODO: TEST MODE ONLY
-    DEBUG = True
     ALLOWED_HOSTS = ['*', ]
-
     # Application definition
 
     INSTALLED_APPS = [
@@ -41,6 +38,7 @@ class BaseConfiguration(Configuration):
         'corsheaders',
 
         'rest_framework',
+        'django_filters',
 
         't_auth.api',
         't_auth.core'
@@ -76,16 +74,6 @@ class BaseConfiguration(Configuration):
     ]
 
     WSGI_APPLICATION = 't_auth.wsgi.application'
-
-    # Database
-    # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
-        }
-    }
 
     # Password validation
     # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -137,31 +125,19 @@ class BaseConfiguration(Configuration):
     EMAIL_PORT = os.environ.get('EMAIL_PORT')
     EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS') == 'True'
 
-
     REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        't_auth.core.authentication.TroodTokenAuthentication',
-    ),
-    'DEFAULT_RENDERER_CLASSES': (
-        't_auth.api.renderers.AuthJsonRenderer',
-    ),
-    'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
-}
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+            't_auth.core.authentication.TroodTokenAuthentication',
+        ),
+        'DEFAULT_RENDERER_CLASSES': (
+            't_auth.api.renderers.AuthJsonRenderer',
+        ),
+        'DEFAULT_FILTER_BACKENDS': (
+            'django_filters.rest_framework.DjangoFilterBackend',
+        ),
+        'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
+    }
 
-
-try:
-    from custom_configuration import CustomConfiguration
-except ImportError:
-    class CustomConfiguration:
-        pass
-
-
-class Development(BaseConfiguration):
-    pass
-
-
-class Production(CustomConfiguration, BaseConfiguration):
-    DEBUG = False
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -171,3 +147,17 @@ class Production(CustomConfiguration, BaseConfiguration):
             'PASSWORD': 'authorization',
         }
     }
+
+try:
+    from custom_configuration import CustomConfiguration
+except ImportError:
+    class CustomConfiguration:
+        pass
+
+
+class Development(BaseConfiguration):
+    DEBUG = True
+
+
+class Production(CustomConfiguration, BaseConfiguration):
+    DEBUG = False

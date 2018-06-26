@@ -122,7 +122,7 @@ class AccountRoleSerializer(serializers.ModelSerializer):
 class ABACActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ABACAction
-        fields = ('id', 'name', )
+        fields = ('id', 'name', 'resource', )
 
 
 class ABACAttributeSerializer(serializers.ModelSerializer):
@@ -130,7 +130,7 @@ class ABACAttributeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ABACAttribute
-        fields = ('id', 'name', 'type')
+        fields = ('id', 'name', 'type', 'resource', )
 
 
 class ABACResourceSerializer(serializers.ModelSerializer):
@@ -154,6 +154,21 @@ class ABACPolicySerializer(serializers.ModelSerializer):
     class Meta:
         model = ABACPolicy
         fields = ('id', 'domain', 'resource', 'action', 'rules')
+
+    def update(self, instance, validated_data):
+        rules = validated_data.pop('rules', [])
+
+        policy = super(ABACPolicySerializer, self).update(instance, validated_data)
+
+        if rules:
+            policy.rules.all().delete()
+
+        for rule in rules:
+            serializer = ABACRuleSerializer(data=rule)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save(policy=policy)
+
+        return policy
 
     def create(self, validated_data):
         rules = validated_data.pop('rules', [])
