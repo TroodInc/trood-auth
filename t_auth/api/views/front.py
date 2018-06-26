@@ -18,9 +18,9 @@ from rest_framework.views import APIView
 from t_auth.api.constants import OBJECT_STATUS
 from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
-from t_auth.api.models import Account, AccountRole, Token
+from t_auth.api.models import Account, AccountRole, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
-from t_auth.api.serializers import LoginResponseSerializer, RegisterSerializer
+from t_auth.api.serializers import LoginResponseSerializer, RegisterSerializer, ABACPolicyMapSerializer
 from .base import BaseViewSet
 
 
@@ -47,6 +47,10 @@ class LoginViewSet(BaseViewSet):
 
                 data['token'] = token.token
                 data['expire'] = token.expire.strftime('%Y-%m-%dT%H-%M')
+
+                policies = ABACPolicy.objects.filter(domain='FRONTEND')
+                data['abac'] = ABACPolicyMapSerializer(policies).data
+
             else:
                 data = self.error_json('invalid_credentials')
                 raise AuthenticationFailed(data)

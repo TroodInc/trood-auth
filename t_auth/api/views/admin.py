@@ -14,16 +14,6 @@ from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, Acc
 from t_auth.api.models import Account, AccountRole, Token, AccountPermission, Endpoint, ABACResource, ABACAction, \
     ABACAttribute, ABACPolicy
 
-
-class EndpointsViewSet(viewsets.ModelViewSet):
-    """
-    Provides CRUD for Endpoints
-    """
-    queryset = Endpoint.objects.all()
-    serializer_class = EndpointSerializer
-    permission_classes = (IsAuthenticated,)
-
-
 class AccountRoleViewSet(viewsets.ModelViewSet):
     """
     Provides CRUD for AccountRole
@@ -48,34 +38,29 @@ class AccountViewSet(viewsets.ModelViewSet):
             Token.objects.filter(account=acc).delete()
 
 
-class PermissionViewSet(viewsets.ModelViewSet):
-    """
-    Provides CRUD for Permissions
-    """
-    queryset = AccountPermission.objects.all()
-    serializer_class = AccountPermissionSerializer
-    permission_classes = (IsAuthenticated, )
-
-
-class ABACResourceViewSet(viewsets.ReadOnlyModelViewSet):
+class ABACResourceViewSet(viewsets.ModelViewSet):
     queryset = ABACResource.objects.all()
     serializer_class = ABACResourceSerializer
+    filter_fields = ("domain", "name", )
     permission_classes = (IsAuthenticated, )
 
 
-class ABACActionViewSet(viewsets.ReadOnlyModelViewSet):
+class ABACActionViewSet(viewsets.ModelViewSet):
     queryset = ABACAction.objects.all()
     serializer_class = ABACActionSerializer
+    filter_fields = ("resource", )
     permission_classes = (IsAuthenticated, )
 
 
-class ABACAttributViewSet(viewsets.ReadOnlyModelViewSet):
+class ABACAttributViewSet(viewsets.ModelViewSet):
     queryset = ABACAttribute.objects.all()
     serializer_class = ABACAttributeSerializer
+    filter_fields = ("resource",)
     permission_classes = (IsAuthenticated, )
 
 
 class ABACPolicyViewSet(viewsets.ModelViewSet):
     queryset = ABACPolicy.objects.all()
     serializer_class = ABACPolicySerializer
-    permission_classes = (IsAuthenticated,)
+    filter_fields = ("resource", "domain", "action", )
+    permission_classes = (IsAuthenticated, )

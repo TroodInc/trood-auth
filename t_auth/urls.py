@@ -16,9 +16,6 @@ router.register(r'login', api_views.LoginViewSet, base_name='login')
 router.register(r'register', api_views.RegistrationViewSet, base_name='register')
 router.register(r'account', api_views.AccountViewSet, base_name='account')
 
-router.register(r'endpoints', t_auth.api.views.admin.EndpointsViewSet, base_name='endpoints')
-router.register(r'permissions', t_auth.api.views.admin.PermissionViewSet, base_name='permissions')
-
 router.register(r'roles', AccountRoleViewSet, base_name='roles')
 router.register(r'resources', ABACResourceViewSet, base_name='resources')
 router.register(r'actions', ABACActionViewSet, base_name='actions')
