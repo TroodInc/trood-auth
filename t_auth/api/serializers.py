@@ -134,8 +134,8 @@ class ABACAttributeSerializer(serializers.ModelSerializer):
 
 
 class ABACResourceSerializer(serializers.ModelSerializer):
-    attributes = ABACAttributeSerializer(many=True)
-    actions = ABACActionSerializer(many=True)
+    attributes = ABACAttributeSerializer(many=True, read_only=True)
+    actions = ABACActionSerializer(many=True, read_only=True)
 
     class Meta:
         model = ABACResource
