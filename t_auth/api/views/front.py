@@ -48,7 +48,7 @@ class LoginViewSet(BaseViewSet):
                 data['token'] = token.token
                 data['expire'] = token.expire.strftime('%Y-%m-%dT%H-%M')
 
-                policies = ABACPolicy.objects.filter(domain='FRONTEND')
+                policies = ABACPolicy.objects.all()
                 data['abac'] = ABACPolicyMapSerializer(policies).data
 
             else:

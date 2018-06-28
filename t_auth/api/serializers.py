@@ -188,13 +188,16 @@ class ABACPolicyMapSerializer(serializers.Serializer):
         result = {}
 
         for policy in data:
-            if policy.resource.name not in result:
-                result[policy.resource.name] = {}
+            if policy.domain not in result:
+                result[policy.domain] = {}
 
-            if policy.action.name not in result[policy.resource.name]:
-                result[policy.resource.name][policy.action.name] = []
+            if policy.resource.name not in result[policy.domain]:
+                result[policy.domain][policy.resource.name] = {}
 
-            result[policy.resource.name][policy.action.name] += [
+            if policy.action.name not in result[policy.domain][policy.resource.name]:
+                result[policy.domain][policy.resource.name][policy.action.name] = []
+
+            result[policy.domain][policy.resource.name][policy.action.name] += [
                 ABACRuleSerializer(instance=rule).data for rule in policy.rules.all()
             ]
 
