@@ -6,7 +6,7 @@ services:
       context: ../
       dockerfile: deployment/Dockerfile
     environment:
-      DJANGO_CONFIGURATION: Production
+      DJANGO_CONFIGURATION: Development
     networks:
       - test-network
 

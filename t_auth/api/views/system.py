@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, ABACPolicy
-from t_auth.api.serializers import VerificationSerializer, ABACPolicyMapSerializer
+from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificationSerializer
 
 
 class VerifyTokenView(APIView):
@@ -16,12 +16,15 @@ class VerifyTokenView(APIView):
 
     def post(self, request):
 
-        response = VerificationSerializer(request.user.account).data
+        response = LoginDataVerificationSerializer(request.user.account).data
 
         # @todo: filter by domain here
         policies = ABACPolicy.objects.all()
 
         response['abac'] = ABACPolicyMapSerializer(policies).data
+
+        # @todo: return custom profile data
+        # response['linked_object'] = request.user.account.get_additional_data()
 
         return Response(response)
 
