@@ -12,27 +12,8 @@ from rest_framework.fields import EmailField
 
 from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
-from t_auth.api.models import AccountPermission, AccountRole, Account, Endpoint, ABACResource, ABACAction, \
+from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
     ABACAttribute, ABACPolicy, ABACRule
-
-
-class EndpointSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Endpoint
-        fields = ('id', 'url', )
-
-
-class AccountPermissionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AccountPermission
-        fields = ('id', 'endpoint', 'method', 'object_permission')
-
-    def to_representation(self, instance):
-        obj = super(AccountPermissionSerializer, self).to_representation(instance)
-        obj['endpoint'] = EndpointSerializer(instance.endpoint).data
-
-        return obj
-
 
 class LoginResponseSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -44,7 +25,6 @@ class LoginResponseSerializer(serializers.Serializer):
 
 class VerificationSerializer(serializers.ModelSerializer):
     role = serializers.CharField(source='role.name')
-    permissions = AccountPermissionSerializer(source='role.permissions', many=True)
 
     class Meta:
         model = Account
@@ -78,7 +58,7 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('id', 'login', 'created', 'status', 'role', 'unique_token', 'pwd_hash')
+        fields = ('id', 'login', 'created', 'status', 'role', 'unique_token', 'pwd_hash', 'type', 'cidr', )
         read_only_fields = ('id', 'created', )
 
     def to_internal_value(self, data):
@@ -106,15 +86,13 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class AccountRoleSerializer(serializers.ModelSerializer):
-    permissions = serializers.PrimaryKeyRelatedField(required=False, many=True, queryset=AccountPermission.objects.all())
 
     class Meta:
         model = AccountRole
-        fields = ('id', 'name', 'status', 'permissions')
+        fields = ('id', 'name', 'status', )
 
     def to_representation(self, instance):
         obj = super(AccountRoleSerializer, self).to_representation(instance)
-        obj['permissions'] = AccountPermissionSerializer(instance.permissions.all(), many=True).data
 
         return obj
 
