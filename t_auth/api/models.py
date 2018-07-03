@@ -8,9 +8,11 @@ Authentication models
 import datetime
 import uuid
 
+import requests
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 from django.utils.deprecation import CallableTrue
 from django.utils.translation import ugettext_lazy as _
 
@@ -56,6 +58,26 @@ class Account(models.Model):
     @property
     def is_authenticated(self):
         return CallableTrue
+
+    def get_additional_data(self):
+        data = {}
+
+        token = self.token_set.last()
+
+        if settings.USER_PROFILE_DATA_URL:
+            response = requests.get(
+                settings.USER_PROFILE_DATA_URL.format(self.id),
+                headers={
+                    'Authorization': "Token {}".format(token.token)
+                },
+            )
+
+            response.raise_for_status()
+
+            if response.status_code == 200:
+                data = response.json()['data'][0]
+
+        return data
 
 
 class Token(models.Model):

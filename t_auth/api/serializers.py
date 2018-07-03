@@ -15,7 +15,7 @@ from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
     ABACAttribute, ABACPolicy, ABACRule
 
-class LoginResponseSerializer(serializers.Serializer):
+class LoginDataVerificationSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     login = serializers.CharField()
 

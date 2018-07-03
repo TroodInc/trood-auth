@@ -148,6 +148,8 @@ class BaseConfiguration(Configuration):
         }
     }
 
+    USER_PROFILE_DATA_URL = "http://custodian.trood:8000/custodian/data/bulk/employee?q=eq(user_id,{})"
+
 try:
     from custom_configuration import CustomConfiguration
 except ImportError:

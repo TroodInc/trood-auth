@@ -16,24 +16,22 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from t_auth.api.constants import OBJECT_STATUS
-from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
-from t_auth.api.models import Account, AccountRole, Token, ABACPolicy
+from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
-from t_auth.api.serializers import LoginResponseSerializer, RegisterSerializer, ABACPolicyMapSerializer
+from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
 from .base import BaseViewSet
 
 
-class LoginViewSet(BaseViewSet):
+class LoginView(APIView):
     """
     Provides external API /login method
     """
     permission_classes = (PublicEndpoint,)
 
-    def create(self, request):
+    def post(self, request):
         login = request.data.get('login')
         password = request.data.get('password')
-        response_code = status.HTTP_200_OK
         try:
             account = Account.objects.get(
                 status__exact=OBJECT_STATUS.ACTIVE,
@@ -41,7 +39,7 @@ class LoginViewSet(BaseViewSet):
             )
 
             if AuthenticationService.authenticate(account, password):
-                data = LoginResponseSerializer(account).data
+                data = LoginDataVerificationSerializer(account).data
 
                 token = Token.objects.create(account=account)
 
@@ -51,13 +49,13 @@ class LoginViewSet(BaseViewSet):
                 policies = ABACPolicy.objects.all()
                 data['abac'] = ABACPolicyMapSerializer(policies).data
 
+                data['linked_object'] = account.get_additional_data()
+
             else:
-                data = self.error_json('invalid_credentials')
-                raise AuthenticationFailed(data)
+                raise AuthenticationFailed({"error": 'invalid_credentials'})
         except ObjectDoesNotExist:
-            data = self.error_json('invalid_credentials')
-            raise AuthenticationFailed(data)
-        return Response(self.pack_json(data), status=response_code)
+            raise AuthenticationFailed({"error": 'invalid_credentials'})
+        return Response(data, status=status.HTTP_200_OK)
 
 
 class LogoutView(APIView):
@@ -84,7 +82,7 @@ class RegistrationViewSet(BaseViewSet):
         if serializer.is_valid(raise_exception=True):
             account = serializer.save()
 
-            return Response(LoginResponseSerializer(account).data)
+            return Response(LoginDataVerificationSerializer(account).data)
 
 
 class RecoveryView(APIView):
