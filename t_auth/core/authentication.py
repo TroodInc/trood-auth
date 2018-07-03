@@ -1,3 +1,5 @@
+from ipaddress import IPv4Network, IPv4Address
+
 from django.utils.deprecation import CallableTrue
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework import exceptions
@@ -16,15 +18,6 @@ class TroodUser(object):
         return CallableTrue
 
 
-class TroodService(object):
-    def __init__(self, name):
-        self.name = name
-
-    @property
-    def is_authenticated(self):
-        return CallableTrue
-
-
 class TroodTokenAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
@@ -37,13 +30,21 @@ class TroodTokenAuthentication(BaseAuthentication):
         if auth[0] == b'Token':
             try:
                 token = Token.objects.get(token=auth[1], type=Token.AUTHORIZATION)
-                user = TroodUser(token.account, token)
-                return user, token.token
+
+                network = IPv4Network(token.account.cidr)
+
+                x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+                if x_forwarded_for:
+                    ip = IPv4Address(x_forwarded_for.split(',')[0])
+                else:
+                    ip = IPv4Address(request.META.get('REMOTE_ADDR'))
+
+                if ip in network:
+                    user = TroodUser(token.account, token)
+
+                    return user, token.token
+
+                raise exceptions.AuthenticationFailed()
 
             except Token.DoesNotExist:
                 raise exceptions.AuthenticationFailed()
-
-        elif auth[0] == b'Service':
-            return TroodService(name=auth[1]), auth[1]
-
-

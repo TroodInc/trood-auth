@@ -9,9 +9,8 @@ and permissions)
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, AccountPermissionSerializer, \
-    EndpointSerializer, ABACResourceSerializer, ABACActionSerializer, ABACAttributeSerializer, ABACPolicySerializer
-from t_auth.api.models import Account, AccountRole, Token, AccountPermission, Endpoint, ABACResource, ABACAction, \
+from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, ABACResourceSerializer, ABACActionSerializer, ABACAttributeSerializer, ABACPolicySerializer
+from t_auth.api.models import Account, AccountRole, Token, ABACResource, ABACAction, \
     ABACAttribute, ABACPolicy
 
 class AccountRoleViewSet(viewsets.ModelViewSet):
