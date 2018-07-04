@@ -2,10 +2,10 @@ import uuid
 
 import factory
 
-from t_auth.api.constants import OBJECT_STATUS, OBJECT_PERMISSION
+from t_auth.api.constants import OBJECT_STATUS
 from t_auth.api.domain.factories import AccountFactory as DomainAccountFactory
 from t_auth.api.domain.services import AuthenticationService
-from t_auth.api.models import Account, AccountPermission, AccountRole, Endpoint
+from t_auth.api.models import Account, AccountRole
 
 
 class AccountFactory(factory.DjangoModelFactory):
@@ -26,22 +26,6 @@ class AccountFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = Account
-
-
-class EndpointFactory(factory.DjangoModelFactory):
-    url = factory.Sequence(lambda n: '/api/v1.0/{}'.format(uuid.uuid4().hex))
-
-    class Meta:
-        model = Endpoint
-
-
-class AccountPermissionFactory(factory.DjangoModelFactory):
-    endpoint = factory.SubFactory(EndpointFactory)
-    method = factory.Sequence(lambda n: 'method#{}'.format(n))
-    object_permission = OBJECT_PERMISSION.OWN_OBJECTS
-
-    class Meta:
-        model = AccountPermission
 
 
 class AccountRoleFactory(factory.DjangoModelFactory):

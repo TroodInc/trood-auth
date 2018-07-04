@@ -4,7 +4,6 @@ from hamcrest import *
 from rest_framework.reverse import reverse
 
 from t_auth.api.constants import OBJECT_STATUS
-from t_auth.api.tests.factories import AccountRoleFactory, AccountPermissionFactory
 
 
 @pytest.mark.django_db
