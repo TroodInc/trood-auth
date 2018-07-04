@@ -28,16 +28,7 @@ class VerificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('id', 'login', 'created', 'status', 'role', 'permissions')
-
-    def to_representation(self, instance):
-        obj = super(VerificationSerializer, self).to_representation(instance)
-
-        if 'permissions' in obj.keys() and obj['permissions']:
-            for p in obj['permissions']:
-                p['endpoint'] = p['endpoint']['url']
-
-        return obj
+        fields = ('id', 'login', 'created', 'status', 'role', )
 
 
 class RegisterSerializer(serializers.Serializer):
