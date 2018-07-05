@@ -1,9 +1,8 @@
 import hashlib
 import uuid
 
-from t_auth.api.constants import OBJECT_STATUS
 from t_auth.api.domain.services import AuthenticationService
-from t_auth.api.models import Account, AccountRole
+from t_auth.api.models import Account
 
 
 class AccountFactory:
@@ -17,7 +16,7 @@ class AccountFactory:
         return hashlib.sha256(target_str.encode('utf-8')).hexdigest()
 
     @classmethod
-    def factory(cls, login, password, status=OBJECT_STATUS.ACTIVE, role=None):
+    def factory(cls, login, password, status=Account.STATUS_ACTIVE, role=None):
         account = Account()
         account.login = login
         account.unique_token = cls._create_token()

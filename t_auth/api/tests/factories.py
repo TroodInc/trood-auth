@@ -2,7 +2,6 @@ import uuid
 
 import factory
 
-from t_auth.api.constants import OBJECT_STATUS
 from t_auth.api.domain.factories import AccountFactory as DomainAccountFactory
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, AccountRole
@@ -14,7 +13,7 @@ class AccountFactory(factory.DjangoModelFactory):
 
     unique_token = ''
     current_session = ''
-    status = OBJECT_STATUS.ACTIVE
+    status = Account.STATUS_ACTIVE
 
     @factory.post_generation
     def pwd_hash(self, create, extracted, **kwargs):
@@ -30,7 +29,7 @@ class AccountFactory(factory.DjangoModelFactory):
 
 class AccountRoleFactory(factory.DjangoModelFactory):
     name = factory.Sequence(lambda n: 'Role#{}'.format(n))
-    status = OBJECT_STATUS.ACTIVE
+    status = AccountRole.STATUS_ACTIVE
 
     class Meta:
         model = AccountRole

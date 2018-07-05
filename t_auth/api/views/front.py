@@ -15,7 +15,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from t_auth.api.constants import OBJECT_STATUS
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
@@ -34,11 +33,13 @@ class LoginView(APIView):
         password = request.data.get('password')
         try:
             account = Account.objects.get(
-                status__exact=OBJECT_STATUS.ACTIVE,
                 login__exact=login
             )
 
             if AuthenticationService.authenticate(account, password):
+                if not account.active:
+                    raise AuthenticationFailed({"error": "Account not active"})
+
                 data = LoginDataVerificationSerializer(account).data
 
                 token = Token.objects.create(account=account)

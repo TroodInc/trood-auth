@@ -4,8 +4,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIClient
 
-from t_auth.api.constants import OBJECT_STATUS
-from t_auth.api.models import Token
+from t_auth.api.models import Token, AccountRole
 from t_auth.api.tests.factories import AccountFactory, AccountRoleFactory
 
 
@@ -44,7 +43,7 @@ class RoleViewSetTestCase(APITestCase):
         response = self.client.post(
             reverse('api:roles-list'), data={
                 'name': 'Test role',
-                'status': OBJECT_STATUS.ACTIVE,
+                'status': AccountRole.STATUS_ACTIVE,
             }
         )
 
@@ -57,7 +56,7 @@ class RoleViewSetTestCase(APITestCase):
         role = AccountRoleFactory()
         response = self.client.patch(
             reverse('api:roles-detail', kwargs={'pk': role.id}), data={
-                'status': OBJECT_STATUS.DISABLED,
+                'status': AccountRole.STATUS_DISABLED,
             }
         )
 
