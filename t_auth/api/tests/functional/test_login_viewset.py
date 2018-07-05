@@ -21,7 +21,7 @@ class LoginViewSetTestCase(APITestCase):
             'password': account._password
         }
 
-        response = self.client.post(reverse('api:login-list'), data=account_data)
+        response = self.client.post(reverse('login'), data=account_data)
         decoded_response = response.json()
 
         assert_that(response.status_code, equal_to(status.HTTP_200_OK))
