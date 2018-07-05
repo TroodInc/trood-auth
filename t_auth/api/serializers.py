@@ -15,20 +15,13 @@ from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
     ABACAttribute, ABACPolicy, ABACRule
 
-class LoginDataVerificationSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    login = serializers.CharField()
 
-    created = serializers.DateTimeField()
-    status = serializers.IntegerField()
-
-
-class VerificationSerializer(serializers.ModelSerializer):
+class LoginDataVerificationSerializer(serializers.ModelSerializer):
     role = serializers.CharField(source='role.name')
 
     class Meta:
         model = Account
-        fields = ('id', 'login', 'created', 'status', 'role', )
+        fields = ('id', 'login', 'created', 'active', 'status', 'role', )
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -49,7 +42,10 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('id', 'login', 'created', 'status', 'role', 'unique_token', 'pwd_hash', 'type', 'cidr', )
+        fields = (
+            'id', 'login', 'created', 'status', 'active', 'role',
+            'unique_token', 'pwd_hash', 'type', 'cidr',
+        )
         read_only_fields = ('id', 'created', )
 
     def to_internal_value(self, data):

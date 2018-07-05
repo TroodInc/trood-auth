@@ -16,16 +16,23 @@ from django.conf import settings
 from django.utils.deprecation import CallableTrue
 from django.utils.translation import ugettext_lazy as _
 
-from .constants import OBJECT_STATUS
-
 
 class AccountRole(models.Model):
+    STATUS_ACTIVE = 'active'
+    STATUS_DISABLED = 'disabled'
+    STATUS_DELETED = 'deleted'
+
+    ROLE_STATUS = (
+        (STATUS_ACTIVE, _('Active')),
+        (STATUS_DISABLED, _('Disabled')),
+        (STATUS_DELETED, _('Deleted'))
+    )
     """
     One role in our system
     Role acts as a scope for permissions
     """
     name = models.CharField(max_length=128, null=False)
-    status = models.SmallIntegerField(choices=OBJECT_STATUS.CHOICES)
+    status = models.CharField(max_length=32, choices=ROLE_STATUS, default=STATUS_ACTIVE)
 
 
 class Account(models.Model):
@@ -41,6 +48,16 @@ class Account(models.Model):
         (SERVICE, _('Service'))
     )
 
+    STATUS_ACTIVE = 'active'
+    STATUS_DISABLED = 'disabled'
+    STATUS_DELETED = 'deleted'
+
+    ACCOUNT_STATUS = (
+        (STATUS_ACTIVE, _('Active')),
+        (STATUS_DISABLED, _('Disabled')),
+        (STATUS_DELETED, _('Deleted'))
+    )
+
     login = models.CharField(max_length=64, null=False, unique=True)
     pwd_hash = models.CharField(max_length=128, null=False)
 
@@ -50,7 +67,9 @@ class Account(models.Model):
     role = models.ForeignKey(AccountRole, null=True)
 
     created = models.DateTimeField(auto_now=True)
-    status = models.SmallIntegerField(choices=OBJECT_STATUS.CHOICES)
+    status = models.CharField(max_length=32, choices=ACCOUNT_STATUS, default=STATUS_ACTIVE)
+
+    active = models.BooleanField(_('Active'), default=True)
 
     type = models.CharField(max_length=12, choices=ACCOUNT_TYPES, default=USER)
     cidr = models.CharField(max_length=20, default="0.0.0.0/0")

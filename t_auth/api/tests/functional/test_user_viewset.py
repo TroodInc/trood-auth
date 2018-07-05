@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient, APITestCase
 
-from t_auth.api.constants import OBJECT_STATUS
 from t_auth.api.models import Token, AccountRole
 from t_auth.api.tests.factories import AccountFactory
 
@@ -37,12 +36,12 @@ class AccountViewSetTestCase(APITestCase):
 
     @pytest.mark.django_db
     def test_create_account(self):
-        role = AccountRole.objects.create(name='Test role', status=OBJECT_STATUS.ACTIVE)
+        role = AccountRole.objects.create(name='Test role', status=AccountRole.STATUS_ACTIVE)
         response = self.client.post(
             reverse('api:account-list'), data={
                 'login': 'test@example.com',
                 'password': 'testpassword',
-                'status': OBJECT_STATUS.ACTIVE,
+                'status': AccountRole.STATUS_ACTIVE,
                 'role': role.id
             }
         )
@@ -55,7 +54,7 @@ class AccountViewSetTestCase(APITestCase):
     def test_update_account(self):
         response = self.client.patch(
             reverse('api:account-detail', kwargs={'pk': self.account.id}), data={
-                'status': OBJECT_STATUS.DISABLED,
+                'status': AccountRole.STATUS_DISABLED,
                 'password': 'new_password'
             }
         )
