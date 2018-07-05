@@ -14,7 +14,6 @@ COPY ./requirements.txt $APPDIR/
 COPY ./pytest.ini $APPDIR/
 
 RUN pip install -r $APPDIR/requirements.txt
-RUN python manage.py migrate
 
 
 
