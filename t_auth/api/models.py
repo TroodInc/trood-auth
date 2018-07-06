@@ -91,8 +91,6 @@ class Account(models.Model):
                 },
             )
 
-            response.raise_for_status()
-
             if response.status_code == 200:
                 data = response.json()['data'][0]
 

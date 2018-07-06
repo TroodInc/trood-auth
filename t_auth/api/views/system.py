@@ -1,10 +1,11 @@
 import datetime
 from django.utils import timezone
+from rest_framework import exceptions
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, ABACPolicy
+from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, ABACPolicy, Account
 from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificationSerializer
 
 
@@ -16,15 +17,22 @@ class VerifyTokenView(APIView):
 
     def post(self, request):
 
-        response = LoginDataVerificationSerializer(request.user.account).data
+        if request.user.type == Account.USER:
+            response = LoginDataVerificationSerializer(request.user.account).data
+            response['linked_object'] = request.user.account.get_additional_data()
 
-        # @todo: filter by domain here
+        if request.user.type == Account.SERVICE:
+            try:
+                token = Token.objects.get(token=request.data.get("token", False))
+
+                response = LoginDataVerificationSerializer(token.account).data
+
+            except Token.DoesNotExist:
+                raise exceptions.AuthenticationFailed({"error": "User token invalid"})
+
         policies = ABACPolicy.objects.all()
 
         response['abac'] = ABACPolicyMapSerializer(policies).data
-
-        # @todo: return custom profile data
-        # response['linked_object'] = request.user.account.get_additional_data()
 
         return Response(response)
 

@@ -1,10 +1,12 @@
 from ipaddress import IPv4Network, IPv4Address
 
+from django.core import signing
 from django.utils.deprecation import CallableTrue
+from django.utils.encoding import force_text
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework import exceptions
 
-from t_auth.api.models import Token
+from t_auth.api.models import Token, Account
 
 
 class TroodUser(object):
@@ -48,3 +50,24 @@ class TroodTokenAuthentication(BaseAuthentication):
 
             except Token.DoesNotExist:
                 raise exceptions.AuthenticationFailed()
+
+        if auth[0] == b'Service':
+            try:
+                creds = force_text(auth[1]).split(':')
+                account = Account.objects.get(login=creds[0])
+
+                signer = signing.Signer(account.pwd_hash, salt="trood.")
+
+                try:
+                    original = signer.unsign(auth[1])
+                    if original == creds[0]:
+                        return account, auth[1]
+
+                    raise exceptions.AuthenticationFailed()
+
+                except signing.BadSignature:
+                    raise exceptions.AuthenticationFailed({"error": "Incorrect (faked?) token"})
+
+            except Token.DoesNotExist:
+                raise exceptions.AuthenticationFailed()
+
