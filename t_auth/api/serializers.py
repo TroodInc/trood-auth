@@ -7,8 +7,9 @@ Object serializers
 import hashlib
 import uuid
 
+from django.core.validators import EmailValidator
 from rest_framework import serializers, fields
-from rest_framework.fields import EmailField
+from django.utils.translation import ugettext_lazy as _
 
 from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
@@ -38,7 +39,6 @@ class RegisterSerializer(serializers.Serializer):
 
 
 class AccountSerializer(serializers.ModelSerializer):
-    login = EmailField(required=True)
 
     class Meta:
         model = Account
@@ -47,6 +47,16 @@ class AccountSerializer(serializers.ModelSerializer):
             'unique_token', 'pwd_hash', 'type', 'cidr',
         )
         read_only_fields = ('id', 'created', )
+
+    def validate(self, data):
+        if data.get('type', None) == Account.SERVICE:
+            return super(AccountSerializer, self).validate(data)
+
+        # @todo: validator must be configured in settings
+        validator = EmailValidator(_('Users login must be a valid email address.'))
+        validator(data['login'])
+
+        return super(AccountSerializer, self).validate(data)
 
     def to_internal_value(self, data):
         password = data.get('password', None)
@@ -66,7 +76,9 @@ class AccountSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super(AccountSerializer, self).to_representation(instance)
         ret.pop('unique_token')
-        ret.pop('pwd_hash')
+        if instance.type == Account.USER:
+            ret.pop('pwd_hash')
+
         ret['role'] = AccountRoleSerializer(instance.role).data
 
         return ret
