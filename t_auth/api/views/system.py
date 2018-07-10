@@ -27,6 +27,8 @@ class VerifyTokenView(APIView):
 
             policies = ABACPolicy.objects.all()
 
+            policies = ABACPolicy.objects.all()
+
         if request.user.type == Account.SERVICE:
             token_type = request.data.get("type")
             if token_type == Account.USER:
