@@ -53,8 +53,9 @@ class AccountSerializer(serializers.ModelSerializer):
             return super(AccountSerializer, self).validate(data)
 
         # @todo: validator must be configured in settings
-        validator = EmailValidator(_('Users login must be a valid email address.'))
-        validator(data['login'])
+        if 'login' in data:
+            validator = EmailValidator(_('Users login must be a valid email address.'))
+            validator(data['login'])
 
         return super(AccountSerializer, self).validate(data)
 
