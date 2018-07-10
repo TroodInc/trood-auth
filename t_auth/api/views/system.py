@@ -1,5 +1,8 @@
 import datetime
+
+from django.core import signing
 from django.utils import timezone
+from django.utils.encoding import force_text
 from rest_framework import exceptions
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -16,21 +19,49 @@ class VerifyTokenView(APIView):
     permission_classes = (IsAuthenticated, )
 
     def post(self, request):
+        token = request.data.get("token", False)
 
         if request.user.type == Account.USER:
             response = LoginDataVerificationSerializer(request.user.account).data
             response['linked_object'] = request.user.account.get_additional_data()
 
+            policies = ABACPolicy.objects.all()
+
         if request.user.type == Account.SERVICE:
-            try:
-                token = Token.objects.get(token=request.data.get("token", False))
+            token_type = request.data.get("type")
+            if token_type == Account.USER:
+                try:
+                    token = Token.objects.get(token=token)
 
-                response = LoginDataVerificationSerializer(token.account).data
+                    response = LoginDataVerificationSerializer(token.account).data
 
-            except Token.DoesNotExist:
-                raise exceptions.AuthenticationFailed({"error": "User token invalid"})
+                except Token.DoesNotExist:
+                    raise exceptions.AuthenticationFailed({"error": "User token invalid"})
 
-        policies = ABACPolicy.objects.all()
+                policies = ABACPolicy.objects.all()
+
+            if token_type == Account.SERVICE:
+
+                try:
+                    parts = force_text(token).split(':')
+                    account = Account.objects.get(login=parts[0])
+
+                    signer = signing.Signer(account.pwd_hash, salt="trood.")
+
+                    try:
+                        original = signer.unsign(token)
+                        if original != parts[0]:
+                            raise exceptions.AuthenticationFailed({"error": "Service token invalid"})
+
+                        response = LoginDataVerificationSerializer(account).data
+
+                    except signing.BadSignature:
+                        raise exceptions.AuthenticationFailed({"error": "Incorrect (faked?) token"})
+
+                except Account.DoesNotExist:
+                    raise exceptions.AuthenticationFailed({"error": "Service token invalid"})
+
+                policies = ABACPolicy.objects.filter(domain=parts[0])
 
         response['abac'] = ABACPolicyMapSerializer(policies).data
 
