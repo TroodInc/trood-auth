@@ -92,7 +92,9 @@ class Account(models.Model):
             )
 
             if response.status_code == 200:
-                data = response.json()['data'][0]
+                response_decoded = response.json()
+                if 'data' in response_decoded and len(response_decoded['data']) == 1:
+                    return response_decoded['data'][0]
 
         return data
 
