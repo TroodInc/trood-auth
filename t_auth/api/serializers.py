@@ -46,7 +46,7 @@ class AccountSerializer(serializers.ModelSerializer):
             'id', 'login', 'created', 'status', 'active', 'role',
             'unique_token', 'pwd_hash', 'type', 'cidr',
         )
-        read_only_fields = ('id', 'created', )
+        read_only_fields = ('id', 'created', 'pwd_hash',)
 
     def validate(self, data):
         if data.get('type', None) == Account.SERVICE:
