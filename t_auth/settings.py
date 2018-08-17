@@ -208,7 +208,7 @@ class BaseConfiguration(Configuration):
 
 
 try:
-    from custom_configuration import CustomConfiguration
+    from .custom_configuration import CustomConfiguration
 except ImportError:
     class CustomConfiguration:
         pass
