@@ -6,10 +6,13 @@ Object serializers
 """
 import hashlib
 import uuid
+from typing import Optional
 
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.core.validators import EmailValidator
-from rest_framework import serializers, fields
 from django.utils.translation import ugettext_lazy as _
+from rest_framework import serializers, fields
 
 from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
@@ -18,28 +21,34 @@ from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
 
 
 class LoginDataVerificationSerializer(serializers.ModelSerializer):
-    role = serializers.CharField(source='role.name')
-
     class Meta:
         model = Account
-        fields = ('id', 'login', 'created', 'active', 'status', 'role', )
+        fields = ('id', 'login', 'created', 'active', 'status', 'role',)
 
 
 class RegisterSerializer(serializers.Serializer):
     login = fields.EmailField(required=True)
     password = fields.CharField(required=True)
 
+    def get_default_role(self) -> Optional[AccountRole]:
+        if hasattr(settings, 'DEFAULT_ACCOUNT_ROLE_ID') and settings.DEFAULT_ACCOUNT_ROLE_ID:
+            try:
+                return AccountRole.objects.get(id=settings.DEFAULT_ACCOUNT_ROLE_ID)
+            except AccountRole.DoesNotExist:
+                raise ImproperlyConfigured('Default account role "{}" does not exist')
+        return None
+
     def save(self, **kwargs):
         account = AccountFactory.factory(
             login=self.validated_data['login'],
-            password=self.validated_data['password']
+            password=self.validated_data['password'],
+            role=self.get_default_role()
         )
 
         return account
 
 
 class AccountSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Account
         fields = (
@@ -86,10 +95,9 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class AccountRoleSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = AccountRole
-        fields = ('id', 'name', 'status', )
+        fields = ('id', 'name', 'status',)
 
     def to_representation(self, instance):
         obj = super(AccountRoleSerializer, self).to_representation(instance)
@@ -100,7 +108,7 @@ class AccountRoleSerializer(serializers.ModelSerializer):
 class ABACActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ABACAction
-        fields = ('id', 'name', 'resource', )
+        fields = ('id', 'name', 'resource',)
 
 
 class ABACAttributeSerializer(serializers.ModelSerializer):
@@ -108,7 +116,7 @@ class ABACAttributeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ABACAttribute
-        fields = ('id', 'name', 'type', 'resource', )
+        fields = ('id', 'name', 'type', 'resource',)
 
 
 class ABACResourceSerializer(serializers.ModelSerializer):
@@ -123,7 +131,7 @@ class ABACResourceSerializer(serializers.ModelSerializer):
 class ABACRuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = ABACRule
-        fields = ('result', 'rule', )
+        fields = ('result', 'rule',)
 
 
 class ABACPolicySerializer(serializers.ModelSerializer):

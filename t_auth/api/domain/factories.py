@@ -22,6 +22,7 @@ class AccountFactory:
         account.unique_token = cls._create_token()
         account.pwd_hash = AuthenticationService.get_password_hash(password, account.unique_token)
         account.status = status
+        account.role = role
         account.save()
 
         return account
