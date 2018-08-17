@@ -9,10 +9,10 @@ import datetime
 import uuid
 
 import requests
+from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
-from django.conf import settings
 from django.utils.deprecation import CallableTrue
 from django.utils.translation import ugettext_lazy as _
 
@@ -31,6 +31,7 @@ class AccountRole(models.Model):
     One role in our system
     Role acts as a scope for permissions
     """
+    id = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=128, null=False)
     status = models.CharField(max_length=32, choices=ROLE_STATUS, default=STATUS_ACTIVE)
 
