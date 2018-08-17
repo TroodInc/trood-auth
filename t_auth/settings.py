@@ -206,6 +206,7 @@ class BaseConfiguration(Configuration):
             'release': os.environ.get('RAVEN_CONFIG_RELEASE')
         }
 
+
 try:
     from custom_configuration import CustomConfiguration
 except ImportError:
@@ -213,7 +214,7 @@ except ImportError:
         pass
 
 
-class Development(BaseConfiguration):
+class Development(CustomConfiguration, BaseConfiguration):
     DEBUG = True
 
 
