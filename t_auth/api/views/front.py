@@ -53,9 +53,9 @@ class LoginView(APIView):
                 data['linked_object'] = account.get_additional_data()
 
             else:
-                raise AuthenticationFailed({"error": 'invalid_credentials'})
+                raise AuthenticationFailed({"error": f'Invalid password for user {login}'})
         except ObjectDoesNotExist:
-            raise AuthenticationFailed({"error": 'invalid_credentials'})
+            raise AuthenticationFailed({"error": f'User with login {login} not found'})
         return Response(data, status=status.HTTP_200_OK)
 
 

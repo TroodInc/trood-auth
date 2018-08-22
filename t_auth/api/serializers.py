@@ -44,7 +44,7 @@ class AccountSerializer(serializers.ModelSerializer):
         model = Account
         fields = (
             'id', 'login', 'created', 'status', 'active', 'role',
-            'unique_token', 'pwd_hash', 'type', 'cidr',
+            'pwd_hash', 'type', 'cidr',
         )
         read_only_fields = ('id', 'created', 'pwd_hash',)
 
@@ -61,22 +61,20 @@ class AccountSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         password = data.get('password', None)
-
+        data = super(AccountSerializer, self).to_internal_value(data)
         if password:
             token = 'acct' + uuid.uuid4().hex
             unique_token = hashlib.sha256(token.encode('utf-8')).hexdigest()
-            new_data = data.copy()
-            new_data.update({
+
+            data.update({
                 'unique_token': unique_token,
                 'pwd_hash': AuthenticationService.get_password_hash(password, unique_token),
             })
-            return super(AccountSerializer, self).to_internal_value(new_data)
 
-        return super(AccountSerializer, self).to_internal_value(data)
+        return data
 
     def to_representation(self, instance):
         ret = super(AccountSerializer, self).to_representation(instance)
-        ret.pop('unique_token')
         if instance.type == Account.USER:
             ret.pop('pwd_hash')
 
