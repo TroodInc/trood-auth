@@ -64,7 +64,7 @@ class LogoutView(APIView):
 
     def post(self, request):
         if 'all' in request.data:
-            Token.objects.filter(account_id=request.user.account.id).delete()
+            Token.objects.filter(account_id=request.user.id).delete()
         else:
             Token.objects.filter(token=request.user.token.token).delete()
 

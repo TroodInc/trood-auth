@@ -1,23 +1,11 @@
 from ipaddress import IPv4Network, IPv4Address
 
 from django.core import signing
-from django.utils.deprecation import CallableTrue
 from django.utils.encoding import force_text
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework import exceptions
 
 from t_auth.api.models import Token, Account
-
-
-class TroodUser(object):
-
-    def __init__(self, account, token):
-        self.account = account
-        self.token = token
-
-    @property
-    def is_authenticated(self):
-        return CallableTrue
 
 
 class TroodTokenAuthentication(BaseAuthentication):
@@ -42,9 +30,7 @@ class TroodTokenAuthentication(BaseAuthentication):
                     ip = IPv4Address(request.META.get('REMOTE_ADDR'))
 
                 if ip in network:
-                    user = TroodUser(token.account, token)
-
-                    return user, token.token
+                    return token.account, token.token
 
                 raise exceptions.AuthenticationFailed()
 
