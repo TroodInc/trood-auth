@@ -22,8 +22,8 @@ class VerifyTokenView(APIView):
         token = request.data.get("token", False)
 
         if request.user.type == Account.USER:
-            response = LoginDataVerificationSerializer(request.user.account).data
-            response['linked_object'] = request.user.account.get_additional_data()
+            response = LoginDataVerificationSerializer(request.user).data
+            response['linked_object'] = request.user.get_additional_data()
 
             policies = ABACPolicy.objects.all()
 
