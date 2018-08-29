@@ -30,19 +30,21 @@ class RegisterSerializer(serializers.Serializer):
     login = fields.EmailField(required=True)
     password = fields.CharField(required=True)
 
-    def get_default_role(self) -> Optional[AccountRole]:
+    def _get_default_role(self) -> Optional[AccountRole]:
         if hasattr(settings, 'DEFAULT_ACCOUNT_ROLE_ID') and settings.DEFAULT_ACCOUNT_ROLE_ID:
             try:
                 return AccountRole.objects.get(id=settings.DEFAULT_ACCOUNT_ROLE_ID)
             except AccountRole.DoesNotExist:
-                raise ImproperlyConfigured('Default account role "{}" does not exist')
+                raise ImproperlyConfigured(
+                    'Default account role "{}" does not exist'.format(settings.DEFAULT_ACCOUNT_ROLE_ID)
+                )
         return None
 
     def save(self, **kwargs):
         account = AccountFactory.factory(
             login=self.validated_data['login'],
             password=self.validated_data['password'],
-            role=self.get_default_role()
+            role=self._get_default_role()
         )
 
         return account
