@@ -148,7 +148,10 @@ class BaseConfiguration(Configuration):
         }
     }
 
-    USER_PROFILE_DATA_URL = "http://custodian.trood:8000/custodian/data/bulk/employee?q=eq(account,{})"
+    USER_PROFILE_DATA_URL = os.environ.get(
+        'USER_PROFILE_DATA_URL', "http://custodian.trood:8000/custodian/data/bulk/employee?q=eq(account,{})"
+    )
+
 
 
 try:
