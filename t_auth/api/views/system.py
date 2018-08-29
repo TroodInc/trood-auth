@@ -90,6 +90,16 @@ class ABACProvisionAttributeMap(APIView):
 
     permission_classes = (AllowAny, )
 
+    def get(self, request):
+        domain = request.GET.get('domain', None)
+
+        if domain:
+            policies = ABACPolicy.objects.filter(domain=domain)
+        else:
+            policies = ABACPolicy.objects.all()
+
+        return Response(ABACPolicyMapSerializer(policies).data)
+
     def post(self, request):
         domain = request.data['domain']
 

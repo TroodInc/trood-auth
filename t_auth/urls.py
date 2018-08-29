@@ -25,7 +25,7 @@ router.register(r'policies', ABACPolicyViewSet, base_name='policies')
 router.register(r'check_2fa', api_views.TwoFactorViewSet, base_name='api_2fa')
 
 urlpatterns = [
-    url(r'^api/v1.0/abac-provision', api_views.system.ABACProvisionAttributeMap.as_view(), name='provision'),
+    url(r'^api/v1.0/abac', api_views.system.ABACProvisionAttributeMap.as_view(), name='abac'),
     url(r'^api/v1.0/login', api_views.front.LoginView.as_view(), name='login'),
     url(r'^api/v1.0/logout', api_views.front.LogoutView.as_view(), name='logout'),
     url(r'^api/v1.0/verify-token', t_auth.api.views.system.VerifyTokenView.as_view(), name='verify-token'),
