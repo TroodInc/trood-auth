@@ -48,7 +48,7 @@ class TroodTokenAuthentication(BaseAuthentication):
                     original = signer.unsign(auth[1])
                     if original == creds[0]:
                         # TODO: inconsistent with Token case return types(Account and Token instances)
-                        return account, auth[1]
+                        return account, Token(token=auth[1], account=account)
 
                     raise exceptions.AuthenticationFailed()
 
@@ -57,4 +57,3 @@ class TroodTokenAuthentication(BaseAuthentication):
 
             except Token.DoesNotExist:
                 raise exceptions.AuthenticationFailed()
-
