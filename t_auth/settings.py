@@ -15,7 +15,7 @@ import os
 from configurations import Configuration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-from t_auth.two_factor_auth.domain.constants import SECOND_AUTH_FACTOR_TYPE
+from t_auth.two_factor_auth.domain.constants import TWO_FACTOR_TYPE
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -159,9 +159,10 @@ class BaseConfiguration(Configuration):
     class TWO_FACTOR:
         AUTH_ENABLED = os.environ.get('TWO_FACTOR_AUTH_ENABLED', False)
         AUTH_REQUIRED = os.environ.get('TWO_FACTOR_AUTH_REQUIRED', True)
-        AUTH_TYPE = os.environ.get('TWO_FACTOR_AUTH_TYPE', SECOND_AUTH_FACTOR_TYPE.PHONE)
+        AUTH_TYPE = os.environ.get('TWO_FACTOR_AUTH_TYPE', TWO_FACTOR_TYPE.PHONE)
         # intermediate token ttl in minutes
         INTERMEDIATE_TOKEN_TTL = os.environ.get('TWO_FACTOR_INTERMEDIATE_TOKEN_TTL', 15)
+        MOCK_MODE = False
 
 
 try:

@@ -1,12 +1,12 @@
 import re
 
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, empty
 
 
 class PhoneField(CharField):
     def run_validation(self, data=None):
-        if data is not None:
+        if data is not None and not isinstance(data, empty):
             if len(re.sub(r'\D', u'', data)[-11:]) < 11:
                 raise ValidationError("Phone has invalid length")
 
