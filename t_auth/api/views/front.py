@@ -60,13 +60,13 @@ class LoginView(APIView):
 
 
 class LogoutView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         if 'all' in request.data:
             Token.objects.filter(account_id=request.user.id).delete()
         else:
-            Token.objects.filter(token=request.user.token.token).delete()
+            Token.objects.filter(token=request.auth.token).delete()
 
         return Response({}, status=200)
 
@@ -87,7 +87,7 @@ class RegistrationViewSet(BaseViewSet):
 
 
 class RecoveryView(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         login = request.data.get('login', None)

@@ -2,8 +2,8 @@ from ipaddress import IPv4Network, IPv4Address
 
 from django.core import signing
 from django.utils.encoding import force_text
-from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework import exceptions
+from rest_framework.authentication import BaseAuthentication, get_authorization_header
 
 from t_auth.api.models import Token, Account
 
@@ -30,7 +30,7 @@ class TroodTokenAuthentication(BaseAuthentication):
                     ip = IPv4Address(request.META.get('REMOTE_ADDR'))
 
                 if ip in network:
-                    return token.account, token.token
+                    return token.account, token
 
                 raise exceptions.AuthenticationFailed()
 
@@ -47,7 +47,8 @@ class TroodTokenAuthentication(BaseAuthentication):
                 try:
                     original = signer.unsign(auth[1])
                     if original == creds[0]:
-                        return account, auth[1]
+                        # TODO: inconsistent with Token case return types(Account and Token instances)
+                        return account, Token(token=auth[1], account=account)
 
                     raise exceptions.AuthenticationFailed()
 
@@ -56,4 +57,3 @@ class TroodTokenAuthentication(BaseAuthentication):
 
             except Token.DoesNotExist:
                 raise exceptions.AuthenticationFailed()
-
