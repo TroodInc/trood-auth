@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from t_auth.api.domain.constants import TOKEN_TYPE
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
@@ -94,7 +95,7 @@ class RecoveryView(APIView):
         try:
             account = Account.objects.get(login=login)
 
-            token = Token.objects.create(account=account, type=Token.RECOVERY)
+            token = Token.objects.create(account=account, type=TOKEN_TYPE.RECOVERY)
 
             message_body = render_to_string('recovery.html', context={
                 'link': settings.RECOVERY_LINK.format(token.token),
@@ -116,7 +117,7 @@ class RecoveryView(APIView):
         token_str = request.data.get('token', None)
 
         try:
-            token = Token.objects.get(token=token_str, type=Token.RECOVERY)
+            token = Token.objects.get(token=token_str, type=TOKEN_TYPE.RECOVERY)
 
             password = request.data.get('password', None)
             password_confirmation = request.data.get('password_confirmation', None)

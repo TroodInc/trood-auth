@@ -8,7 +8,7 @@ from t_auth.api.models import Account
 
 @pytest.mark.django_db
 def test_creates_account_and_returns_2fa_enabled_flag_if_2fa_enabled(client: Client, settings):
-    settings.TWO_FACTOR_AUTH_ENABLED = True
+    settings.TWO_FACTOR.AUTH_ENABLED = True
 
     account_data = {
         'login': 'test@example.com',

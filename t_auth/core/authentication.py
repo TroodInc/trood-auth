@@ -5,6 +5,7 @@ from django.utils.encoding import force_text
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 
+from t_auth.api.domain.constants import TOKEN_TYPE
 from t_auth.api.models import Token, Account
 
 
@@ -19,7 +20,7 @@ class TroodTokenAuthentication(BaseAuthentication):
 
         if auth[0] == b'Token':
             try:
-                token = Token.objects.get(token=auth[1], type=Token.AUTHORIZATION)
+                token = Token.objects.get(token=auth[1], type=TOKEN_TYPE.AUTHORIZATION)
 
                 network = IPv4Network(token.account.cidr)
 
