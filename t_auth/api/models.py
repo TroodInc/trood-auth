@@ -16,6 +16,8 @@ from django.utils import timezone
 from django.utils.deprecation import CallableTrue
 from django.utils.translation import ugettext_lazy as _
 
+from t_auth.api.domain.constants import TOKEN_TYPE
+
 
 class AccountRole(models.Model):
     STATUS_ACTIVE = 'active'
@@ -101,18 +103,10 @@ class Account(models.Model):
 
 
 class Token(models.Model):
-    RECOVERY = 'recovery'
-    AUTHORIZATION = 'authorization'
-
-    TOKEN_TYPES = (
-        (RECOVERY, _('Recovery')),
-        (AUTHORIZATION, _('Authorization'))
-    )
-
     token = models.CharField(max_length=64, null=False)
     account = models.ForeignKey(Account)
     expire = models.DateTimeField(null=False)
-    type = models.CharField(_('Type'), max_length=24, choices=TOKEN_TYPES, default=AUTHORIZATION)
+    type = models.CharField(_('Type'), max_length=24, choices=TOKEN_TYPE.CHOICES, default=TOKEN_TYPE.AUTHORIZATION)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):

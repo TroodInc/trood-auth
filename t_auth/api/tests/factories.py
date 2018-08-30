@@ -8,7 +8,7 @@ from t_auth.api.models import Account, AccountRole
 
 
 class AccountFactory(factory.DjangoModelFactory):
-    login = factory.Sequence(lambda n: 'account#{}'.format(n))
+    login = factory.Sequence(lambda n: 'account#{}@mail.com'.format(n))
     pwd_hash = ''
 
     unique_token = ''
@@ -28,6 +28,7 @@ class AccountFactory(factory.DjangoModelFactory):
 
 
 class AccountRoleFactory(factory.DjangoModelFactory):
+    id = "DEFAULT_ROLE"
     name = factory.Sequence(lambda n: 'Role#{}'.format(n))
     status = AccountRole.STATUS_ACTIVE
 

@@ -15,6 +15,8 @@ import os
 from configurations import Configuration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from t_auth.two_factor_auth.domain.constants import SECOND_AUTH_FACTOR_TYPE
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -41,7 +43,8 @@ class BaseConfiguration(Configuration):
         'django_filters',
 
         't_auth.api',
-        't_auth.core'
+        't_auth.core',
+        't_auth.two_factor_auth'
     ]
 
     MIDDLEWARE = [
@@ -152,6 +155,13 @@ class BaseConfiguration(Configuration):
         'USER_PROFILE_DATA_URL', "http://custodian.trood:8000/custodian/data/bulk/employee?q=eq(account,{})"
     )
 
+    # 2FA SETTINGS
+    class TWO_FACTOR:
+        AUTH_ENABLED = os.environ.get('TWO_FACTOR_AUTH_ENABLED', False)
+        AUTH_REQUIRED = os.environ.get('TWO_FACTOR_AUTH_REQUIRED', True)
+        AUTH_TYPE = os.environ.get('TWO_FACTOR_AUTH_TYPE', SECOND_AUTH_FACTOR_TYPE.PHONE)
+        # intermediate token ttl in minutes
+        INTERMEDIATE_TOKEN_TTL = os.environ.get('TWO_FACTOR_INTERMEDIATE_TOKEN_TTL', 15)
 
 
 try:

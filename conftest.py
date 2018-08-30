@@ -1,0 +1,1 @@
+from t_auth.api.tests.fixtures import *

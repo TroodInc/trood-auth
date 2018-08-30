@@ -21,6 +21,16 @@ from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
 
 
 class LoginDataVerificationSerializer(serializers.ModelSerializer):
+
+    # static fields declaration with/without "2fa_enabled" does not work with tests well
+    def __init__(self, *args, **kwargs):
+        super(LoginDataVerificationSerializer, self).__init__(*args, **kwargs)
+        if settings.TWO_FACTOR_AUTH_ENABLED:
+            self.fields['2fa_enabled'] = serializers.SerializerMethodField()
+
+    def get_2fa_enabled(self, object: Account):
+        return object.second_auth_factors.count() > 0
+
     class Meta:
         model = Account
         fields = ('id', 'login', 'created', 'active', 'status', 'role',)
