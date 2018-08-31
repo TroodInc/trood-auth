@@ -18,6 +18,7 @@ from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
     ABACAttribute, ABACPolicy, ABACRule
+from t_auth.two_factor_auth.domain.services import AccountValidationService
 
 
 class LoginDataVerificationSerializer(serializers.ModelSerializer):
@@ -26,10 +27,10 @@ class LoginDataVerificationSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super(LoginDataVerificationSerializer, self).__init__(*args, **kwargs)
         if settings.TWO_FACTOR_AUTH_ENABLED:
-            self.fields['2fa_enabled'] = serializers.SerializerMethodField()
+            self.fields['2fa_binding_required'] = serializers.SerializerMethodField()
 
-    def get_2fa_enabled(self, object: Account):
-        return object.second_auth_factors.count() > 0
+    def get_2fa_binding_required(self, object: Account):
+        return AccountValidationService.two_factor_is_enabled_for_account(object)
 
     class Meta:
         model = Account

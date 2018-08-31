@@ -49,5 +49,5 @@ def test_creates_account_and_returns_2fa_enabled_flag_if_2fa_enabled(client: Cli
     decoded_response = response.json()
     assert_that(decoded_response['data']['status'], equal_to(Account.STATUS_ACTIVE))
     assert_that(decoded_response['data']['id'], instance_of(int))
-    assert_that(decoded_response['data'], has_key('2fa_enabled'))
-    assert_that(decoded_response['data']['2fa_enabled'], equal_to(False))
+    assert_that(decoded_response['data'], has_key('2fa_binding_required'))
+    assert_that(decoded_response['data']['2fa_binding_required'], equal_to(False))

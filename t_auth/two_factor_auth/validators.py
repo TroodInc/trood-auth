@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from t_auth.api.models import Account
+from t_auth.two_factor_auth.domain.constants import EXCEPTIONS
 from t_auth.two_factor_auth.domain.services import IntermediateTokenValidationService
 from t_auth.two_factor_auth.models import SecondAuthFactor
 
@@ -32,5 +33,5 @@ class IntermediateTokenValidator:
             token=values['temporary_token']
         )
         if not intermediate_token:
-            raise ValidationError({"intermediate_token": "Provided token is not valid"})
+            raise ValidationError({"intermediate_token": EXCEPTIONS.TOKEN_IS_INVALID})
         setattr(self, 'intermediate_token', intermediate_token)

@@ -5,7 +5,7 @@ from hamcrest import *
 from rest_framework import status
 
 from t_auth.api.tests.factories import AccountFactory
-from t_auth.two_factor_auth.domain.constants import TWO_FACTOR_TYPE
+from t_auth.two_factor_auth.domain.constants import TWO_FACTOR_TYPE, EXCEPTIONS
 from t_auth.two_factor_auth.domain.factories import IntermediateTokenFactory
 from t_auth.two_factor_auth.domain.services import IntermediateTokenValidationService
 
@@ -21,7 +21,7 @@ def test_creates_second_auth_factor_with_valid_intermediate_token(client: Client
         'factor_id': factor_id,
         'temporary_token': intermediate_token.token,
     }
-    response = client.post(reverse('2fa-auth:verify'), data=data)
+    response = client.post(reverse('2fa-auth:bind-verify'), data=data)
     decoded_response = response.json()
     assert_that(response.status_code, equal_to(status.HTTP_201_CREATED))
     assert_that(decoded_response['data']['token'], is_not(empty()))
@@ -38,7 +38,7 @@ def test_returns_error_with_invalid_token_provided(client: Client, settings):
         'factor_id': '79999999999',
         'temporary_token': 'some-invalid-token',
     }
-    response = client.post(reverse('2fa-auth:verify'), data=data)
+    response = client.post(reverse('2fa-auth:bind-verify'), data=data)
     decoded_response = response.json()
     assert_that(response.status_code, equal_to(status.HTTP_400_BAD_REQUEST))
-    assert_that(decoded_response['data']['intermediate_token'][0], equal_to("Provided token is not valid"))
+    assert_that(decoded_response['data']['intermediate_token'][0], equal_to(EXCEPTIONS.TOKEN_IS_INVALID))

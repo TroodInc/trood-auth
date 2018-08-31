@@ -20,6 +20,7 @@ from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
 from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
+from t_auth.two_factor_auth.domain.constants import EXCEPTIONS
 from .base import BaseViewSet
 
 
@@ -28,6 +29,17 @@ class LoginView(APIView):
     Provides external API /login method
     """
     permission_classes = (PublicEndpoint,)
+
+    def _validate_preconditions(self, account):
+        # check account is active
+        if not account.active:
+            raise AuthenticationFailed({"error": "Account not active"})
+
+        # if 2fa is enabled verify the account has second factor bind
+        if settings.TWO_FACTOR_AUTH_ENABLED:
+            from t_auth.two_factor_auth.domain.services import AccountValidationService
+            if not AccountValidationService.two_factor_is_enabled_for_account(account):
+                raise AuthenticationFailed({"error": EXCEPTIONS.TWO_FACTOR_BIND_REQUIRED})
 
     def post(self, request):
         login = request.data.get('login')
@@ -38,9 +50,7 @@ class LoginView(APIView):
             )
 
             if AuthenticationService.authenticate(account, password):
-                if not account.active:
-                    raise AuthenticationFailed({"error": "Account not active"})
-
+                self._validate_preconditions(account)
                 data = LoginDataVerificationSerializer(account).data
 
                 token = Token.objects.create(account=account)

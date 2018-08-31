@@ -19,5 +19,5 @@ from .views import BindSecondAuthFactorApiView, VerifyIntermediateTokenApiView
 
 urlpatterns = [
     url(r'bind/$', BindSecondAuthFactorApiView.as_view(), name="bind"),
-    url(r'verify/$', VerifyIntermediateTokenApiView.as_view(), name="verify"),
+    url(r'bind/verify/$', VerifyIntermediateTokenApiView.as_view(), name="bind-verify"),
 ]
