@@ -25,7 +25,7 @@ class LoginDataVerificationSerializer(serializers.ModelSerializer):
     # static fields declaration with/without "2fa_enabled" does not work with tests well
     def __init__(self, *args, **kwargs):
         super(LoginDataVerificationSerializer, self).__init__(*args, **kwargs)
-        if settings.TWO_FACTOR.AUTH_ENABLED:
+        if settings.TWO_FACTOR_AUTH_ENABLED:
             self.fields['2fa_enabled'] = serializers.SerializerMethodField()
 
     def get_2fa_enabled(self, object: Account):

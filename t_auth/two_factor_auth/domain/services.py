@@ -15,7 +15,7 @@ class IntermediateTokenValidationService:
                 factor_id=factor_id,
                 factor_type=factor_type,
                 expire__gte=datetime.datetime.now(tz=pytz.UTC) - datetime.timedelta(
-                    minutes=settings.TWO_FACTOR.INTERMEDIATE_TOKEN_TTL),
+                    minutes=settings.TWO_FACTOR_INTERMEDIATE_TOKEN_TTL),
                 used=False
             )
         except IntermediateToken.DoesNotExist:

@@ -156,13 +156,12 @@ class BaseConfiguration(Configuration):
     )
 
     # 2FA SETTINGS
-    class TWO_FACTOR:
-        AUTH_ENABLED = os.environ.get('TWO_FACTOR_AUTH_ENABLED', False)
-        AUTH_REQUIRED = os.environ.get('TWO_FACTOR_AUTH_REQUIRED', True)
-        AUTH_TYPE = os.environ.get('TWO_FACTOR_AUTH_TYPE', TWO_FACTOR_TYPE.PHONE)
-        # intermediate token ttl in minutes
-        INTERMEDIATE_TOKEN_TTL = os.environ.get('TWO_FACTOR_INTERMEDIATE_TOKEN_TTL', 15)
-        MOCK_MODE = False
+    TWO_FACTOR_AUTH_ENABLED = os.environ.get('TWO_FACTOR_AUTH_ENABLED', False)
+    TWO_FACTOR_AUTH_REQUIRED = os.environ.get('TWO_FACTOR_AUTH_REQUIRED', True)
+    TWO_FACTOR_AUTH_TYPE = os.environ.get('TWO_FACTOR_AUTH_TYPE', TWO_FACTOR_TYPE.PHONE)
+    # intermediate token ttl in minutes
+    TWO_FACTOR_INTERMEDIATE_TOKEN_TTL = os.environ.get('TWO_FACTOR_INTERMEDIATE_TOKEN_TTL', 15)
+    TWO_FACTOR_MOCK_MODE = False
 
 
 try:

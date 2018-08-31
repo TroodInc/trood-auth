@@ -11,7 +11,7 @@ class BindSecondAuthFactorApiView(CreateAPIView):
     }
 
     def get_serializer(self, *args, **kwargs):
-        serializer_class = self.serializer_classes[settings.TWO_FACTOR.AUTH_TYPE]
+        serializer_class = self.serializer_classes[settings.TWO_FACTOR_AUTH_TYPE]
         kwargs['context'] = self.get_serializer_context()
         return serializer_class(*args, **kwargs)
 

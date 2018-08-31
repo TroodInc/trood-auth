@@ -23,7 +23,7 @@ class PhoneFactorBindingSerializer(serializers.ModelSerializer):
         self.instance = IntermediateTokenFactory.factory(
             account=self._get_account(self.validated_data['login']),
             factor_id=self.validated_data['factor_id'],
-            factor_type=settings.TWO_FACTOR.AUTH_TYPE
+            factor_type=settings.TWO_FACTOR_AUTH_TYPE
         )
         return self.instance
 

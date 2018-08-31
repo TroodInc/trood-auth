@@ -27,7 +27,7 @@ class IntermediateTokenValidator:
 
     def __call__(self, values):
         intermediate_token = IntermediateTokenValidationService.validate(
-            factor_type=settings.TWO_FACTOR.AUTH_TYPE,
+            factor_type=settings.TWO_FACTOR_AUTH_TYPE,
             factor_id=values['factor_id'],
             token=values['temporary_token']
         )

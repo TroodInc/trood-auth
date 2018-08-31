@@ -11,7 +11,7 @@ from t_auth.two_factor_auth.models import IntermediateToken, SecondAuthFactor
 class IntermediateTokenFactory:
     @classmethod
     def factory(cls, account: Account, factor_id: str, factor_type: str):
-        if settings.TWO_FACTOR.MOCK_MODE:
+        if settings.TWO_FACTOR_MOCK_MODE:
             token = '000000'
             IntermediateToken.objects.filter(token=token).delete()
         else:
@@ -20,7 +20,7 @@ class IntermediateTokenFactory:
             factor_id=factor_id,
             account=account,
             expire=datetime.datetime.now(tz=pytz.UTC) + datetime.timedelta(
-                minutes=settings.TWO_FACTOR.INTERMEDIATE_TOKEN_TTL),
+                minutes=settings.TWO_FACTOR_INTERMEDIATE_TOKEN_TTL),
             token=token,
             factor_type=factor_type
         )

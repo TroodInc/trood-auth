@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^api/v1.0/password-recovery', t_auth.api.views.front.RecoveryView.as_view(), name='password-recovery'),
     url(r'^api/v1.0/invalidate-token', t_auth.api.views.system.InvalidateTokenView.as_view(), name='invalidate-token'),
     url(r'^api/v1.0/', include(router.urls, namespace='api')),
-    url(r'^api/v1.0/2fa', include(two_factor_urls, namespace='2fa-auth')),
+    url(r'^api/v1.0/2fa/', include(two_factor_urls, namespace='2fa-auth')),
 
 ]
 if settings.DEBUG:
