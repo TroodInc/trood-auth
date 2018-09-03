@@ -17,7 +17,7 @@ from rest_framework import serializers, fields
 from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
-    ABACAttribute, ABACPolicy, ABACRule
+    ABACAttribute, ABACPolicy, ABACRule, Token
 from t_auth.two_factor_auth.domain.services import AccountValidationService
 
 
@@ -59,6 +59,32 @@ class RegisterSerializer(serializers.Serializer):
         )
 
         return account
+
+
+class AuthorizationTokenSerializer(serializers.ModelSerializer):
+    # token
+    expire = serializers.DateTimeField(format='%Y-%m-%dT%H-%M', read_only=True)
+    token = serializers.CharField(read_only=True)
+
+    # account
+    id = serializers.IntegerField(source='account.id', read_only=True)
+    abac = serializers.SerializerMethodField(read_only=True)
+    login = serializers.CharField(source='account.login', read_only=True)
+    created = serializers.DateTimeField(source='account.created', read_only=True)
+    active = serializers.BooleanField(source='account.active', read_only=True)
+    status = serializers.CharField(source='account.status', read_only=True)
+    role = serializers.CharField(source='account.role', read_only=True)
+    linked_object = serializers.SerializerMethodField(read_only=True)
+
+    def get_abac(self, obj):
+        return ABACPolicyMapSerializer(ABACPolicy.objects.all()).data
+
+    def get_linked_object(self, obj):
+        return obj.account.get_additional_data()
+
+    class Meta:
+        model = Token
+        fields = ('expire', 'token', 'id', 'abac', 'login', 'created', 'active', 'status', 'role', 'linked_object')
 
 
 class AccountSerializer(serializers.ModelSerializer):

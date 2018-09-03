@@ -7,7 +7,7 @@ from rest_framework import status
 from t_auth.api.tests.factories import AccountFactory
 from t_auth.two_factor_auth.domain.constants import TWO_FACTOR_TYPE
 from t_auth.two_factor_auth.models import IntermediateToken
-from t_auth.two_factor_auth.tests.factories import SecondAuthFactorFactory
+from t_auth.two_factor_auth.tests.factories import AuthFactorFactory
 
 
 @pytest.mark.django_db
@@ -45,11 +45,10 @@ def test_returns_error_with_invalid_phone_number(client: Client):
 @pytest.mark.django_db
 def test_returns_error_with_duplicated_phone_number(client: Client):
     account = AccountFactory()
-    phone_number = '79999999999'
-    SecondAuthFactorFactory(account=account, factor_id=phone_number, type=TWO_FACTOR_TYPE.PHONE)
+    auth_factor = AuthFactorFactory(account=account, type=TWO_FACTOR_TYPE.SMS)
     data = {
         'login': account.login,
-        'factor_id': phone_number
+        'factor_id': auth_factor.factor_id
     }
 
     response = client.post(reverse('2fa-auth:bind'), data=data)

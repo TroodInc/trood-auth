@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url
 
-from .views import BindSecondAuthFactorApiView, VerifyIntermediateTokenApiView
+from .views import BindSecondAuthFactorApiView, BindingIntermediateTokenVerificationApiView, \
+    AuthorizationIntermediateTokenVerificationApiView
 
 urlpatterns = [
     url(r'bind/$', BindSecondAuthFactorApiView.as_view(), name="bind"),
-    url(r'bind/verify/$', VerifyIntermediateTokenApiView.as_view(), name="bind-verify"),
+    url(r'bind/verify/$', BindingIntermediateTokenVerificationApiView.as_view(), name="bind-verify"),
+    url(r'auth/verify/$', AuthorizationIntermediateTokenVerificationApiView.as_view(), name="auth-verify"),
 ]
