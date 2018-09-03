@@ -156,8 +156,7 @@ class BaseConfiguration(Configuration):
     )
 
     # 2FA SETTINGS
-    TWO_FACTOR_AUTH_ENABLED = os.environ.get('TWO_FACTOR_AUTH_ENABLED', False)
-    TWO_FACTOR_AUTH_REQUIRED = os.environ.get('TWO_FACTOR_AUTH_REQUIRED', True)
+    TWO_FACTOR_AUTH_ENABLED = os.environ.get('TWO_FACTOR_AUTH_ENABLED', False) == "True"
     TWO_FACTOR_AUTH_TYPE = os.environ.get('TWO_FACTOR_AUTH_TYPE', TWO_FACTOR_TYPE.SMS)
     # intermediate token ttl in minutes
     TWO_FACTOR_INTERMEDIATE_TOKEN_TTL = os.environ.get('TWO_FACTOR_INTERMEDIATE_TOKEN_TTL', 15)
