@@ -161,7 +161,6 @@ class BaseConfiguration(Configuration):
     TWO_FACTOR_AUTH_TYPE = os.environ.get('TWO_FACTOR_AUTH_TYPE', TWO_FACTOR_TYPE.SMS)
     # intermediate token ttl in minutes
     TWO_FACTOR_INTERMEDIATE_TOKEN_TTL = os.environ.get('TWO_FACTOR_INTERMEDIATE_TOKEN_TTL', 15)
-    TWO_FACTOR_MOCK_MODE = False
 
 
 try:
@@ -173,6 +172,8 @@ except ImportError:
 
 class Development(CustomConfiguration, BaseConfiguration):
     DEBUG = True
+    USER_PROFILE_DATA_URL = None
+    TWO_FACTOR_AUTH_ENABLED = True
 
 
 class Production(CustomConfiguration, BaseConfiguration):

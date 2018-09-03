@@ -1,0 +1,217 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Auth Service",
+		"_postman_id": "e4a61cf2-3d1d-3cb7-100f-2d567812d0ee",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Detail Account",
+			"request": {
+				"url": "http://{{host}}/api/v1.0/account/1/",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Token {{auth_token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"admin2@demo.com\",\n    \"password\": \"admin\",\n    \"role\": \"ADMIN\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update Account",
+			"request": {
+				"url": "http://{{host}}/api/v1.0/account/1/",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Token {{auth_token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"admin2@demo.com\",\n    \"password\": \"admin\",\n    \"role\": \"ADMIN\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"url": "http://{{host}}/api/v1.0/login/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"admin@demo.com\",\n    \"password\": \"demo\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Verify Token",
+			"request": {
+				"url": "http://{{host}}/api/v1.0/verify-token",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Token 1ecf7de4af6c490ebe7c55308f015b0e",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"token\": \"0d24a088ba4e40de83ca3f5fb7acc1aa\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Registration",
+			"request": {
+				"url": "http://{{host}}/api/v1.0/register/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "{{auth_token}}",
+						"description": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"login\": \"admin@demo.com\", \"password\": \"demo\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "List Roles",
+			"request": {
+				"url": "http://{{host}}/api/v1.0/roles/",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Token {{auth_token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"admin@demo.com\",\n    \"password\": \"admin\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "2FA Bind",
+			"request": {
+				"url": "http://{{host}}/api/v1.0/2fa/bind/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"login\": \"admin@demo.com\",\n\t\"factor_id\": \"79999999999\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "2FA Bind Verify",
+			"request": {
+				"url": "http://{{host}}/api/v1.0/2fa/bind/verify/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"temporary_token\": \"c3cdf5\",\n\t\"factor_id\": \"79999999999\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "2FA Auth Verify",
+			"request": {
+				"url": "http://{{host}}/api/v1.0/2fa/auth/verify/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"temporary_token\" : \"000000\",\n\t\"factor_id\": \"79999999999\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

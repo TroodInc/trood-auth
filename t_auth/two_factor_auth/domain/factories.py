@@ -11,7 +11,7 @@ from t_auth.two_factor_auth.models import IntermediateToken, AuthFactor
 class IntermediateTokenFactory:
     @classmethod
     def factory(cls, account: Account, factor_id: str, factor_type: str, verification_type: int):
-        if settings.TWO_FACTOR_MOCK_MODE:
+        if settings.DEBUG:
             token = '000000'
             IntermediateToken.objects.filter(token=token).delete()
         else:
