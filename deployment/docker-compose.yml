@@ -5,6 +5,7 @@ services:
     build:
       context: ../
       dockerfile: deployment/Dockerfile
+    container_name: authorization
     environment:
       DJANGO_CONFIGURATION: Development
     networks:
