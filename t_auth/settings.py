@@ -14,6 +14,8 @@ import os
 
 from configurations import Configuration
 
+import dj_database_url
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -139,13 +141,9 @@ class BaseConfiguration(Configuration):
     }
 
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'authorization',
-            'HOST': 'authorization_postgres',
-            'USER': 'authorization',
-            'PASSWORD': 'authorization',
-        }
+        'default': dj_database_url.config(
+            default='postgres://authorization:authorization@authorization_postgres/authorization'
+        )
     }
 
     USER_PROFILE_DATA_URL = os.environ.get(
