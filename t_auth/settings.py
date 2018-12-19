@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import dj_database_url
 
 from configurations import Configuration
 
@@ -139,13 +140,9 @@ class BaseConfiguration(Configuration):
     }
 
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'authorization',
-            'HOST': 'authorization_postgres',
-            'USER': 'authorization',
-            'PASSWORD': 'authorization',
-        }
+        'default': dj_database_url.config(
+            'DB_URI', default='pgsql://authorization:authorization@authorization_postgres/authorization',
+        )
     }
 
     USER_PROFILE_DATA_URL = os.environ.get(
