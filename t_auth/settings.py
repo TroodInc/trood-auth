@@ -141,7 +141,7 @@ class BaseConfiguration(Configuration):
 
     DATABASES = {
         'default': dj_database_url.config(
-            'DB_URI', default='pgsql://authorization:authorization@authorization_postgres/authorization',
+            default='pgsql://authorization:authorization@authorization_postgres/authorization',
         )
     }
 
