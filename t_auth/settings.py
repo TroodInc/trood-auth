@@ -149,6 +149,9 @@ class BaseConfiguration(Configuration):
         'USER_PROFILE_DATA_URL', None
     )
 
+    SERVICE_DOMAIN = os.environ.get("SERVICE_DOMAIN", "AUTHORIZATION")
+    SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
+
 
 try:
     from custom_configuration import CustomConfiguration
