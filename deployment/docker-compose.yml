@@ -1,10 +1,11 @@
-version: "2"
+version: "2.2"
 
 services:
   authorization:
     build:
       context: ../
       dockerfile: deployment/Dockerfile
+    container_name: authorization
     environment:
       DJANGO_CONFIGURATION: Development
     networks:

@@ -63,3 +63,13 @@ class AccountViewSetTestCase(APITestCase):
         assert_that(decoded_response['data']['status'], is_not(self.account.status))
 
         assert_that(Token.objects.count(), equal_to(0))
+
+    @pytest.mark.django_db
+    def test_delete_account(self):
+        account = AccountFactory()
+
+        response = self.client.delete(
+            reverse('api:account-detail', kwargs={'pk': account.id})
+        )
+
+        assert_that(response.status_code, equal_to(status.HTTP_204_NO_CONTENT))

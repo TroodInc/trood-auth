@@ -36,6 +36,7 @@ Pygments==2.2.0
 PyHamcrest==1.9.0
 pytest==3.4.2
 pytest-django==3.1.2
+pytest-cov==2.6.0
 python-dateutil==2.7.0
 python-jose==1.4.0
 pytz==2017.2
@@ -47,3 +48,7 @@ text-unidecode==1.2
 traitlets==4.3.2
 uritemplate==3.0.0
 wcwidth==0.1.7
+dj-database-url==0.5.0
+
+teamcity-messages==1.21
+git+https://07de0218088728b42ee60f155c71990f1dc6a717:x-oauth-basic@github.com/Q-CIS-DEV/trood-auth-client.git#egg=trood-auth-client
