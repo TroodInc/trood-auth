@@ -136,8 +136,6 @@ class BaseConfiguration(Configuration):
     SERVICE_DOMAIN = values.Value("AUTHORIZATION", environ_prefix='')
     SERVICE_AUTH_SECRET = values.Value('', environ_prefix='')
 
-    SERVICE_DOMAIN = os.environ.get("SERVICE_DOMAIN", "AUTHORIZATION")
-    SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
 
 
 try:
