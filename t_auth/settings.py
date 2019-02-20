@@ -133,6 +133,8 @@ class BaseConfiguration(Configuration):
         ),
         'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
     }
+    SERVICE_DOMAIN = values.Value("AUTHORIZATION", environ_prefix='')
+    SERVICE_AUTH_SECRET = values.Value('', environ_prefix='')
 
 
 try:
