@@ -27,8 +27,6 @@ class VerifyTokenView(APIView):
 
             policies = ABACPolicy.objects.all()
 
-            policies = ABACPolicy.objects.all()
-
         if request.user.type == Account.SERVICE:
             token_type = request.data.get("type")
             if token_type == Account.USER:
@@ -36,6 +34,7 @@ class VerifyTokenView(APIView):
                     token = Token.objects.get(token=token)
 
                     response = LoginDataVerificationSerializer(token.account).data
+                    response['linked_object'] = token.account.get_additional_data()
 
                 except Token.DoesNotExist:
                     raise exceptions.AuthenticationFailed({"error": "User token invalid"})

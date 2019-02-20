@@ -15,6 +15,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.utils.deprecation import CallableTrue
 from django.utils.translation import ugettext_lazy as _
+from trood_auth_client.authentication import get_service_token
 
 
 class AccountRole(models.Model):
@@ -87,7 +88,7 @@ class Account(models.Model):
             response = requests.get(
                 settings.USER_PROFILE_DATA_URL.format(self.id),
                 headers={
-                    'Authorization': "Token {}".format(token.token)
+                    'Authorization': get_service_token()
                 },
             )
 
