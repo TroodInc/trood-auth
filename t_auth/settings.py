@@ -1,5 +1,5 @@
 import os
-from configurations import Configuration, values
+from configurations import Configuration
 import dj_database_url
 
 
@@ -11,23 +11,21 @@ class BaseConfiguration(Configuration):
     # Django environ
     # DOTENV = os.path.join(BASE_DIR, '.env')
 
-    DEBUG = values.BooleanValue(True, environ_prefix='')
     # SECURITY WARNING: keep the secret key used in production secret!
-    # Must be set from enviroment
-    # SECRET_KEY = values.SecretValue('=y3scd+v+70xtpter(4#2^%fp3f6n^lt_*&gi9cnq0j)p7o@67')
-    SECRET_KEY = values.Value('=y3scd+v+70xtpter(4#2^%fp3f6n^lt_*&gi9cnq0j)p7o@67', environ_prefix='')
-    RECOVERY_LINK = values.URLValue('http://127.0.0.1/recovery?token={}', environ_prefix='')
-    FROM_EMAIL = values.EmailValue('robot@trood.ru', environ_prefix='')
-    EMAIL_HOST = values.Value('trood.ru', environ_prefix='')
-    # Must be set from enviroment
-    # EMAIL_HOST_PASSWORD = values.SecretValue('password')
-    EMAIL_HOST_PASSWORD = values.Value('password', environ_prefix='')
-    EMAIL_HOST_USER = values.Value('robot', environ_prefix='')
-    EMAIL_PORT = values.IntegerValue(25, environ_prefix='')
-    EMAIL_USE_TLS = values.BooleanValue(True, environ_prefix='')
-    USER_PROFILE_DATA_URL = values.URLValue(None, environ_prefix='')
+    SECRET_KEY = '=y3scd+v+70xtpter(4#2^%fp3f6n^lt_*&gi9cnq0j)p7o@67'
+    RECOVERY_LINK =  os.environ.get('RECOVERY_LINK', "http://127.0.0.1/recovery?token={}")
+    FROM_EMAIL = os.environ.get('FROM_EMAIL')
+    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_PORT = os.environ.get('EMAIL_PORT')
+    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS') == 'True'
+    USER_PROFILE_DATA_URL = os.environ.get(
+        'USER_PROFILE_DATA_URL', None
+    )
     DATABASES = {
-        'default': dj_database_url.config(default='postgres://authorization:authorization@authorization_postgres/authorization')
+        'default': dj_database_url.config(
+            default='pgsql://authorization:authorization@authorization_postgres/authorization')
     }
 
     ALLOWED_HOSTS = ['*', ]
@@ -133,8 +131,8 @@ class BaseConfiguration(Configuration):
         ),
         'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
     }
-    SERVICE_DOMAIN = values.Value("AUTHORIZATION", environ_prefix='')
-    SERVICE_AUTH_SECRET = values.Value('', environ_prefix='')
+    SERVICE_DOMAIN = os.environ.get("SERVICE_DOMAIN", "AUTHORIZATION")
+    SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
 
 
 
