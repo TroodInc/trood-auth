@@ -1,6 +1,7 @@
 import os
 from configurations import Configuration
 import dj_database_url
+import raven
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -39,6 +40,7 @@ class BaseConfiguration(Configuration):
         'django.contrib.messages',
         'django.contrib.staticfiles',
         'corsheaders',
+        'raven.contrib.django.raven_compat',
 
         'rest_framework',
         'django_filters',
@@ -134,7 +136,13 @@ class BaseConfiguration(Configuration):
     SERVICE_DOMAIN = os.environ.get("SERVICE_DOMAIN", "AUTHORIZATION")
     SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
 
+    ENABLE_RAVEN = os.environ.get('ENABLE_RAVEN', "False")
 
+    if ENABLE_RAVEN == "True":
+        RAVEN_CONFIG = {
+            'dsn': os.environ.get('RAVEN_CONFIG_DSN'),
+            'release': os.environ.get('RAVEN_CONFIG_RELEASE')
+        }
 
 try:
     from custom_configuration import CustomConfiguration
