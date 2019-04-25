@@ -8,7 +8,7 @@ import hashlib
 import uuid
 
 from django.core.validators import EmailValidator
-from rest_framework import serializers, fields
+from rest_framework import serializers, fields, exceptions
 from django.utils.translation import ugettext_lazy as _
 
 from t_auth.api.domain.factories import AccountFactory
@@ -28,6 +28,11 @@ class LoginDataVerificationSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.Serializer):
     login = fields.EmailField(required=True)
     password = fields.CharField(required=True)
+
+    def validate_login(self, login):
+        if Account.objects.filter(login=login).exists():
+            raise exceptions.ValidationError('Registered user')
+        return login
 
     def save(self, **kwargs):
         account = AccountFactory.factory(
