@@ -8,6 +8,9 @@ services:
     container_name: authorization
     environment:
       DJANGO_CONFIGURATION: Development
+      RAVEN_CONFIG_DSN: "YOUR_DSN_HERE"
+      RAVEN_CONFIG_RELEASE: "dev"
+      ENABLE_RAVEN: "False"
     networks:
       - test-network
 
