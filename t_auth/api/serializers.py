@@ -124,6 +124,8 @@ class ABACResourceSerializer(serializers.ModelSerializer):
 
 
 class ABACRuleSerializer(serializers.ModelSerializer):
+    mask = serializers.ListField(child=serializers.CharField())
+
     class Meta:
         model = ABACRule
         fields = ('result', 'rule', 'mask')
