@@ -9,7 +9,7 @@ import datetime
 import uuid
 
 import requests
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
@@ -156,4 +156,5 @@ class ABACRule(models.Model):
 
     result = models.CharField(max_length=64, choices=RESULT_TYPES, null=False)
     rule = JSONField()
+    mask = ArrayField(models.CharField(max_length=256, null=False), null=True)
     policy = models.ForeignKey(ABACPolicy, null=True, related_name="rules")
