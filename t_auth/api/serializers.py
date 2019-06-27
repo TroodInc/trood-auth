@@ -126,7 +126,7 @@ class ABACResourceSerializer(serializers.ModelSerializer):
 class ABACRuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = ABACRule
-        fields = ('result', 'rule', )
+        fields = ('result', 'rule', 'mask')
 
 
 class ABACPolicySerializer(serializers.ModelSerializer):
