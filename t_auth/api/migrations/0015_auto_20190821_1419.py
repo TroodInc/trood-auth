@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
             name='ABACDomain',
             fields=[
                 ('id', models.CharField(max_length=128, primary_key=True, serialize=False)),
-                ('default_result', models.CharField(choices=[('allow', 'Allow'), ('deny', 'Deny')], default='allow', max_length=64)),
+                ('default_result', models.CharField(choices=[('allow', 'Allow'), ('deny', 'Deny')], null=True, max_length=64)),
             ],
         ),
         migrations.RunPython(make_domains, reverse_code=migrations.RunPython.noop),

@@ -131,7 +131,7 @@ class Token(models.Model):
 
 class ABACDomain(models.Model):
     id = models.CharField(max_length=128, primary_key=True)
-    default_result = models.CharField(max_length=64, choices=RESULT_TYPES, default=ALLOW, null=False)
+    default_result = models.CharField(max_length=64, choices=RESULT_TYPES, null=True)
 
 
 class ABACResource(models.Model):

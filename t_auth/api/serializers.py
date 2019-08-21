@@ -176,8 +176,11 @@ class ABACPolicyMapSerializer(serializers.Serializer):
         for policy in data:
             if policy.domain not in result:
                 result[policy.domain] = {
-                    "_default_resolution": policy.domain.default_result
+
                 }
+
+                if policy.resource.domain.default_result is not None:
+                    result[policy.domain]["_default_resolution"] = policy.resource.domain.default_result
 
             if policy.resource.name not in result[policy.domain]:
                 result[policy.domain][policy.resource.name] = {}
