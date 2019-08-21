@@ -136,6 +136,8 @@ class BaseConfiguration(Configuration):
     SERVICE_DOMAIN = os.environ.get("SERVICE_DOMAIN", "AUTHORIZATION")
     SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
 
+    ABAC_DEFAULT_RESOLUTION = os.environ.get("ABAC_DEFAULT_RESOLUTION", "allow")
+
     ENABLE_RAVEN = os.environ.get('ENABLE_RAVEN', "False")
 
     if ENABLE_RAVEN == "True":
