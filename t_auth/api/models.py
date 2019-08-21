@@ -17,6 +17,13 @@ from django.utils.deprecation import CallableTrue
 from django.utils.translation import ugettext_lazy as _
 from trood_auth_client.authentication import get_service_token
 
+ALLOW = 'allow'
+DENY = 'deny'
+
+RESULT_TYPES = (
+    (ALLOW, _('Allow')),
+    (DENY, _('Deny'))
+)
 
 class AccountRole(models.Model):
     STATUS_ACTIVE = 'active'
@@ -122,8 +129,13 @@ class Token(models.Model):
             super(Token, self).save()
 
 
+class ABACDomain(models.Model):
+    id = models.CharField(max_length=128, primary_key=True)
+    default_result = models.CharField(max_length=64, choices=RESULT_TYPES, default=ALLOW, null=False)
+
+
 class ABACResource(models.Model):
-    domain = models.CharField(max_length=128, null=False)
+    domain = models.ForeignKey(ABACDomain, null=True, related_name="domain")
     comment = models.TextField()
     name = models.CharField(max_length=64, null=False)
 
@@ -146,14 +158,6 @@ class ABACPolicy(models.Model):
 
 
 class ABACRule(models.Model):
-    ALLOW = 'allow'
-    DENY = 'deny'
-
-    RESULT_TYPES = (
-        (ALLOW, _('Allow')),
-        (DENY, _('Deny'))
-    )
-
     result = models.CharField(max_length=64, choices=RESULT_TYPES, null=False)
     rule = JSONField()
     mask = ArrayField(models.CharField(max_length=256, null=False), null=True)
