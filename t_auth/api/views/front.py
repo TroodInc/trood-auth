@@ -14,6 +14,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from t_auth.template_email import CustomEmailBackend, CustomEmailMassage
 
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
@@ -97,16 +98,28 @@ class RecoveryView(APIView):
 
             token = Token.objects.create(account=account, type=Token.RECOVERY)
 
-            message_body = render_to_string('recovery.html', context={
-                'link': settings.RECOVERY_LINK.format(token.token),
-            })
+            link = settings.RECOVERY_LINK.format(token.token)
 
-            send_mail(
-                _('Password recovery email'),
-                message_body,
-                from_email=settings.FROM_EMAIL,
-                recipient_list=[account.login, ]
-            )
+            if settings.EMAIL_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
+
+                message_body = render_to_string('recovery.html', context={
+                    'link': link,
+                })
+
+                send_mail(
+                    _('Password recovery email'),
+                    message_body,
+                    from_email=settings.FROM_EMAIL,
+                    recipient_list=[account.login, ]
+                )
+            else:
+                email_message = CustomEmailMassage(to=[account.login, ],
+                                                   link=link,
+                                                   template='PASSWORD_RECOVERY_RU')
+
+                email_backend = CustomEmailBackend(settings.EMAIL_SERVICE)
+
+                email_backend.send_messages([email_message, ])
 
             return Response({'detail': 'Recovery link was sent'}, status=status.HTTP_200_OK)
 

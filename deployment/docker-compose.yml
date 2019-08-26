@@ -7,28 +7,65 @@ services:
       dockerfile: deployment/Dockerfile
     container_name: authorization
     environment:
-      DJANGO_CONFIGURATION: Development
-      RAVEN_CONFIG_DSN: "YOUR_DSN_HERE"
-      RAVEN_CONFIG_RELEASE: "dev"
-      ENABLE_RAVEN: "False"
-    networks:
-      - test-network
+      DJANGO_CONFIGURATION: "Development"
+      RECOVERY_LINK: "http://custodian:8000/custodian/data/bulk/employee?q=eq(account,{})&depth=1&omit_outers=true"
+      FROM_EMAIL: "no-reply@trood.com"
+      EMAIL_HOST: "smtp.yandex.ru"
+      EMAIL_HOST_PASSWORD: "sdOSI(2_192"
+      EMAIL_HOST_USER: "no-reply@trood.com"
+      EMAIL_PORT: 587
+      EMAIL_USE_TLS: "True"
+      SERVICE_DOMAIN: "AUTHORIZATION"
+      SERVICE_AUTH_SECRET: "3dd09def9ce1945116ba915793de32ee85b7e7b36421fd0ebd745d5d4fe4bd14e2d256cf97de6cf1686fd44c94ccfd292148477cae59822c54fae58f01fe3d7f"
+      EMAIL_SERVICE: "http://mail:8000"
+      EMAIL_BACKEND: "t_auth.template_email"
+      DB_HOST: "postgres.authorization"
+      # DATABASE_URL: "postgres://custodian:custodian@postgres.custodian:5432/auth"
+      # DATABASE_URL: "sqlite:///application.sqlite3"
+      # USER_PROFILE_DATA_URL: "http://custodian:8000/custodian/data/bulk/employee?q=eq(account,{})&depth=1&omit_outers=true"
+    volumes:
+      - ./.fixtures:/home/.fixtures
+    ports:
+      - "9010:8000"
+
+  mail:
+    image: registry.tools.trood.ru/mail:dev
+    container_name: mail
+    environment:
+      DJANGO_CONFIGURATION: "Development"
+      TROOD_AUTH_SERVICE_URL: "http://authorization:8000/"
+      SKIP_MAILS_BEFORE: "05-09-2018"
+      DEFAULT_IMAP_QUERY: "UNSEEN SINCE 25-Oct-2018"
+      SERVICE_DOMAIN: "MAIL"
+      SERVICE_AUTH_SECRET: "71f47ab21e8c2b1153bd6b32c5249024bcaa9b1287d138c5c5fc8acedb9cbb6c2a02329dd15cbdbd664ab6d08eb7da3987e7d04da42cb28656212dd82d4d9db9"
+      SENTRY_ENABLED: "False"
+      DB_HOST: "postgres.mail"
+      # DATABASkE_URL: "postgres://custodian:custodian@postgres.custodian:5432/mail"
+      # DATABASE_URL: "sqlite:///application.sqlite3"
+    volumes:
+      - ./.fixtures:/home/.fixtures
+      # - ./mail/events:/home/src/mail/events
+    ports:
+      - "9020:8000"
+
+  mail_postgres:
+    image: postgres:10.5
+    container_name: postgres.mail
+    volumes:
+      - ./postgres/mail:/var/lib/postgresql/data
+    environment:
+      LC_ALL: C.UTF-8
+      POSTGRES_DB: mail
+      POSTGRES_USER: mail
+      POSTGRES_PASSWORD: mail
 
   authorization_postgres:
-    image: postgres:9.5
+    image: postgres:10.5
+    container_name: postgres.authorization
     volumes:
-      - ./postgres/${CONTAINER_NAME}/data:/var/lib/postgresql/data
-      - ./postgres/${CONTAINER_NAME}/conf:/etc/postgresql
-      - ./postgres/${CONTAINER_NAME}/logs:/var/log/postgresql
+      - ./postgres/authorization:/var/lib/postgresql/data
     environment:
       LC_ALL: C.UTF-8
       POSTGRES_DB: authorization
       POSTGRES_USER: authorization
       POSTGRES_PASSWORD: authorization
-
-    networks:
-      - test-network
-
-networks:
-  test-network:
-    driver: bridge

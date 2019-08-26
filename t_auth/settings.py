@@ -119,7 +119,11 @@ class BaseConfiguration(Configuration):
     # CROSS-ORIGIN STUFF
     # CORS_ORIGIN_ALLOW_ALL = True
 
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_BACKEND = os.environ.get(
+        "EMAIL_BACKEND",
+        'django.core.mail.backends.smtp.EmailBackend')
+    
+    EMAIL_SERVICE = os.environ.get("EMAIL_SERVICE")
 
     REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': (

@@ -1,0 +1,227 @@
+[
+  {
+    "model": "api.mailbox",
+    "pk": 1,
+    "fields": {
+      "name": "Legal mailbox",
+      "uri": "imap+ssl://no-repl%40trood.com:sdOSI(2_192@imap.trood.com:465",
+      "from_email": "no-reply@trood.com",
+      "active": true,
+      "last_polling": "2018-09-03T14:13:36.002Z",
+      "owner": 1,
+      "smtp_host": "smtp.yandex.ru",
+      "smtp_port": 465,
+      "smtp_secure": "ssl",
+      "shared": true
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 1,
+    "fields": {
+      "owner": 1,
+      "alias": "ACCOUNT_REGISTERED_RU",
+      "name": "Trood Legal account registered RU",
+      "subject": "Trood-Legal. Регистрация в системе.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Вы зарегистрированы в системе Trood Legal.</p><p>Ваши данные для входа</p><p>Логин: {{ login }}</p><p>Пароль: {{ password }}</p><p>Доступ в систему: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 2,
+    "fields": {
+      "owner": 1,
+      "alias": "TASK_ASSIGNED_RU",
+      "name": "Trood Legal task assigned RU",
+      "subject": "Trood-Legal. Назначена новая задача.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Создана новая задача <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 3,
+    "fields": {
+      "owner": 1,
+      "alias": "CLIENT_ASSIGNED_RU",
+      "name": "Trood Legal client assigned RU",
+      "subject": "Trood-Legal. Назначен клиент.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Вам назначен новый клиент <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 4,
+    "fields": {
+      "owner": 1,
+      "alias": "MATTER_ASSIGNED_RU",
+      "name": "Trood Legal matter assigned RU",
+      "subject": "Trood-Legal. Назначено дело.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Вам назначено новое дело <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 5,
+    "fields": {
+      "owner": 1,
+      "alias": "TASK_DONE_RU",
+      "name": "Trood Legal task done RU",
+      "subject": "Trood-Legal. Задача завершена.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Завершена задача <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 6,
+    "fields": {
+      "owner": 1,
+      "alias": "TASK_DEADLINE_RU",
+      "name": "Trood Legal task deadline RU",
+      "subject": "Trood-Legal. Истекает время на выполнение задачи.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Через {{ deadline_limit }} истечет время выполнения задачи <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 7,
+    "fields": {
+      "owner": 1,
+      "alias": "MEETING_IS_COMMING_RU",
+      "name": "Trood Legal meeting is comming RU",
+      "subject": "Trood-Legal. Напоминание о встрече.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Через {{ deadline_limit }} наступит время встречи <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 8,
+    "fields": {
+      "owner": 1,
+      "alias": "BILL_NOT_PAID_RU",
+      "name": "Trood Legal bill not paid RU",
+      "subject": "Trood-Legal. Напоминание о счете.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Счет для клиента {{ client_name }} не оплачен 10 дней <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 9,
+    "fields": {
+      "owner": 1,
+      "alias": "BILL_PARTLY_PAID_RU",
+      "name": "Trood Legal bill partly paid RU",
+      "subject": "Trood-Legal. Счет частично оплачен.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Счет для клиента {{ client_name }} частично оплачен <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 10,
+    "fields": {
+      "owner": 1,
+      "alias": "BILL_PAID_RU",
+      "name": "Trood Legal bill paid RU",
+      "subject": "Trood-Legal. Счет оплачен.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Счет для клиента {{ client_name }} полностью оплачен <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 11,
+    "fields": {
+      "owner": 1,
+      "alias": "MATTER_STATUS_CHANGED_RU",
+      "name": "Trood Legal matter status changed RU",
+      "subject": "Trood-Legal. Смена статуса дела.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>У дела {{ matter_name }} сменился статус <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 12,
+    "fields": {
+      "owner": 1,
+      "alias": "TROOD_LEGAL_TEST_MESSAGE",
+      "name": "Trood Legal test message",
+      "subject": "Trood-Legal. Test message.",
+      "body": "<p>Trood Legal test: {{ message }}</p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 13,
+    "fields": {
+      "owner": 1,
+      "alias": "REQUEST_VACATION_ASSIGNED",
+      "name": "Trood Legal request vacation assigned",
+      "subject": "Trood-Legal. Назначена заявка на отпуск.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Вам назначена заявка на отпуск для подтверждения <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 14,
+    "fields": {
+      "owner": 1,
+      "alias": "REQUEST_VACATION_APPROVED",
+      "name": "Trood Legal request vacation approved",
+      "subject": "Trood-Legal. Заявка на отпуск подтверждена.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Ваша заявка на отпуск подтверждена <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 15,
+    "fields": {
+      "owner": 1,
+      "alias": "REQUEST_VACATION_REJECTED",
+      "name": "Trood Legal request vacation rejected",
+      "subject": "Trood-Legal. Заявка на отпуск отклонена.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Ваша заявка на отпуск отклонена <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 16,
+    "fields": {
+      "owner": 1,
+      "alias": "PROCESSED_REQUEST_VACATION_CANCELED",
+      "name": "Trood Legal request vacation canceled",
+      "subject": "Trood-Legal. Заявка на отпуск отменена.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Заявка на отпуск сотрудника {{ author }}  отменена автором <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 17,
+    "fields": {
+      "owner": 1,
+      "alias": "HR_APPROVE",
+      "name": "Trood Legal request vacation approved",
+      "subject": "Trood-Legal. Заявка на отпуск одобрена.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Заявка на отпуск сотрудника {{ author }} одобрена <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 18,
+    "fields": {
+      "owner": 1,
+      "alias": "IN_PROGRESS_REQUEST_VACATION_CANCELED",
+      "name": "Trood Legal request vacation canceled",
+      "subject": "Trood-Legal. Заявка на отпуск отменена.",
+      "body": "<p>Здравствуйте, {{ username }}!</p><p>Заявка на отпуск сотрудника {{ author }} отменена автором <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 19,
+    "fields": {
+      "owner": 1,
+      "alias": "PASSWORD_RECOVERY_RU",
+      "name": "Trood Legal password recovery",
+      "subject": "Trood-Legal. Восстановление пароля.",
+      "body": "<p>Здравствуйте!</p><p>Для восстановления пароля пройдите по ссылке <a href=\"{{ link }}\">{{ link }}</a></p><p>Если вы не запрашивали восстановление пароля, игнорируйте это сообщение или свяжитесь со службой технической поддержки</p>"
+    }
+  }
+]

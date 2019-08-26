@@ -1,0 +1,146 @@
+[
+  {
+    "model": "api.account",
+    "pk": 1,
+    "fields": {
+      "login": "admin@demo.com",
+      "pwd_hash": "b1b4a229c0cb5865f67f0626dc9c184526dc6dd99f8f505b14d1c95739d523dfcfaa17534ea160364fe27e10e6c331a1c231f60be581e69fed4f5bf9c4dfdadb",
+      "unique_token": "365a0bc04ed6783573a02ad3bca58c3b63ba183ee24c902aaec9d78091ced03d",
+      "current_session": "",
+      "role": null,
+      "created": "2018-10-08T08:16:26.752Z",
+      "status": "active",
+      "active": true,
+      "type": "user",
+      "cidr": "0.0.0.0/0"
+    }
+  },
+  {
+    "model": "api.account",
+    "pk": 2,
+    "fields": {
+      "login": "CUSTODIAN",
+      "pwd_hash": "01577176fef562c07d20b488e611afdff91eefc5c5c45e96d5f57b94f2d023ee4ae34364bef302cbe90938583432288d7c91bd1cd2cf5e3a46af5485cf17938d",
+      "unique_token": "fd4e6b65420a23bcd9dcf97ff2e31fbde8babbe447388ab69e2812f144d9b43f",
+      "current_session": "",
+      "role": null,
+      "created": "2018-10-08T08:38:36.505Z",
+      "status": "active",
+      "active": true,
+      "type": "service",
+      "cidr": "0.0.0.0/0"
+    }
+  },
+  {
+    "model": "api.account",
+    "pk": 3,
+    "fields": {
+      "login": "MAIL",
+      "pwd_hash": "71f47ab21e8c2b1153bd6b32c5249024bcaa9b1287d138c5c5fc8acedb9cbb6c2a02329dd15cbdbd664ab6d08eb7da3987e7d04da42cb28656212dd82d4d9db9",
+      "unique_token": "de53d6ce133929c1766ba11a6b39beb80f7d39ba823a62555405971574d75fb5",
+      "current_session": "",
+      "role": null,
+      "created": "2018-10-08T08:43:02.375Z",
+      "status": "active",
+      "active": true,
+      "type": "service",
+      "cidr": "0.0.0.0/0"
+    }
+  },
+  {
+    "model": "api.account",
+    "pk": 4,
+    "fields": {
+      "login": "CUSTOM",
+      "pwd_hash": "b321039f6c71ca17b65a80e98bbe3645900e61ab0c0447b8525c451e8a6c0e86a93764a8ee12814467284ba7211ea604fa9e44cc84f5144521f8f413b113a728",
+      "unique_token": "9010acf4b4e37f1559676bd03abad860f5b8f53be66d37eda633d038ce6c57c6",
+      "current_session": "",
+      "role": null,
+      "created": "2018-10-08T15:19:31.072Z",
+      "status": "active",
+      "active": true,
+      "type": "service",
+      "cidr": "0.0.0.0/0"
+    }
+  },
+  {
+    "model": "api.account",
+    "pk": 5,
+    "fields": {
+      "login": "FILES",
+      "pwd_hash": "70bd06434748cfe2d399c8151e59107e6fb53b433e615a11469510e49abfc0629b65bc0fe0bf76285edf95aaa08478d70328b1637746d2fb5d098acfc1cc27a2",
+      "unique_token": "f7ca91908a0aa63489b15ae8bd07db25106727ca6d020a04e158a07c9a9a6aa7",
+      "current_session": "",
+      "role": null,
+      "created": "2018-10-09T09:18:44.280Z",
+      "status": "active",
+      "active": true,
+      "type": "service",
+      "cidr": "0.0.0.0/0"
+    }
+  },
+  {
+    "model": "api.account",
+    "pk": 6,
+    "fields": {
+      "login": "SCHEDULER",
+      "pwd_hash": "3701d9b2cdd512d06d60f9551b06c0ee02628ee74a028e3d0b51c4d26bcbcba3c93f616e47a62c0511a1b0eaf806067988d9b532dab1a9a7176144167ddd822e",
+      "unique_token": "5023c00f1098193b36638d931a8c6be15a3a6bde5df268b277790587b7e56542",
+      "current_session": "",
+      "role": null,
+      "created": "2018-10-09T10:20:53.308Z",
+      "status": "active",
+      "active": true,
+      "type": "service",
+      "cidr": "0.0.0.0/0"
+    }
+  },
+  {
+    "model": "api.account",
+    "pk": 7,
+    "fields": {
+      "login": "AUTHORIZATION",
+      "pwd_hash": "3dd09def9ce1945116ba915793de32ee85b7e7b36421fd0ebd745d5d4fe4bd14e2d256cf97de6cf1686fd44c94ccfd292148477cae59822c54fae58f01fe3d7f",
+      "unique_token": "2697c995861e555d6a6882ec85fab3d74ebcb920d1dcd5800ab7af045a8959cb",
+      "current_session": "",
+      "role": null,
+      "created": "2018-12-26T10:47:17.609Z",
+      "status": "active",
+      "active": true,
+      "type": "service",
+      "cidr": "0.0.0.0/0"
+    }
+  },
+  {
+    "model": "api.account",
+    "pk": 8,
+    "fields": {
+      "login": "JOURNAL",
+      "pwd_hash": "1f6a57c517f97ece4bd9fa664e573fd9d66ffc3dc1dfcc3bd21ea278f016973148a951a86a88e3da5ac37a4ad479eba2a1dbe83710968f22e5e026093995945d",
+      "unique_token": "01b68881f249f43cd304325d99534f5c7d59357b57aa3ff71cbbe38491d02dad",
+      "current_session": "",
+      "role": null,
+      "created": "2019-01-22T00:04:09.707Z",
+      "status": "active",
+      "active": true,
+      "type": "service",
+      "cidr": "0.0.0.0/0"
+    }
+  },
+  {
+    "model": "api.account",
+    "pk": 8,
+    "fields": {
+      "login": "AGENT",
+      "pwd_hash": "b1b4a229c0cb5865f67f0626dc9c184526dc6dd99f8f505b14d1c95739d523dfcfaa17534ea160364fe27e10e6c331a1c231f60be581e69fed4f5bf9c4dfdadb",
+      "unique_token": "68801b24981fcd3f4325d04334f995d595c7b57357ff7aa3be31cb1d0849d2da",
+      "current_session": "",
+      "role": null,
+      "created": "2019-01-22T00:04:09.707Z",
+      "status": "active",
+      "active": true,
+      "type": "service",
+      "cidr": "0.0.0.0/0"
+    }
+  }
+]

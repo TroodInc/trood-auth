@@ -1,0 +1,216 @@
+[
+  {
+    "model": "api.mailbox",
+    "pk": 1,
+    "fields": {
+      "name": "Legal mailbox",
+      "uri": "imap+ssl://no-repl%40trood.com:sdOSI(2_192@imap.trood.com:465",
+      "from_email": "no-reply@trood.com",
+      "active": true,
+      "last_polling": "2018-09-03T14:13:36.002Z",
+      "owner": 1,
+      "smtp_host": "smtp.yandex.ru",
+      "smtp_port": 465,
+      "smtp_secure": "ssl",
+      "shared": true
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 1,
+    "fields": {
+      "owner": 1,
+      "alias": "ACCOUNT_REGISTERED_RU",
+      "name": "Trood Legal account registered RU",
+      "subject": "Trood-Legal. System registration.",
+      "body": "<p>Hi, {{ username }}!</p><p>You are now registered in Trood Legal.</p><p>Your credentials are as follows</p><p>Login: {{ login }}</p><p>Password: {{ password }}</p><p>System access link: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 2,
+    "fields": {
+      "owner": 1,
+      "alias": "TASK_ASSIGNED_RU",
+      "name": "Trood Legal task assigned RU",
+      "subject": "Trood-Legal. New task assigned.",
+      "body": "<p>Hi, {{ username }}!</p><p>The new task is asigned: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 3,
+    "fields": {
+      "owner": 1,
+      "alias": "CLIENT_ASSIGNED_RU",
+      "name": "Trood Legal client assigned RU",
+      "subject": "Trood-Legal. New client assigned.",
+      "body": "<p>Hi, {{ username }}!</p><p>The new client is assigned: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 4,
+    "fields": {
+      "owner": 1,
+      "alias": "MATTER_ASSIGNED_RU",
+      "name": "Trood Legal matter assigned RU",
+      "subject": "Trood-Legal. New matter assigned.",
+      "body": "<p>Hi, {{ username }}!</p><p>The new matter is assigned: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 5,
+    "fields": {
+      "owner": 1,
+      "alias": "TASK_DONE_RU",
+      "name": "Trood Legal task done RU",
+      "subject": "Trood-Legal. Task completed.",
+      "body": "<p>Hi, {{ username }}!</p><p>The task is completed: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 6,
+    "fields": {
+      "owner": 1,
+      "alias": "TASK_DEADLINE_RU",
+      "name": "Trood Legal task deadline RU",
+      "subject": "Trood-Legal. Task expiration is close.",
+      "body": "<p>Hi, {{ username }}!</p><p>In {{ deadline_limit }}, the time is expired for the task: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 7,
+    "fields": {
+      "owner": 1,
+      "alias": "MEETING_IS_COMMING_RU",
+      "name": "Trood Legal meeting is comming RU",
+      "subject": "Trood-Legal. Meeting reminder.",
+      "body": "<p>Hi, {{ username }}!</p><p>In {{ deadline_limit }}, the meeting is expected: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 8,
+    "fields": {
+      "owner": 1,
+      "alias": "BILL_NOT_PAID_RU",
+      "name": "Trood Legal bill not paid RU",
+      "subject": "Trood-Legal. Bill reminder.",
+      "body": "<p>Hi, {{ username }}!</p><p>The bill for {{ client_name }} is not paid for 10 days: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 9,
+    "fields": {
+      "owner": 1,
+      "alias": "BILL_PARTLY_PAID_RU",
+      "name": "Trood Legal bill partly paid RU",
+      "subject": "Trood-Legal. Bill partial payment.",
+      "body": "<p>Hi, {{ username }}!</p><p>The bill for  {{ client_name }} is partially paid: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 10,
+    "fields": {
+      "owner": 1,
+      "alias": "BILL_PAID_RU",
+      "name": "Trood Legal bill paid RU",
+      "subject": "Trood-Legal. Bill payment.",
+      "body": "<p>Hi, {{ username }}!</p><p>The bill for  {{ client_name }} is paid in full: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 11,
+    "fields": {
+      "owner": 1,
+      "alias": "MATTER_STATUS_CHANGED_RU",
+      "name": "Trood Legal matter status changed RU",
+      "subject": "Trood-Legal. Matter status changed.",
+      "body": "<p>Hi, {{ username }}!</p><p>The matter  {{ matter_name }} has changed status: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 12,
+    "fields": {
+      "owner": 1,
+      "alias": "TROOD_LEGAL_TEST_MESSAGE",
+      "name": "Trood Legal test message",
+      "subject": "Trood-Legal. Test message.",
+      "body": "<p>Trood Legal test: {{ message }}</p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 13,
+    "fields": {
+      "owner": 1,
+      "alias": "REQUEST_VACATION_ASSIGNED",
+      "name": "Trood Legal request vacation assigned",
+      "subject": "Trood-Legal. Request assigned for approval.",
+      "body": "<p>Hi, {{ username }}!</p><p>Vacation request assigned for your approval: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 14,
+    "fields": {
+      "owner": 1,
+      "alias": "REQUEST_VACATION_APPROVED",
+      "name": "Trood Legal request vacation approved",
+      "subject": "Trood-Legal. Vacation request approved.",
+      "body": "<p>Hi, {{ username }}!</p><p>Your vacation request has been approved: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 15,
+    "fields": {
+      "owner": 1,
+      "alias": "REQUEST_VACATION_REJECTED",
+      "name": "Trood Legal request vacation rejected",
+      "subject": "Trood-Legal. Vacation request rejected.",
+      "body": "<p>Hi, {{ username }}!</p><p>Your vacation request has been rejected: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 16,
+    "fields": {
+      "owner": 1,
+      "alias": "PROCESSED_REQUEST_VACATION_CANCELED",
+      "name": "Trood Legal request vacation canceled",
+      "subject": "Trood-Legal. Request cancelled.",
+      "body": "<p>Hi, {{ username }}!</p><p>Vacation request of {{ author }}  has been cancelled by requestor: <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 17,
+    "fields": {
+      "owner": 1,
+      "alias": "HR_APPROVE",
+      "name": "Trood Legal request vacation approved",
+      "subject": "Trood-Legal. Vacation request approved.",
+      "body": "<p>Hi, {{ username }}!</p><p>Vacation request of {{ author }} has been approved <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  },
+  {
+    "model": "api.template",
+    "pk": 18,
+    "fields": {
+      "owner": 1,
+      "alias": "IN_PROGRESS_REQUEST_VACATION_CANCELED",
+      "name": "Trood Legal request vacation canceled",
+      "subject": "Trood-Legal. Request cancelled.",
+      "body": "<p>Hi, {{ username }}!</p><p>Vacation request of {{ author }} has been cancelled by requestor <a href=\"{{ link }}\">{{ link }}</a></p>"
+    }
+  }
+]
