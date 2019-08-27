@@ -7,6 +7,7 @@ Public endpoints (login/logout, authentication, two-factor login, registration)
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
+from django.core.mail.message import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
@@ -14,7 +15,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from t_auth.template_email import CustomEmailBackend, CustomEmailMassage
+from t_auth.template_email import TroodEmailBackend, TroodEmailMessage
 
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
@@ -113,11 +114,13 @@ class RecoveryView(APIView):
                     recipient_list=[account.login, ]
                 )
             else:
-                email_message = CustomEmailMassage(to=[account.login, ],
-                                                   link=link,
-                                                   template='PASSWORD_RECOVERY_RU')
+                email_message = EmailMessage(to=[account.login, ],
+                                             data={'data': {'link': link}},
+                                             template='PASSWORD_RECOVERY_RU')
 
-                email_backend = CustomEmailBackend(settings.EMAIL_SERVICE)
+                email_backend = TroodEmailBackend(
+                    custom_mail_service=settings.EMAIL_SERVICE
+                    )
 
                 email_backend.send_messages([email_message, ])
 
