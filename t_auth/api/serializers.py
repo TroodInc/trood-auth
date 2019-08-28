@@ -7,6 +7,7 @@ Object serializers
 import hashlib
 import uuid
 
+from django.conf import settings
 from django.core.validators import EmailValidator
 from rest_framework import serializers, fields, exceptions
 from django.utils.translation import ugettext_lazy as _
@@ -124,9 +125,11 @@ class ABACResourceSerializer(serializers.ModelSerializer):
 
 
 class ABACRuleSerializer(serializers.ModelSerializer):
+    mask = serializers.ListField(child=serializers.CharField())
+
     class Meta:
         model = ABACRule
-        fields = ('result', 'rule', )
+        fields = ('result', 'rule', 'mask')
 
 
 class ABACPolicySerializer(serializers.ModelSerializer):
@@ -166,11 +169,18 @@ class ABACPolicySerializer(serializers.ModelSerializer):
 class ABACPolicyMapSerializer(serializers.Serializer):
     def to_representation(self, data):
 
-        result = {}
+        result = {
+            "_default_resolution": settings.ABAC_DEFAULT_RESOLUTION
+        }
 
         for policy in data:
             if policy.domain not in result:
-                result[policy.domain] = {}
+                result[policy.domain] = {
+
+                }
+
+                if policy.resource.domain.default_result is not None:
+                    result[policy.domain]["_default_resolution"] = policy.resource.domain.default_result
 
             if policy.resource.name not in result[policy.domain]:
                 result[policy.domain][policy.resource.name] = {}
