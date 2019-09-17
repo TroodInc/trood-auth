@@ -8,7 +8,7 @@ import t_auth.api.views.front
 import t_auth.api.views.system
 from t_auth.api import views as api_views
 from t_auth.api.views.admin import AccountRoleViewSet, ABACResourceViewSet, ABACActionViewSet, ABACAttributViewSet, \
-    ABACPolicyViewSet
+    ABACPolicyViewSet, ABACDomainViewSet
 
 router = routers.DefaultRouter()
 
@@ -20,6 +20,7 @@ router.register(r'resources', ABACResourceViewSet, base_name='resources')
 router.register(r'actions', ABACActionViewSet, base_name='actions')
 router.register(r'attributes', ABACAttributViewSet, base_name='attributes')
 router.register(r'policies', ABACPolicyViewSet, base_name='policies')
+router.register(r'domains', ABACDomainViewSet, base_name='domains')
 
 # not actually used
 router.register(r'check_2fa', api_views.TwoFactorViewSet, base_name='api_2fa')

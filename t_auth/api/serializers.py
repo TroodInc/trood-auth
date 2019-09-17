@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
-    ABACAttribute, ABACPolicy, ABACRule
+    ABACAttribute, ABACPolicy, ABACRule, ABACDomain
 
 
 class LoginDataVerificationSerializer(serializers.ModelSerializer):
@@ -99,6 +99,12 @@ class AccountRoleSerializer(serializers.ModelSerializer):
         obj = super(AccountRoleSerializer, self).to_representation(instance)
 
         return obj
+
+
+class ABACDomainSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ABACDomain
+        fields = ('id', 'default_result', )
 
 
 class ABACActionSerializer(serializers.ModelSerializer):

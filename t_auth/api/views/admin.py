@@ -9,9 +9,11 @@ and permissions)
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, ABACResourceSerializer, ABACActionSerializer, ABACAttributeSerializer, ABACPolicySerializer
+from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, ABACResourceSerializer, \
+    ABACActionSerializer, ABACAttributeSerializer, ABACPolicySerializer, ABACDomainSerializer
 from t_auth.api.models import Account, AccountRole, Token, ABACResource, ABACAction, \
-    ABACAttribute, ABACPolicy
+    ABACAttribute, ABACPolicy, ABACDomain
+
 
 class AccountRoleViewSet(viewsets.ModelViewSet):
     """
@@ -55,6 +57,12 @@ class ABACAttributViewSet(viewsets.ModelViewSet):
     queryset = ABACAttribute.objects.all()
     serializer_class = ABACAttributeSerializer
     filter_fields = ("resource",)
+    permission_classes = (IsAuthenticated, )
+
+
+class ABACDomainViewSet(viewsets.ModelViewSet):
+    queryset = ABACDomain.objects.all()
+    serializer_class = ABACDomainSerializer
     permission_classes = (IsAuthenticated, )
 
 
