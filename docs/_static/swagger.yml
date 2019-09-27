@@ -1,0 +1,1712 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+tags:
+  - name: Authorization
+    description: "Base endpoints used to enter the system"
+  - name: Recovery
+    description: "Action for getting lost password back"
+paths:
+  /api/v1.0/account/:
+    get:
+      tags:
+        - Account
+      operationId: listAccounts
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    login:
+                      type: string
+                      maxLength: 64
+                    created:
+                      type: string
+                      format: date-time
+                      readOnly: true
+                    status:
+                      enum:
+                      - active
+                      - disabled
+                      - deleted
+                    active:
+                      type: boolean
+                    role:
+                      type: integer
+                      nullable: true
+                    pwd_hash:
+                      type: string
+                      readOnly: true
+                    type:
+                      enum:
+                      - user
+                      - service
+                    cidr:
+                      type: string
+                      maxLength: 20
+                  required:
+                  - login
+          description: ''
+    post:
+      tags:
+        - Account
+      operationId: createAccount
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  maxLength: 64
+                status:
+                  enum:
+                  - active
+                  - disabled
+                  - deleted
+                active:
+                  type: boolean
+                role:
+                  type: integer
+                  nullable: true
+                type:
+                  enum:
+                  - user
+                  - service
+                cidr:
+                  type: string
+                  maxLength: 20
+              required:
+              - login
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  login:
+                    type: string
+                    maxLength: 64
+                  created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  status:
+                    enum:
+                    - active
+                    - disabled
+                    - deleted
+                  active:
+                    type: boolean
+                  role:
+                    type: integer
+                    nullable: true
+                  pwd_hash:
+                    type: string
+                    readOnly: true
+                  type:
+                    enum:
+                    - user
+                    - service
+                  cidr:
+                    type: string
+                    maxLength: 20
+                required:
+                - login
+          description: ''
+  /api/v1.0/account/{id}/:
+    get:
+      tags:
+        - Account
+      operationId: retrieveAccount
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  login:
+                    type: string
+                    maxLength: 64
+                  created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  status:
+                    enum:
+                    - active
+                    - disabled
+                    - deleted
+                  active:
+                    type: boolean
+                  role:
+                    type: integer
+                    nullable: true
+                  pwd_hash:
+                    type: string
+                    readOnly: true
+                  type:
+                    enum:
+                    - user
+                    - service
+                  cidr:
+                    type: string
+                    maxLength: 20
+                required:
+                - login
+          description: ''
+    patch:
+      tags:
+        - Account
+      operationId: partial_updateAccount
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  maxLength: 64
+                status:
+                  enum:
+                  - active
+                  - disabled
+                  - deleted
+                active:
+                  type: boolean
+                role:
+                  type: integer
+                  nullable: true
+                type:
+                  enum:
+                  - user
+                  - service
+                cidr:
+                  type: string
+                  maxLength: 20
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  login:
+                    type: string
+                    maxLength: 64
+                  created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  status:
+                    enum:
+                    - active
+                    - disabled
+                    - deleted
+                  active:
+                    type: boolean
+                  role:
+                    type: integer
+                    nullable: true
+                  pwd_hash:
+                    type: string
+                    readOnly: true
+                  type:
+                    enum:
+                    - user
+                    - service
+                  cidr:
+                    type: string
+                    maxLength: 20
+                required:
+                - login
+          description: ''
+    delete:
+      tags:
+        - Account
+      operationId: destroyAccount
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/roles/:
+    get:
+      tags:
+        - Role
+      operationId: listAccountRoles
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    name:
+                      type: string
+                      maxLength: 128
+                    status:
+                      enum:
+                      - active
+                      - disabled
+                      - deleted
+                  required:
+                  - name
+          description: ''
+    post:
+      tags:
+        - Role
+      operationId: createAccountRole
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  maxLength: 128
+                status:
+                  enum:
+                  - active
+                  - disabled
+                  - deleted
+              required:
+              - name
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 128
+                  status:
+                    enum:
+                    - active
+                    - disabled
+                    - deleted
+                required:
+                - name
+          description: ''
+  /api/v1.0/roles/{id}/:
+    get:
+      tags:
+        - Role
+      operationId: retrieveAccountRole
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account role.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 128
+                  status:
+                    enum:
+                    - active
+                    - disabled
+                    - deleted
+                required:
+                - name
+          description: ''
+    patch:
+      tags:
+        - Role
+      operationId: partial_updateAccountRole
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account role.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  maxLength: 128
+                status:
+                  enum:
+                  - active
+                  - disabled
+                  - deleted
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 128
+                  status:
+                    enum:
+                    - active
+                    - disabled
+                    - deleted
+                required:
+                - name
+          description: ''
+    delete:
+      tags:
+        - Role
+      operationId: destroyAccountRole
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account role.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/resources/:
+    get:
+      tags:
+        - ABAC Resource
+      operationId: listABACResources
+      parameters:
+      - name: domain
+        required: false
+        in: query
+        description: domain
+        schema:
+          type: string
+      - name: name
+        required: false
+        in: query
+        description: name
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    domain:
+                      type: string
+                      nullable: true
+                    comment:
+                      type: string
+                    name:
+                      type: string
+                      maxLength: 64
+                    attributes:
+                      type: array
+                      items:
+                        properties:
+                          id:
+                            type: integer
+                            readOnly: true
+                          name:
+                            type: string
+                            maxLength: 64
+                          type:
+                            type: string
+                          resource:
+                            type: integer
+                        required:
+                        - name
+                        - type
+                        - resource
+                      readOnly: true
+                    actions:
+                      type: array
+                      items:
+                        properties:
+                          id:
+                            type: integer
+                            readOnly: true
+                          name:
+                            type: string
+                            maxLength: 64
+                          resource:
+                            type: integer
+                        required:
+                        - name
+                        - resource
+                      readOnly: true
+                  required:
+                  - comment
+                  - name
+          description: ''
+    post:
+      tags:
+        - ABAC Resource
+      operationId: createABACResource
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                domain:
+                  type: string
+                  nullable: true
+                comment:
+                  type: string
+                name:
+                  type: string
+                  maxLength: 64
+              required:
+              - comment
+              - name
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  domain:
+                    type: string
+                    nullable: true
+                  comment:
+                    type: string
+                  name:
+                    type: string
+                    maxLength: 64
+                  attributes:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 64
+                        type:
+                          type: string
+                        resource:
+                          type: integer
+                      required:
+                      - name
+                      - type
+                      - resource
+                    readOnly: true
+                  actions:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 64
+                        resource:
+                          type: integer
+                      required:
+                      - name
+                      - resource
+                    readOnly: true
+                required:
+                - comment
+                - name
+          description: ''
+  /api/v1.0/resources/{id}/:
+    get:
+      tags:
+        - ABAC Resource
+      operationId: retrieveABACResource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac resource.
+        schema:
+          type: string
+      - name: domain
+        required: false
+        in: query
+        description: domain
+        schema:
+          type: string
+      - name: name
+        required: false
+        in: query
+        description: name
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  domain:
+                    type: string
+                    nullable: true
+                  comment:
+                    type: string
+                  name:
+                    type: string
+                    maxLength: 64
+                  attributes:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 64
+                        type:
+                          type: string
+                        resource:
+                          type: integer
+                      required:
+                      - name
+                      - type
+                      - resource
+                    readOnly: true
+                  actions:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 64
+                        resource:
+                          type: integer
+                      required:
+                      - name
+                      - resource
+                    readOnly: true
+                required:
+                - comment
+                - name
+          description: ''
+    patch:
+      tags:
+        - ABAC Resource
+      operationId: partial_updateABACResource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac resource.
+        schema:
+          type: string
+      - name: domain
+        required: false
+        in: query
+        description: domain
+        schema:
+          type: string
+      - name: name
+        required: false
+        in: query
+        description: name
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                domain:
+                  type: string
+                  nullable: true
+                comment:
+                  type: string
+                name:
+                  type: string
+                  maxLength: 64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  domain:
+                    type: string
+                    nullable: true
+                  comment:
+                    type: string
+                  name:
+                    type: string
+                    maxLength: 64
+                  attributes:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 64
+                        type:
+                          type: string
+                        resource:
+                          type: integer
+                      required:
+                      - name
+                      - type
+                      - resource
+                    readOnly: true
+                  actions:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          type: integer
+                          readOnly: true
+                        name:
+                          type: string
+                          maxLength: 64
+                        resource:
+                          type: integer
+                      required:
+                      - name
+                      - resource
+                    readOnly: true
+                required:
+                - comment
+                - name
+          description: ''
+    delete:
+      tags:
+        - ABAC Resource
+      operationId: destroyABACResource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac resource.
+        schema:
+          type: string
+      - name: domain
+        required: false
+        in: query
+        description: domain
+        schema:
+          type: string
+      - name: name
+        required: false
+        in: query
+        description: name
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/actions/:
+    get:
+      tags:
+        - ABAC Action
+      operationId: listABACActions
+      parameters:
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    name:
+                      type: string
+                      maxLength: 64
+                    resource:
+                      type: integer
+                  required:
+                  - name
+                  - resource
+          description: ''
+    post:
+      tags:
+        - ABAC Action
+      operationId: createABACAction
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  maxLength: 64
+                resource:
+                  type: integer
+              required:
+              - name
+              - resource
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 64
+                  resource:
+                    type: integer
+                required:
+                - name
+                - resource
+          description: ''
+  /api/v1.0/actions/{id}/:
+    get:
+      tags:
+        - ABAC Action
+      operationId: retrieveABACAction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac action.
+        schema:
+          type: string
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 64
+                  resource:
+                    type: integer
+                required:
+                - name
+                - resource
+          description: ''
+    patch:
+      tags:
+        - ABAC Action
+      operationId: partial_updateABACAction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac action.
+        schema:
+          type: string
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  maxLength: 64
+                resource:
+                  type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 64
+                  resource:
+                    type: integer
+                required:
+                - name
+                - resource
+          description: ''
+    delete:
+      tags:
+        - ABAC Action
+      operationId: destroyABACAction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac action.
+        schema:
+          type: string
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/attributes/:
+    get:
+      tags:
+        - ABAC Attribute
+      operationId: listABACAttributes
+      parameters:
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    name:
+                      type: string
+                      maxLength: 64
+                    type:
+                      type: string
+                    resource:
+                      type: integer
+                  required:
+                  - name
+                  - type
+                  - resource
+          description: ''
+    post:
+      tags:
+        - ABAC Attribute
+      operationId: createABACAttribute
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  maxLength: 64
+                type:
+                  type: string
+                resource:
+                  type: integer
+              required:
+              - name
+              - type
+              - resource
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 64
+                  type:
+                    type: string
+                  resource:
+                    type: integer
+                required:
+                - name
+                - type
+                - resource
+          description: ''
+  /api/v1.0/attributes/{id}/:
+    get:
+      tags:
+        - ABAC Attribute
+      operationId: retrieveABACAttribute
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac attribute.
+        schema:
+          type: string
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 64
+                  type:
+                    type: string
+                  resource:
+                    type: integer
+                required:
+                - name
+                - type
+                - resource
+          description: ''
+    patch:
+      tags:
+        - ABAC Attribute
+      operationId: partial_updateABACAttribute
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac attribute.
+        schema:
+          type: string
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  maxLength: 64
+                type:
+                  type: string
+                resource:
+                  type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    maxLength: 64
+                  type:
+                    type: string
+                  resource:
+                    type: integer
+                required:
+                - name
+                - type
+                - resource
+          description: ''
+    delete:
+      tags:
+        - ABAC Attribute
+      operationId: destroyABACAttribute
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac attribute.
+        schema:
+          type: string
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/policies/:
+    get:
+      tags:
+        - ABAC Policy
+      operationId: listABACPolicys
+      parameters:
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      - name: domain
+        required: false
+        in: query
+        description: domain
+        schema:
+          type: string
+      - name: action
+        required: false
+        in: query
+        description: action
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    domain:
+                      type: string
+                      maxLength: 128
+                    resource:
+                      type: integer
+                      nullable: true
+                    action:
+                      type: integer
+                      nullable: true
+                    rules:
+                      type: array
+                      items:
+                        properties:
+                          result:
+                            enum:
+                            - allow
+                            - deny
+                          rule:
+                            type: object
+                          mask:
+                            type: array
+                            items:
+                              type: string
+                        required:
+                        - result
+                        - rule
+                        - mask
+                  required:
+                  - domain
+                  - rules
+          description: ''
+    post:
+      tags:
+        - ABAC Policy
+      operationId: createABACPolicy
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                domain:
+                  type: string
+                  maxLength: 128
+                resource:
+                  type: integer
+                  nullable: true
+                action:
+                  type: integer
+                  nullable: true
+                rules:
+                  type: array
+                  items:
+                    properties:
+                      result:
+                        enum:
+                        - allow
+                        - deny
+                      rule:
+                        type: object
+                      mask:
+                        type: array
+                        items:
+                          type: string
+                    required:
+                    - result
+                    - rule
+                    - mask
+              required:
+              - domain
+              - rules
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  domain:
+                    type: string
+                    maxLength: 128
+                  resource:
+                    type: integer
+                    nullable: true
+                  action:
+                    type: integer
+                    nullable: true
+                  rules:
+                    type: array
+                    items:
+                      properties:
+                        result:
+                          enum:
+                          - allow
+                          - deny
+                        rule:
+                          type: object
+                        mask:
+                          type: array
+                          items:
+                            type: string
+                      required:
+                      - result
+                      - rule
+                      - mask
+                required:
+                - domain
+                - rules
+          description: ''
+  /api/v1.0/policies/{id}/:
+    get:
+      tags:
+        - ABAC Policy
+      operationId: retrieveABACPolicy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac policy.
+        schema:
+          type: string
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      - name: domain
+        required: false
+        in: query
+        description: domain
+        schema:
+          type: string
+      - name: action
+        required: false
+        in: query
+        description: action
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  domain:
+                    type: string
+                    maxLength: 128
+                  resource:
+                    type: integer
+                    nullable: true
+                  action:
+                    type: integer
+                    nullable: true
+                  rules:
+                    type: array
+                    items:
+                      properties:
+                        result:
+                          enum:
+                          - allow
+                          - deny
+                        rule:
+                          type: object
+                        mask:
+                          type: array
+                          items:
+                            type: string
+                      required:
+                      - result
+                      - rule
+                      - mask
+                required:
+                - domain
+                - rules
+          description: ''
+    patch:
+      tags:
+        - ABAC Policy
+      operationId: partial_updateABACPolicy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac policy.
+        schema:
+          type: string
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      - name: domain
+        required: false
+        in: query
+        description: domain
+        schema:
+          type: string
+      - name: action
+        required: false
+        in: query
+        description: action
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                domain:
+                  type: string
+                  maxLength: 128
+                resource:
+                  type: integer
+                  nullable: true
+                action:
+                  type: integer
+                  nullable: true
+                rules:
+                  type: array
+                  items:
+                    properties:
+                      result:
+                        enum:
+                        - allow
+                        - deny
+                      rule:
+                        type: object
+                      mask:
+                        type: array
+                        items:
+                          type: string
+                    required:
+                    - result
+                    - rule
+                    - mask
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  domain:
+                    type: string
+                    maxLength: 128
+                  resource:
+                    type: integer
+                    nullable: true
+                  action:
+                    type: integer
+                    nullable: true
+                  rules:
+                    type: array
+                    items:
+                      properties:
+                        result:
+                          enum:
+                          - allow
+                          - deny
+                        rule:
+                          type: object
+                        mask:
+                          type: array
+                          items:
+                            type: string
+                      required:
+                      - result
+                      - rule
+                      - mask
+                required:
+                - domain
+                - rules
+          description: ''
+    delete:
+      tags:
+        - ABAC Policy
+      operationId: destroyABACPolicy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac policy.
+        schema:
+          type: string
+      - name: resource
+        required: false
+        in: query
+        description: resource
+        schema:
+          type: string
+      - name: domain
+        required: false
+        in: query
+        description: domain
+        schema:
+          type: string
+      - name: action
+        required: false
+        in: query
+        description: action
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/domains/:
+    get:
+      tags:
+        - ABAC Domain
+      operationId: listABACDomains
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: string
+                      maxLength: 128
+                    default_result:
+                      enum:
+                      - allow
+                      - deny
+                      nullable: true
+                  required:
+                  - id
+          description: ''
+    post:
+      tags:
+        - ABAC Domain
+      operationId: createABACDomain
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: string
+                  maxLength: 128
+                default_result:
+                  enum:
+                  - allow
+                  - deny
+                  nullable: true
+              required:
+              - id
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: string
+                    maxLength: 128
+                  default_result:
+                    enum:
+                    - allow
+                    - deny
+                    nullable: true
+                required:
+                - id
+          description: ''
+  /api/v1.0/domains/{id}/:
+    get:
+      tags:
+        - ABAC Domain
+      operationId: retrieveABACDomain
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac domain.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: string
+                    maxLength: 128
+                  default_result:
+                    enum:
+                    - allow
+                    - deny
+                    nullable: true
+                required:
+                - id
+          description: ''
+    patch:
+      tags:
+        - ABAC Domain
+      operationId: partial_updateABACDomain
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac domain.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: string
+                  maxLength: 128
+                default_result:
+                  enum:
+                  - allow
+                  - deny
+                  nullable: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: string
+                    maxLength: 128
+                  default_result:
+                    enum:
+                    - allow
+                    - deny
+                    nullable: true
+                required:
+                - id
+          description: ''
+    delete:
+      tags:
+        - ABAC Domain
+      operationId: destroyABACDomain
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac domain.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/login:
+    post:
+      tags:
+        - Authorization
+      operationId: CreateLogin
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+  /api/v1.0/logout:
+    post:
+      tags:
+        - Authorization
+      operationId: CreateLogout
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+  /api/v1.0/invalidate-token:
+    get:
+      tags:
+        - Token
+      operationId: listInvalidateTokens
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {}
+          description: ''
+  /api/v1.0/verify-token:
+    post:
+      tags:
+        - Token
+      operationId: CreateVerifyToken
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+  /api/v1.0/password-recovery:
+    post:
+      tags:
+        - Recovery
+      operationId: CreateRecovery
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+    patch:
+      tags:
+        - Recovery
+      operationId: PartialUpdateRecovery
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+  /api/v1.0/register/:
+    post:
+      tags:
+        - Authorization
+      operationId: createRegistrationViewSet
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''

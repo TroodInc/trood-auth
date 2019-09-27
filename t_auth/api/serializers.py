@@ -19,7 +19,7 @@ from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
 
 
 class LoginDataVerificationSerializer(serializers.ModelSerializer):
-    role = serializers.CharField(source='role.name')
+    role = serializers.CharField(source='role.name', default=None)
 
     class Meta:
         model = Account

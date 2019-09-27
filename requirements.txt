@@ -7,9 +7,9 @@ coreschema==0.0.4
 decorator==4.2.1
 Django==1.11.5
 django-configurations==2.0
-django-filter==1.1.0
+djangorestframework
+django-filter
 django-cors-headers==2.1.0
-djangorestframework==3.6.4
 ecdsa==0.13
 factory-boy==2.10.0
 Faker==0.8.12
@@ -50,6 +50,7 @@ uritemplate==3.0.0
 wcwidth==0.1.7
 dj-database-url==0.5.0
 raven==6.9.0
+pyyaml
 
 teamcity-messages==1.21
 git+https://07de0218088728b42ee60f155c71990f1dc6a717:x-oauth-basic@github.com/Q-CIS-DEV/trood-auth-client.git#egg=trood-auth-client
