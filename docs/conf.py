@@ -40,8 +40,14 @@ release = u'0.1.1'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinxcontrib.openapi',
+    'autoapi.extension',
     # 'sphinx.ext.inheritance_diagram',
 ]
+
+autoapi_type = 'python'
+autoapi_dirs = ['../t_auth']
+autoapi_ignore = ['*test*', '*migration*']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
