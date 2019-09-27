@@ -71,13 +71,13 @@ class LogoutView(APIView):
         return Response({}, status=200)
 
 
-class RegistrationViewSet(BaseViewSet):
+class RegistrationViewSet(APIView):
     """
     Provides external API /register method
     """
     permission_classes = (PublicEndpoint,)
 
-    def create(self, request):
+    def post(self, request):
         serializer = RegisterSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
@@ -138,14 +138,3 @@ class RecoveryView(APIView):
                 {'detail': 'Recovery token {} not found'.format(token_str)},
                 status=status.HTTP_404_NOT_FOUND
             )
-
-
-# ======================================================================================================================
-class TwoFactorViewSet(BaseViewSet):
-    """
-    Provides external API /check_2fa method
-    """
-    permission_classes = (PublicEndpoint,)
-
-    def create(self, request):
-        return Response(self.not_implemented())
