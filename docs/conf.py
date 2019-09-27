@@ -89,7 +89,7 @@ html_theme = 'classic'
 # documentation.
 #
 html_theme_options = {
-    "body_max_width": None
+    # "body_max_width": None
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
