@@ -12,6 +12,7 @@ COPY ./t_auth $APPDIR/t_auth
 COPY ./manage.py $APPDIR/
 COPY ./requirements.txt $APPDIR/
 COPY ./pytest.ini $APPDIR/
+COPY ./docs/_static/swagger.yml $APPDIR/static/
 
 RUN pip install -r $APPDIR/requirements.txt
 

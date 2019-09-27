@@ -40,8 +40,14 @@ release = u'0.1.1'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinxcontrib.openapi',
+    'autoapi.extension',
     # 'sphinx.ext.inheritance_diagram',
 ]
+
+autoapi_type = 'python'
+autoapi_dirs = ['../t_auth']
+autoapi_ignore = ['*test*', '*migration*']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -83,7 +89,7 @@ html_theme = 'classic'
 # documentation.
 #
 html_theme_options = {
-    "body_max_width": None
+    # "body_max_width": None
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

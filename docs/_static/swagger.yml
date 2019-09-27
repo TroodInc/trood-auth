@@ -1,0 +1,1090 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+tags:
+  - name: Authorization
+    description: "Base endpoints used to enter the system"
+  - name: Recovery
+    description: "Action for getting lost password back"
+paths:
+  /api/v1.0/account/:
+    get:
+      tags:
+        - Account
+      operationId: listAccounts
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account'
+          description: ''
+    post:
+      tags:
+        - Account
+      operationId: createAccount
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  maxLength: 64
+                status:
+                  enum:
+                  - active
+                  - disabled
+                  - deleted
+                active:
+                  type: boolean
+                role:
+                  type: integer
+                  nullable: true
+                type:
+                  enum:
+                  - user
+                  - service
+                cidr:
+                  type: string
+                  maxLength: 20
+              required:
+              - login
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: ''
+  /api/v1.0/account/{id}/:
+    get:
+      tags:
+        - Account
+      operationId: retrieveAccount
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: ''
+    patch:
+      tags:
+        - Account
+      operationId: partial_updateAccount
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  maxLength: 64
+                status:
+                  enum:
+                  - active
+                  - disabled
+                  - deleted
+                active:
+                  type: boolean
+                role:
+                  type: integer
+                  nullable: true
+                type:
+                  enum:
+                  - user
+                  - service
+                cidr:
+                  type: string
+                  maxLength: 20
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+          description: ''
+    delete:
+      tags:
+        - Account
+      operationId: destroyAccount
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/roles/:
+    get:
+      tags:
+        - Role
+      operationId: listAccountRoles
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Role"
+          description: ''
+    post:
+      tags:
+        - Role
+      operationId: createAccountRole
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Role"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Role"
+          description: ''
+  /api/v1.0/roles/{id}/:
+    get:
+      tags:
+        - Role
+      operationId: retrieveAccountRole
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account role.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Role"
+          description: ''
+    patch:
+      tags:
+        - Role
+      operationId: partial_updateAccountRole
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account role.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  maxLength: 128
+                status:
+                  enum:
+                  - active
+                  - disabled
+                  - deleted
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Role"
+          description: ''
+    delete:
+      tags:
+        - Role
+      operationId: destroyAccountRole
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account role.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/resources/:
+    get:
+      tags:
+        - ABAC Resource
+      operationId: listABACResources
+      parameters:
+      - name: domain
+        required: false
+        in: query
+        description: domain
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ABACResource"
+          description: ''
+    post:
+      tags:
+        - ABAC Resource
+      operationId: createABACResource
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                domain:
+                  type: string
+                  nullable: true
+                comment:
+                  type: string
+                name:
+                  type: string
+                  maxLength: 64
+              required:
+              - comment
+              - name
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACResource"
+          description: ''
+  /api/v1.0/resources/{id}/:
+    get:
+      tags:
+        - ABAC Resource
+      operationId: retrieveABACResource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac resource.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACResource"
+          description: ''
+    patch:
+      tags:
+        - ABAC Resource
+      operationId: partial_updateABACResource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac resource.
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                domain:
+                  type: string
+                  nullable: true
+                comment:
+                  type: string
+                name:
+                  type: string
+                  maxLength: 64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACResource"
+          description: ''
+    delete:
+      tags:
+        - ABAC Resource
+      operationId: destroyABACResource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac resource.
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/actions/:
+    get:
+      tags:
+        - ABAC Action
+      operationId: listABACActions
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ABACAction"
+          description: ''
+    post:
+      tags:
+        - ABAC Action
+      operationId: createABACAction
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ABACAction"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACAction"
+          description: ''
+  /api/v1.0/actions/{id}/:
+    get:
+      tags:
+        - ABAC Action
+      operationId: retrieveABACAction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac action.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACAction"
+          description: ''
+    patch:
+      tags:
+        - ABAC Action
+      operationId: partial_updateABACAction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac action.
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ABACAction"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACAction"
+          description: ''
+    delete:
+      tags:
+        - ABAC Action
+      operationId: destroyABACAction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac action.
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/attributes/:
+    get:
+      tags:
+        - ABAC Attribute
+      operationId: listABACAttributes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ABACAttribute"
+          description: ''
+    post:
+      tags:
+        - ABAC Attribute
+      operationId: createABACAttribute
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ABACAttribute"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACAttribute"
+          description: ''
+  /api/v1.0/attributes/{id}/:
+    get:
+      tags:
+        - ABAC Attribute
+      operationId: retrieveABACAttribute
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac attribute.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACAttribute"
+          description: ''
+    patch:
+      tags:
+        - ABAC Attribute
+      operationId: partial_updateABACAttribute
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac attribute.
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+               $ref: "#/components/schemas/ABACAttribute"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACAttribute"
+          description: ''
+    delete:
+      tags:
+        - ABAC Attribute
+      operationId: destroyABACAttribute
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac attribute.
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/policies/:
+    get:
+      tags:
+        - ABAC Policy
+      operationId: listABACPolicys
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ABACPolicy"
+          description: ''
+    post:
+      tags:
+        - ABAC Policy
+      operationId: createABACPolicy
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ABACPolicy"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACPolicy"
+          description: ''
+  /api/v1.0/policies/{id}/:
+    get:
+      tags:
+        - ABAC Policy
+      operationId: retrieveABACPolicy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac policy.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACPolicy"
+          description: ''
+    patch:
+      tags:
+        - ABAC Policy
+      operationId: partial_updateABACPolicy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac policy.
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ABACPolicy"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACPolicy"
+          description: ''
+    delete:
+      tags:
+        - ABAC Policy
+      operationId: destroyABACPolicy
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac policy.
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/domains/:
+    get:
+      tags:
+        - ABAC Domain
+      operationId: listABACDomains
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ABACDomain'
+          description: ''
+    post:
+      tags:
+        - ABAC Domain
+      operationId: createABACDomain
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ABACDomain'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ABACDomain'
+          description: ''
+  /api/v1.0/domains/{id}/:
+    get:
+      tags:
+        - ABAC Domain
+      operationId: retrieveABACDomain
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac domain.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ABACDomain'
+          description: ''
+    patch:
+      tags:
+        - ABAC Domain
+      operationId: partial_updateABACDomain
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac domain.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ABACDomain'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ABACDomain'
+          description: ''
+    delete:
+      tags:
+        - ABAC Domain
+      operationId: destroyABACDomain
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac domain.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/login:
+    post:
+      summary: Authenticate user by credentials
+      description: >
+        If user was authenticated you receive a `Token` needed to authorize future requests. <br>
+        For each new authentication unique `Token` would be created. <br>
+        So you will have ability to differentiate sessions from devices <br><br>
+        Additinaly you will receive `ABAC` _(Attribute Based Access Control)_ object with rules avaliable in system
+      tags:
+        - Authorization
+      operationId: CreateLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  maxLength: 128
+                  nullable: false
+                  format: email
+                password:
+                  type: string
+                  maxLength: 128
+                  nullable: false
+              required:
+              - login
+              - password
+      responses:
+        '200':
+          $ref: "#/components/responses/Authentication"
+  /api/v1.0/logout:
+    post:
+      summary: Close user session
+      description: >
+        Logout routine discards current user Token, by default it removes only current Token.<br>
+        If you want to remove all Token-s (to logout on all devices) you can use
+        `all` option
+      tags:
+        - Authorization
+      operationId: CreateLogout[]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                all:
+                  type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+          description: ''
+  /api/v1.0/invalidate-token:
+    get:
+      summary: System endpoint for removing expired tokens
+      tags:
+        - Token
+      operationId: listInvalidateTokens
+      parameters:
+      - name: all
+        in: query
+        description: Flag for removing all not only expired tokens
+        schema:
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  removed_tokens:
+                    type: integer
+
+          description: ''
+  /api/v1.0/verify-token:
+    post:
+      summary: System endpoint for cros-service authorization
+      tags:
+        - Token
+      operationId: CreateVerifyToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          $ref: "#/components/responses/Authentication"
+  /api/v1.0/password-recovery:
+    post:
+      summary: Initiate recovery process
+      description: >
+        After submiting user `login` system will generate one time `recovery Token` and send it to user email
+      tags:
+        - Recovery
+      operationId: CreateRecovery
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  maxLength: 128
+                  nullable: false
+                  format: email
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+    patch:
+      summary: Updating user password
+      description: >
+        A fter password update `recovery Token` will be removed <br>
+      tags:
+        - Recovery
+      operationId: PartialUpdateRecovery
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                token:
+                  type: string
+                  maxLength: 128
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+  /api/v1.0/register/:
+    post:
+      summary: Registering new user
+      tags:
+        - Authorization
+      operationId: createRegistrationViewSet
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      login:
+                        type: string
+                        format: email
+                      created:
+                        type: string
+                        format: date-time
+                      active:
+                        type: boolean
+                      status:
+                        type: string
+                        enum:
+                        - active
+                        - disabled
+                        - deleted
+                      role:
+                        type: string
+                        nullable: true
+                        example: null
+          description: ''
+
+components:
+  schemas:
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        login:
+          type: string
+          maxLength: 64
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          enum:
+          - active
+          - disabled
+          - deleted
+        active:
+          type: boolean
+        role:
+          type: integer
+          nullable: true
+        pwd_hash:
+          type: string
+          readOnly: true
+        type:
+          enum:
+          - user
+          - service
+        cidr:
+          type: string
+          maxLength: 20
+      required:
+      - login
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 128
+        status:
+          enum:
+          - active
+          - disabled
+          - deleted
+      required:
+      - name
+
+    ABACDomain:
+      type: object
+      properties:
+        id:
+          type: string
+          maxLength: 128
+        default_result:
+          enum:
+          - allow
+          - deny
+          nullable: true
+      required:
+      - id
+
+    ABACAction:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 64
+        resource:
+          type: integer
+      required:
+      - name
+      - resource
+
+    ABACAttribute:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 64
+        type:
+          type: string
+        resource:
+          type: integer
+      required:
+      - name
+      - type
+      - resource
+
+    ABACResource:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        domain:
+          type: string
+          nullable: true
+        comment:
+          type: string
+        name:
+          type: string
+          maxLength: 64
+        attributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/ABACAttribute"
+          readOnly: true
+        actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ABACAction"
+          readOnly: true
+      required:
+      - comment
+      - name
+
+    ABACPolicy:
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        domain:
+          type: string
+          maxLength: 128
+        resource:
+          type: integer
+          nullable: true
+        action:
+          type: integer
+          nullable: true
+        rules:
+          type: array
+          items:
+            properties:
+              result:
+                enum:
+                - allow
+                - deny
+              rule:
+                type: object
+              mask:
+                type: array
+                items:
+                  type: string
+            required:
+            - result
+            - rule
+            - mask
+      required:
+      - domain
+      - rules
+  responses:
+    Authentication:
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: integer
+              login:
+                type: string
+                format: email
+              created:
+                type: string
+                format: date-time
+              active:
+                type: boolean
+              status:
+                type: string
+              role:
+                type: string
+                nullable: true
+              token:
+                type: string
+              expire:
+                type: string
+                format: date-time
+              abac:
+                type: object
+              linked_object:
+                type: object
+      description: ''
