@@ -21,39 +21,7 @@ paths:
               schema:
                 type: array
                 items:
-                  properties:
-                    id:
-                      type: integer
-                      readOnly: true
-                    login:
-                      type: string
-                      maxLength: 64
-                    created:
-                      type: string
-                      format: date-time
-                      readOnly: true
-                    status:
-                      enum:
-                      - active
-                      - disabled
-                      - deleted
-                    active:
-                      type: boolean
-                    role:
-                      type: integer
-                      nullable: true
-                    pwd_hash:
-                      type: string
-                      readOnly: true
-                    type:
-                      enum:
-                      - user
-                      - service
-                    cidr:
-                      type: string
-                      maxLength: 20
-                  required:
-                  - login
+                  $ref: '#/components/schemas/Account'
           description: ''
     post:
       tags:
@@ -92,39 +60,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  login:
-                    type: string
-                    maxLength: 64
-                  created:
-                    type: string
-                    format: date-time
-                    readOnly: true
-                  status:
-                    enum:
-                    - active
-                    - disabled
-                    - deleted
-                  active:
-                    type: boolean
-                  role:
-                    type: integer
-                    nullable: true
-                  pwd_hash:
-                    type: string
-                    readOnly: true
-                  type:
-                    enum:
-                    - user
-                    - service
-                  cidr:
-                    type: string
-                    maxLength: 20
-                required:
-                - login
+                $ref: '#/components/schemas/Account'
           description: ''
   /api/v1.0/account/{id}/:
     get:
@@ -143,39 +79,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  login:
-                    type: string
-                    maxLength: 64
-                  created:
-                    type: string
-                    format: date-time
-                    readOnly: true
-                  status:
-                    enum:
-                    - active
-                    - disabled
-                    - deleted
-                  active:
-                    type: boolean
-                  role:
-                    type: integer
-                    nullable: true
-                  pwd_hash:
-                    type: string
-                    readOnly: true
-                  type:
-                    enum:
-                    - user
-                    - service
-                  cidr:
-                    type: string
-                    maxLength: 20
-                required:
-                - login
+                $ref: '#/components/schemas/Account'
           description: ''
     patch:
       tags:
@@ -218,39 +122,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  login:
-                    type: string
-                    maxLength: 64
-                  created:
-                    type: string
-                    format: date-time
-                    readOnly: true
-                  status:
-                    enum:
-                    - active
-                    - disabled
-                    - deleted
-                  active:
-                    type: boolean
-                  role:
-                    type: integer
-                    nullable: true
-                  pwd_hash:
-                    type: string
-                    readOnly: true
-                  type:
-                    enum:
-                    - user
-                    - service
-                  cidr:
-                    type: string
-                    maxLength: 20
-                required:
-                - login
+                $ref: '#/components/schemas/Account'
           description: ''
     delete:
       tags:
@@ -279,20 +151,7 @@ paths:
               schema:
                 type: array
                 items:
-                  properties:
-                    id:
-                      type: integer
-                      readOnly: true
-                    name:
-                      type: string
-                      maxLength: 128
-                    status:
-                      enum:
-                      - active
-                      - disabled
-                      - deleted
-                  required:
-                  - name
+                  $ref: "#/components/schemas/Role"
           description: ''
     post:
       tags:
@@ -303,36 +162,13 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                name:
-                  type: string
-                  maxLength: 128
-                status:
-                  enum:
-                  - active
-                  - disabled
-                  - deleted
-              required:
-              - name
+              $ref: "#/components/schemas/Role"
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  name:
-                    type: string
-                    maxLength: 128
-                  status:
-                    enum:
-                    - active
-                    - disabled
-                    - deleted
-                required:
-                - name
+                $ref: "#/components/schemas/Role"
           description: ''
   /api/v1.0/roles/{id}/:
     get:
@@ -351,20 +187,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  name:
-                    type: string
-                    maxLength: 128
-                  status:
-                    enum:
-                    - active
-                    - disabled
-                    - deleted
-                required:
-                - name
+                $ref: "#/components/schemas/Role"
           description: ''
     patch:
       tags:
@@ -395,20 +218,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  name:
-                    type: string
-                    maxLength: 128
-                  status:
-                    enum:
-                    - active
-                    - disabled
-                    - deleted
-                required:
-                - name
+                $ref: "#/components/schemas/Role"
           description: ''
     delete:
       tags:
@@ -436,12 +246,6 @@ paths:
         description: domain
         schema:
           type: string
-      - name: name
-        required: false
-        in: query
-        description: name
-        schema:
-          type: string
       responses:
         '200':
           content:
@@ -449,56 +253,7 @@ paths:
               schema:
                 type: array
                 items:
-                  properties:
-                    id:
-                      type: integer
-                      readOnly: true
-                    domain:
-                      type: string
-                      nullable: true
-                    comment:
-                      type: string
-                    name:
-                      type: string
-                      maxLength: 64
-                    attributes:
-                      type: array
-                      items:
-                        properties:
-                          id:
-                            type: integer
-                            readOnly: true
-                          name:
-                            type: string
-                            maxLength: 64
-                          type:
-                            type: string
-                          resource:
-                            type: integer
-                        required:
-                        - name
-                        - type
-                        - resource
-                      readOnly: true
-                    actions:
-                      type: array
-                      items:
-                        properties:
-                          id:
-                            type: integer
-                            readOnly: true
-                          name:
-                            type: string
-                            maxLength: 64
-                          resource:
-                            type: integer
-                        required:
-                        - name
-                        - resource
-                      readOnly: true
-                  required:
-                  - comment
-                  - name
+                  $ref: "#/components/schemas/ABACResource"
           description: ''
     post:
       tags:
@@ -526,56 +281,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  domain:
-                    type: string
-                    nullable: true
-                  comment:
-                    type: string
-                  name:
-                    type: string
-                    maxLength: 64
-                  attributes:
-                    type: array
-                    items:
-                      properties:
-                        id:
-                          type: integer
-                          readOnly: true
-                        name:
-                          type: string
-                          maxLength: 64
-                        type:
-                          type: string
-                        resource:
-                          type: integer
-                      required:
-                      - name
-                      - type
-                      - resource
-                    readOnly: true
-                  actions:
-                    type: array
-                    items:
-                      properties:
-                        id:
-                          type: integer
-                          readOnly: true
-                        name:
-                          type: string
-                          maxLength: 64
-                        resource:
-                          type: integer
-                      required:
-                      - name
-                      - resource
-                    readOnly: true
-                required:
-                - comment
-                - name
+                $ref: "#/components/schemas/ABACResource"
           description: ''
   /api/v1.0/resources/{id}/:
     get:
@@ -588,74 +294,13 @@ paths:
         required: true
         description: A unique integer value identifying this abac resource.
         schema:
-          type: string
-      - name: domain
-        required: false
-        in: query
-        description: domain
-        schema:
-          type: string
-      - name: name
-        required: false
-        in: query
-        description: name
-        schema:
-          type: string
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  domain:
-                    type: string
-                    nullable: true
-                  comment:
-                    type: string
-                  name:
-                    type: string
-                    maxLength: 64
-                  attributes:
-                    type: array
-                    items:
-                      properties:
-                        id:
-                          type: integer
-                          readOnly: true
-                        name:
-                          type: string
-                          maxLength: 64
-                        type:
-                          type: string
-                        resource:
-                          type: integer
-                      required:
-                      - name
-                      - type
-                      - resource
-                    readOnly: true
-                  actions:
-                    type: array
-                    items:
-                      properties:
-                        id:
-                          type: integer
-                          readOnly: true
-                        name:
-                          type: string
-                          maxLength: 64
-                        resource:
-                          type: integer
-                      required:
-                      - name
-                      - resource
-                    readOnly: true
-                required:
-                - comment
-                - name
+                $ref: "#/components/schemas/ABACResource"
           description: ''
     patch:
       tags:
@@ -667,19 +312,7 @@ paths:
         required: true
         description: A unique integer value identifying this abac resource.
         schema:
-          type: string
-      - name: domain
-        required: false
-        in: query
-        description: domain
-        schema:
-          type: string
-      - name: name
-        required: false
-        in: query
-        description: name
-        schema:
-          type: string
+          type: integer
       requestBody:
         content:
           application/json:
@@ -698,56 +331,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  domain:
-                    type: string
-                    nullable: true
-                  comment:
-                    type: string
-                  name:
-                    type: string
-                    maxLength: 64
-                  attributes:
-                    type: array
-                    items:
-                      properties:
-                        id:
-                          type: integer
-                          readOnly: true
-                        name:
-                          type: string
-                          maxLength: 64
-                        type:
-                          type: string
-                        resource:
-                          type: integer
-                      required:
-                      - name
-                      - type
-                      - resource
-                    readOnly: true
-                  actions:
-                    type: array
-                    items:
-                      properties:
-                        id:
-                          type: integer
-                          readOnly: true
-                        name:
-                          type: string
-                          maxLength: 64
-                        resource:
-                          type: integer
-                      required:
-                      - name
-                      - resource
-                    readOnly: true
-                required:
-                - comment
-                - name
+                $ref: "#/components/schemas/ABACResource"
           description: ''
     delete:
       tags:
@@ -759,19 +343,7 @@ paths:
         required: true
         description: A unique integer value identifying this abac resource.
         schema:
-          type: string
-      - name: domain
-        required: false
-        in: query
-        description: domain
-        schema:
-          type: string
-      - name: name
-        required: false
-        in: query
-        description: name
-        schema:
-          type: string
+          type: integer
       responses:
         '204':
           description: ''
@@ -780,13 +352,6 @@ paths:
       tags:
         - ABAC Action
       operationId: listABACActions
-      parameters:
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
       responses:
         '200':
           content:
@@ -794,18 +359,7 @@ paths:
               schema:
                 type: array
                 items:
-                  properties:
-                    id:
-                      type: integer
-                      readOnly: true
-                    name:
-                      type: string
-                      maxLength: 64
-                    resource:
-                      type: integer
-                  required:
-                  - name
-                  - resource
+                  $ref: "#/components/schemas/ABACAction"
           description: ''
     post:
       tags:
@@ -816,32 +370,13 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                name:
-                  type: string
-                  maxLength: 64
-                resource:
-                  type: integer
-              required:
-              - name
-              - resource
+              $ref: "#/components/schemas/ABACAction"
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  name:
-                    type: string
-                    maxLength: 64
-                  resource:
-                    type: integer
-                required:
-                - name
-                - resource
+                $ref: "#/components/schemas/ABACAction"
           description: ''
   /api/v1.0/actions/{id}/:
     get:
@@ -854,30 +389,13 @@ paths:
         required: true
         description: A unique integer value identifying this abac action.
         schema:
-          type: string
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  name:
-                    type: string
-                    maxLength: 64
-                  resource:
-                    type: integer
-                required:
-                - name
-                - resource
+                $ref: "#/components/schemas/ABACAction"
           description: ''
     patch:
       tags:
@@ -889,40 +407,18 @@ paths:
         required: true
         description: A unique integer value identifying this abac action.
         schema:
-          type: string
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
+          type: integer
       requestBody:
         content:
           application/json:
             schema:
-              properties:
-                name:
-                  type: string
-                  maxLength: 64
-                resource:
-                  type: integer
+              $ref: "#/components/schemas/ABACAction"
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  name:
-                    type: string
-                    maxLength: 64
-                  resource:
-                    type: integer
-                required:
-                - name
-                - resource
+                $ref: "#/components/schemas/ABACAction"
           description: ''
     delete:
       tags:
@@ -934,13 +430,7 @@ paths:
         required: true
         description: A unique integer value identifying this abac action.
         schema:
-          type: string
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
+          type: integer
       responses:
         '204':
           description: ''
@@ -949,13 +439,6 @@ paths:
       tags:
         - ABAC Attribute
       operationId: listABACAttributes
-      parameters:
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
       responses:
         '200':
           content:
@@ -963,21 +446,7 @@ paths:
               schema:
                 type: array
                 items:
-                  properties:
-                    id:
-                      type: integer
-                      readOnly: true
-                    name:
-                      type: string
-                      maxLength: 64
-                    type:
-                      type: string
-                    resource:
-                      type: integer
-                  required:
-                  - name
-                  - type
-                  - resource
+                  $ref: "#/components/schemas/ABACAttribute"
           description: ''
     post:
       tags:
@@ -988,38 +457,13 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                name:
-                  type: string
-                  maxLength: 64
-                type:
-                  type: string
-                resource:
-                  type: integer
-              required:
-              - name
-              - type
-              - resource
+              $ref: "#/components/schemas/ABACAttribute"
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  name:
-                    type: string
-                    maxLength: 64
-                  type:
-                    type: string
-                  resource:
-                    type: integer
-                required:
-                - name
-                - type
-                - resource
+                $ref: "#/components/schemas/ABACAttribute"
           description: ''
   /api/v1.0/attributes/{id}/:
     get:
@@ -1032,33 +476,13 @@ paths:
         required: true
         description: A unique integer value identifying this abac attribute.
         schema:
-          type: string
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  name:
-                    type: string
-                    maxLength: 64
-                  type:
-                    type: string
-                  resource:
-                    type: integer
-                required:
-                - name
-                - type
-                - resource
+                $ref: "#/components/schemas/ABACAttribute"
           description: ''
     patch:
       tags:
@@ -1070,45 +494,18 @@ paths:
         required: true
         description: A unique integer value identifying this abac attribute.
         schema:
-          type: string
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
+          type: integer
       requestBody:
         content:
           application/json:
             schema:
-              properties:
-                name:
-                  type: string
-                  maxLength: 64
-                type:
-                  type: string
-                resource:
-                  type: integer
+               $ref: "#/components/schemas/ABACAttribute"
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  name:
-                    type: string
-                    maxLength: 64
-                  type:
-                    type: string
-                  resource:
-                    type: integer
-                required:
-                - name
-                - type
-                - resource
+                $ref: "#/components/schemas/ABACAttribute"
           description: ''
     delete:
       tags:
@@ -1120,13 +517,7 @@ paths:
         required: true
         description: A unique integer value identifying this abac attribute.
         schema:
-          type: string
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
+          type: integer
       responses:
         '204':
           description: ''
@@ -1135,25 +526,6 @@ paths:
       tags:
         - ABAC Policy
       operationId: listABACPolicys
-      parameters:
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
-      - name: domain
-        required: false
-        in: query
-        description: domain
-        schema:
-          type: string
-      - name: action
-        required: false
-        in: query
-        description: action
-        schema:
-          type: string
       responses:
         '200':
           content:
@@ -1161,40 +533,7 @@ paths:
               schema:
                 type: array
                 items:
-                  properties:
-                    id:
-                      type: integer
-                      readOnly: true
-                    domain:
-                      type: string
-                      maxLength: 128
-                    resource:
-                      type: integer
-                      nullable: true
-                    action:
-                      type: integer
-                      nullable: true
-                    rules:
-                      type: array
-                      items:
-                        properties:
-                          result:
-                            enum:
-                            - allow
-                            - deny
-                          rule:
-                            type: object
-                          mask:
-                            type: array
-                            items:
-                              type: string
-                        required:
-                        - result
-                        - rule
-                        - mask
-                  required:
-                  - domain
-                  - rules
+                  $ref: "#/components/schemas/ABACPolicy"
           description: ''
     post:
       tags:
@@ -1205,76 +544,13 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                domain:
-                  type: string
-                  maxLength: 128
-                resource:
-                  type: integer
-                  nullable: true
-                action:
-                  type: integer
-                  nullable: true
-                rules:
-                  type: array
-                  items:
-                    properties:
-                      result:
-                        enum:
-                        - allow
-                        - deny
-                      rule:
-                        type: object
-                      mask:
-                        type: array
-                        items:
-                          type: string
-                    required:
-                    - result
-                    - rule
-                    - mask
-              required:
-              - domain
-              - rules
+              $ref: "#/components/schemas/ABACPolicy"
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  domain:
-                    type: string
-                    maxLength: 128
-                  resource:
-                    type: integer
-                    nullable: true
-                  action:
-                    type: integer
-                    nullable: true
-                  rules:
-                    type: array
-                    items:
-                      properties:
-                        result:
-                          enum:
-                          - allow
-                          - deny
-                        rule:
-                          type: object
-                        mask:
-                          type: array
-                          items:
-                            type: string
-                      required:
-                      - result
-                      - rule
-                      - mask
-                required:
-                - domain
-                - rules
+                $ref: "#/components/schemas/ABACPolicy"
           description: ''
   /api/v1.0/policies/{id}/:
     get:
@@ -1287,64 +563,13 @@ paths:
         required: true
         description: A unique integer value identifying this abac policy.
         schema:
-          type: string
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
-      - name: domain
-        required: false
-        in: query
-        description: domain
-        schema:
-          type: string
-      - name: action
-        required: false
-        in: query
-        description: action
-        schema:
-          type: string
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  domain:
-                    type: string
-                    maxLength: 128
-                  resource:
-                    type: integer
-                    nullable: true
-                  action:
-                    type: integer
-                    nullable: true
-                  rules:
-                    type: array
-                    items:
-                      properties:
-                        result:
-                          enum:
-                          - allow
-                          - deny
-                        rule:
-                          type: object
-                        mask:
-                          type: array
-                          items:
-                            type: string
-                      required:
-                      - result
-                      - rule
-                      - mask
-                required:
-                - domain
-                - rules
+                $ref: "#/components/schemas/ABACPolicy"
           description: ''
     patch:
       tags:
@@ -1356,96 +581,18 @@ paths:
         required: true
         description: A unique integer value identifying this abac policy.
         schema:
-          type: string
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
-      - name: domain
-        required: false
-        in: query
-        description: domain
-        schema:
-          type: string
-      - name: action
-        required: false
-        in: query
-        description: action
-        schema:
-          type: string
+          type: integer
       requestBody:
         content:
           application/json:
             schema:
-              properties:
-                domain:
-                  type: string
-                  maxLength: 128
-                resource:
-                  type: integer
-                  nullable: true
-                action:
-                  type: integer
-                  nullable: true
-                rules:
-                  type: array
-                  items:
-                    properties:
-                      result:
-                        enum:
-                        - allow
-                        - deny
-                      rule:
-                        type: object
-                      mask:
-                        type: array
-                        items:
-                          type: string
-                    required:
-                    - result
-                    - rule
-                    - mask
+              $ref: "#/components/schemas/ABACPolicy"
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-                    readOnly: true
-                  domain:
-                    type: string
-                    maxLength: 128
-                  resource:
-                    type: integer
-                    nullable: true
-                  action:
-                    type: integer
-                    nullable: true
-                  rules:
-                    type: array
-                    items:
-                      properties:
-                        result:
-                          enum:
-                          - allow
-                          - deny
-                        rule:
-                          type: object
-                        mask:
-                          type: array
-                          items:
-                            type: string
-                      required:
-                      - result
-                      - rule
-                      - mask
-                required:
-                - domain
-                - rules
+                $ref: "#/components/schemas/ABACPolicy"
           description: ''
     delete:
       tags:
@@ -1457,25 +604,7 @@ paths:
         required: true
         description: A unique integer value identifying this abac policy.
         schema:
-          type: string
-      - name: resource
-        required: false
-        in: query
-        description: resource
-        schema:
-          type: string
-      - name: domain
-        required: false
-        in: query
-        description: domain
-        schema:
-          type: string
-      - name: action
-        required: false
-        in: query
-        description: action
-        schema:
-          type: string
+          type: integer
       responses:
         '204':
           description: ''
@@ -1492,17 +621,7 @@ paths:
               schema:
                 type: array
                 items:
-                  properties:
-                    id:
-                      type: string
-                      maxLength: 128
-                    default_result:
-                      enum:
-                      - allow
-                      - deny
-                      nullable: true
-                  required:
-                  - id
+                  $ref: '#/components/schemas/ABACDomain'
           description: ''
     post:
       tags:
@@ -1513,33 +632,13 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                id:
-                  type: string
-                  maxLength: 128
-                default_result:
-                  enum:
-                  - allow
-                  - deny
-                  nullable: true
-              required:
-              - id
+              $ref: '#/components/schemas/ABACDomain'
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: string
-                    maxLength: 128
-                  default_result:
-                    enum:
-                    - allow
-                    - deny
-                    nullable: true
-                required:
-                - id
+                $ref: '#/components/schemas/ABACDomain'
           description: ''
   /api/v1.0/domains/{id}/:
     get:
@@ -1558,17 +657,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: string
-                    maxLength: 128
-                  default_result:
-                    enum:
-                    - allow
-                    - deny
-                    nullable: true
-                required:
-                - id
+                $ref: '#/components/schemas/ABACDomain'
           description: ''
     patch:
       tags:
@@ -1585,31 +674,13 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                id:
-                  type: string
-                  maxLength: 128
-                default_result:
-                  enum:
-                  - allow
-                  - deny
-                  nullable: true
+              $ref: '#/components/schemas/ABACDomain'
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: string
-                    maxLength: 128
-                  default_result:
-                    enum:
-                    - allow
-                    - deny
-                    nullable: true
-                required:
-                - id
+                $ref: '#/components/schemas/ABACDomain'
           description: ''
     delete:
       tags:
@@ -1631,23 +702,69 @@ paths:
         - Authorization
       operationId: CreateLogin
       parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  maxLength: 128
+                  nullable: false
+                  format: email
+                password:
+                  type: string
+                  maxLength: 128
+                  nullable: false
+              required:
+              - login
+              - password
       responses:
         '200':
           content:
             application/json:
-              schema: {}
+              schema:
+                properties:
+                  id:
+                    type: integer
+                  login:
+                    type: string
+                    format: email
+                  created:
+                    type: string
+                    format: date-time
+                  active:
+                    type: boolean
+                  status:
+                    type: string
+                  role:
+                    type: string
+                    nullable: true
+                  token:
+                    type: string
+                  expire:
+                    type: string
+                    format: date-time
+                  abac:
+                    type: object
+                  linked_object:
+                    type: object
           description: ''
   /api/v1.0/logout:
     post:
       tags:
         - Authorization
-      operationId: CreateLogout
-      parameters: []
+      operationId: CreateLogout[]
       responses:
         '200':
           content:
             application/json:
-              schema: {}
+              schema:
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
           description: ''
   /api/v1.0/invalidate-token:
     get:
@@ -1704,9 +821,211 @@ paths:
         - Authorization
       operationId: createRegistrationViewSet
       parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  format: email
+                password:
+                  type: string
       responses:
         '200':
           content:
             application/json:
-              schema: {}
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      login:
+                        type: string
+                        format: email
+                      created:
+                        type: string
+                        format: date-time
+                      active:
+                        type: boolean
+                      status:
+                        type: string
+                        enum:
+                        - active
+                        - disabled
+                        - deleted
+                      role:
+                        type: string
+                        nullable: true
+                        example: null
           description: ''
+
+components:
+  schemas:
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        login:
+          type: string
+          maxLength: 64
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          enum:
+          - active
+          - disabled
+          - deleted
+        active:
+          type: boolean
+        role:
+          type: integer
+          nullable: true
+        pwd_hash:
+          type: string
+          readOnly: true
+        type:
+          enum:
+          - user
+          - service
+        cidr:
+          type: string
+          maxLength: 20
+      required:
+      - login
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 128
+        status:
+          enum:
+          - active
+          - disabled
+          - deleted
+      required:
+      - name
+
+    ABACDomain:
+      type: object
+      properties:
+        id:
+          type: string
+          maxLength: 128
+        default_result:
+          enum:
+          - allow
+          - deny
+          nullable: true
+      required:
+      - id
+
+    ABACAction:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 64
+        resource:
+          type: integer
+      required:
+      - name
+      - resource
+
+    ABACAttribute:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 64
+        type:
+          type: string
+        resource:
+          type: integer
+      required:
+      - name
+      - type
+      - resource
+
+    ABACResource:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        domain:
+          type: string
+          nullable: true
+        comment:
+          type: string
+        name:
+          type: string
+          maxLength: 64
+        attributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/ABACAttribute"
+          readOnly: true
+        actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/ABACAction"
+          readOnly: true
+      required:
+      - comment
+      - name
+
+    ABACPolicy:
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        domain:
+          type: string
+          maxLength: 128
+        resource:
+          type: integer
+          nullable: true
+        action:
+          type: integer
+          nullable: true
+        rules:
+          type: array
+          items:
+            properties:
+              result:
+                enum:
+                - allow
+                - deny
+              rule:
+                type: object
+              mask:
+                type: array
+                items:
+                  type: string
+            required:
+            - result
+            - rule
+            - mask
+      required:
+      - domain
+      - rules
