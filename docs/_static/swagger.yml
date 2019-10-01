@@ -698,10 +698,15 @@ paths:
           description: ''
   /api/v1.0/login:
     post:
+      summary: Authenticate user by credentials
+      description: >
+        If user was authenticated you receive a `Token` needed to authorize future requests. <br>
+        For each new authentication unique `Token` would be created. <br>
+        So you will have ability to differentiate sessions from devices <br><br>
+        Additinaly you will receive `ABAC` _(Attribute Based Access Control)_ object with rules avaliable in system
       tags:
         - Authorization
       operationId: CreateLogin
-      parameters: []
       requestBody:
         content:
           application/json:
@@ -721,40 +726,24 @@ paths:
               - password
       responses:
         '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  id:
-                    type: integer
-                  login:
-                    type: string
-                    format: email
-                  created:
-                    type: string
-                    format: date-time
-                  active:
-                    type: boolean
-                  status:
-                    type: string
-                  role:
-                    type: string
-                    nullable: true
-                  token:
-                    type: string
-                  expire:
-                    type: string
-                    format: date-time
-                  abac:
-                    type: object
-                  linked_object:
-                    type: object
-          description: ''
+          $ref: "#/components/responses/Authentication"
   /api/v1.0/logout:
     post:
+      summary: Close user session
+      description: >
+        Logout routine discards current user Token, by default it removes only current Token.<br>
+        If you want to remove all Token-s (to logout on all devices) you can use
+        `all` option
       tags:
         - Authorization
       operationId: CreateLogout[]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                all:
+                  type: boolean
       responses:
         '200':
           content:
@@ -768,36 +757,60 @@ paths:
           description: ''
   /api/v1.0/invalidate-token:
     get:
+      summary: System endpoint for removing expired tokens
       tags:
         - Token
       operationId: listInvalidateTokens
-      parameters: []
+      parameters:
+      - name: all
+        in: query
+        description: Flag for removing all not only expired tokens
+        schema:
+          type: boolean
       responses:
         '200':
           content:
             application/json:
               schema:
-                type: array
-                items: {}
+                properties:
+                  removed_tokens:
+                    type: integer
+
           description: ''
   /api/v1.0/verify-token:
     post:
+      summary: System endpoint for cros-service authorization
       tags:
         - Token
       operationId: CreateVerifyToken
-      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                token:
+                  type: string
       responses:
         '200':
-          content:
-            application/json:
-              schema: {}
-          description: ''
+          $ref: "#/components/responses/Authentication"
   /api/v1.0/password-recovery:
     post:
+      summary: Initiate recovery process
+      description: >
+        After submiting user `login` system will generate one time `recovery Token` and send it to user email
       tags:
         - Recovery
       operationId: CreateRecovery
-      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  maxLength: 128
+                  nullable: false
+                  format: email
       responses:
         '200':
           content:
@@ -805,10 +818,24 @@ paths:
               schema: {}
           description: ''
     patch:
+      summary: Updating user password
+      description: >
+        A fter password update `recovery Token` will be removed <br>
       tags:
         - Recovery
       operationId: PartialUpdateRecovery
-      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                token:
+                  type: string
+                  maxLength: 128
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
       responses:
         '200':
           content:
@@ -817,6 +844,7 @@ paths:
           description: ''
   /api/v1.0/register/:
     post:
+      summary: Registering new user
       tags:
         - Authorization
       operationId: createRegistrationViewSet
@@ -1029,3 +1057,34 @@ components:
       required:
       - domain
       - rules
+  responses:
+    Authentication:
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: integer
+              login:
+                type: string
+                format: email
+              created:
+                type: string
+                format: date-time
+              active:
+                type: boolean
+              status:
+                type: string
+              role:
+                type: string
+                nullable: true
+              token:
+                type: string
+              expire:
+                type: string
+                format: date-time
+              abac:
+                type: object
+              linked_object:
+                type: object
+      description: ''
