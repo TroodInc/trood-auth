@@ -16,11 +16,7 @@ Faker==0.8.12
 future==0.16.0
 gunicorn==19.7.1
 idna==2.6
-ipython==6.2.1
-ipython-genutils==0.2.0
 itypes==1.1.0
-jedi==0.11.1
-Jinja2==2.10
 MarkupSafe==1.0
 parso==0.1.1
 pexpect==4.4.0
@@ -40,7 +36,7 @@ pytest-cov==2.6.0
 python-dateutil==2.7.0
 python-jose==1.4.0
 pytz==2017.2
-requests==2.19.1
+requests
 rsa==3.4.2
 simplegeneric==0.8.1
 six==1.10.0
@@ -54,4 +50,4 @@ pyyaml
 jsonfield
 
 teamcity-messages==1.21
-git+https://07de0218088728b42ee60f155c71990f1dc6a717:x-oauth-basic@github.com/Q-CIS-DEV/trood-auth-client.git#egg=trood-auth-client
+git+https://07de0218088728b42ee60f155c71990f1dc6a717:x-oauth-basic@github.com/Q-CIS-DEV/trood-sdk.git#egg=trood

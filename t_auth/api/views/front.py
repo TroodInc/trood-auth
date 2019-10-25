@@ -50,7 +50,7 @@ class LoginView(APIView):
                 policies = ABACPolicy.objects.all()
                 data['abac'] = ABACPolicyMapSerializer(policies).data
 
-                data['linked_object'] = account.get_additional_data()
+                data['linked_object'] = account.get_profile()
 
             else:
                 raise AuthenticationFailed({"error": f'Invalid password for user {login}'})
