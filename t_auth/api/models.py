@@ -108,7 +108,7 @@ class Account(models.Model):
                     record = custodian.records.create(Record(obj, **profile_data))
                     self.profile_id = record.get_pk()
             except Exception as e:
-                raise ValidationError(e)
+                raise ValidationError({"error": e})
 
         super(Account, self).save(*args, **kwargs)
 

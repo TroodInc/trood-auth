@@ -50,7 +50,8 @@ class LoginView(APIView):
                 policies = ABACPolicy.objects.all()
                 data['abac'] = ABACPolicyMapSerializer(policies).data
 
-                data['linked_object'] = account.get_profile()
+                # @todo: 'linked_object' is deprecated, remove after 26 NOV
+                data['linked_object'] = account.profile
 
             else:
                 raise AuthenticationFailed({"error": f'Invalid password for user {login}'})

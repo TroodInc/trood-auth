@@ -47,7 +47,7 @@ class RegisterSerializer(serializers.Serializer):
         account = Account.objects.create(
             login=self.validated_data['login'],
             status=Account.STATUS_ACTIVE,
-            profile=self.validated_data['profile'],
+            profile=self.validated_data.get('profile', {}),
             unique_token=unique_token,
             pwd_hash=AuthenticationService.get_password_hash(self.validated_data['password'], unique_token)
         )
@@ -56,7 +56,7 @@ class RegisterSerializer(serializers.Serializer):
 
 
 class AccountSerializer(serializers.ModelSerializer):
-    profile = fields.JSONField()
+    profile = fields.JSONField(required=False)
 
     class Meta:
         model = Account
