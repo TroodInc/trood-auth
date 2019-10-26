@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.utils.deprecation import CallableTrue
 from django.utils.translation import ugettext_lazy as _
+from rest_framework.exceptions import ValidationError
 from trood.api.custodian.records.model import Record
 from trood.core.utils import get_service_token
 from trood.api.custodian import client
@@ -92,18 +93,22 @@ class Account(models.Model):
 
     def save(self, *args, **kwargs):
         if settings.PROFILE_STORAGE == "CUSTODIAN":
-            custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
-            obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
 
-            if self.profile_id:
-                record = custodian.records.get(obj, self.profile_id)
-                if record:
-                    record.data.update(self.profile_data)
-                    custodian.records.update(record)
-            else:
-                profile_data = self.profile_data if self.profile_data else {}
-                record = custodian.records.create(Record(obj, **profile_data))
-                self.profile_id = record.get_pk()
+            try:
+                custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
+                obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
+
+                if self.profile_id:
+                    record = custodian.records.get(obj, self.profile_id)
+                    if record:
+                        record.data.update(self.profile_data)
+                        custodian.records.update(record)
+                else:
+                    profile_data = self.profile_data if self.profile_data else {}
+                    record = custodian.records.create(Record(obj, **profile_data))
+                    self.profile_id = record.get_pk()
+            except Exception as e:
+                raise ValidationError(e)
 
         super(Account, self).save(*args, **kwargs)
 

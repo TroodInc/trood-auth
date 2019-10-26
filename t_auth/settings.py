@@ -138,7 +138,6 @@ class BaseConfiguration(Configuration):
         'DEFAULT_FILTER_BACKENDS': (
             'django_filters.rest_framework.DjangoFilterBackend',
         ),
-        'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
     }
     SERVICE_DOMAIN = os.environ.get("SERVICE_DOMAIN", "AUTHORIZATION")
     SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
