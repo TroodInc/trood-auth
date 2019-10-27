@@ -45,8 +45,9 @@ Contents
 --------
 
 .. toctree::
-   :maxdepth: 2
-   :glob:
+    :maxdepth: 2
+    :glob:
 
-   rest-api
-   autoapi/index
+    config
+    rest-api
+    autoapi/index

@@ -35,6 +35,7 @@ class LoginDataVerificationSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.Serializer):
     login = fields.EmailField(required=True)
     password = fields.CharField(required=True)
+    profile = fields.JSONField(required=False)
 
     def validate_login(self, login):
         if Account.objects.filter(login=login).exists():
@@ -42,21 +43,26 @@ class RegisterSerializer(serializers.Serializer):
         return login
 
     def save(self, **kwargs):
-        account = AccountFactory.factory(
+        unique_token = AccountFactory._create_token()
+        account = Account.objects.create(
             login=self.validated_data['login'],
-            password=self.validated_data['password']
+            status=Account.STATUS_ACTIVE,
+            profile=self.validated_data.get('profile', {}),
+            unique_token=unique_token,
+            pwd_hash=AuthenticationService.get_password_hash(self.validated_data['password'], unique_token)
         )
 
         return account
 
 
 class AccountSerializer(serializers.ModelSerializer):
+    profile = fields.JSONField(required=False)
 
     class Meta:
         model = Account
         fields = (
             'id', 'login', 'created', 'status', 'active', 'role',
-            'pwd_hash', 'type', 'cidr',
+            'pwd_hash', 'type', 'cidr', 'profile',
         )
         read_only_fields = ('id', 'created', 'pwd_hash',)
 
