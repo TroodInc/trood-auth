@@ -9,12 +9,12 @@ General settings
 
 .. envvar:: SERVICE_DOMAIN
 
-    Service identification used in TroodCore ecosystem, default `AUTHORIZATION`
+    Service identification used in TroodCore ecosystem, default ``AUTHORIZATION``
 
 
 .. envvar:: SERVICE_AUTH_SECRET
 
-    Random generated string for system token authentication purposes, `please keep in secret`
+    Random generated string for system token authentication purposes, ``please keep in secret``
     
 
 User profile settings
@@ -27,12 +27,12 @@ User profile settings
 
 .. envvar:: PROFILE_STORAGE
 
-    Where user profile must be stored, can be set tot `CUSTODIAN` or `BUILTIN`
+    Where user profile must be stored, can be set tot ``CUSTODIAN`` or ``BUILTIN``
     
 
 .. envvar:: CUSTODIAN_PROFILE_OBJECT
 
-    The `name` of Custodian object used for storing user profiles
+    The ``name`` of Custodian object used for storing user profiles
     
 
 .. envvar:: CUSTODIAN_LINK
@@ -67,14 +67,14 @@ Debug settings
 
 .. envvar:: DJANGO_CONFIGURATION
 
-    | Service mode, cab be `Production` or `Development`.
-    | `Development` mode has additional features enabled:
-    | - Swagger endpoint at  `/swagger/`
+    | Service mode, cab be ``Production`` or ``Development``.
+    | ``Development`` mode has additional features enabled:
+    | - Swagger endpoint at  ``/swagger/``
     
 
 .. envvar:: ENABLE_RAVEN
 
-    Boolean flag for `Sentry` logging enabled `False` by default
+    Boolean flag for ``Sentry`` logging enabled ``False`` by default
     
 
 .. envvar:: RAVEN_CONFIG_DSN
@@ -84,5 +84,5 @@ Debug settings
 
 .. envvar:: RAVEN_CONFIG_RELEASE
 
-    String tag for identify events sent into `Sentry` log
+    String tag for identify events sent into ``Sentry`` log
     
