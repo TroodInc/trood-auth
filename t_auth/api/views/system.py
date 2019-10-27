@@ -23,7 +23,9 @@ class VerifyTokenView(APIView):
 
         if request.user.type == Account.USER:
             response = LoginDataVerificationSerializer(request.user).data
-            response['linked_object'] = request.user.get_additional_data()
+
+            # @todo: 'linked_object' is deprecated, remove after 26 NOV
+            response['linked_object'] = request.user.profile
 
             policies = ABACPolicy.objects.all()
 
@@ -34,7 +36,9 @@ class VerifyTokenView(APIView):
                     token = Token.objects.get(token=token)
 
                     response = LoginDataVerificationSerializer(token.account).data
-                    response['linked_object'] = token.account.get_additional_data()
+
+                    # @todo: 'linked_object' is deprecated, remove after 26 NOV
+                    response['linked_object'] = token.account.profile
 
                 except Token.DoesNotExist:
                     raise exceptions.AuthenticationFailed({"error": "User token invalid"})

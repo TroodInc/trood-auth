@@ -24,9 +24,12 @@ class BaseConfiguration(Configuration):
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
     EMAIL_PORT = os.environ.get('EMAIL_PORT')
     EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS') == 'True'
-    USER_PROFILE_DATA_URL = os.environ.get(
-        'USER_PROFILE_DATA_URL', None
-    )
+
+    PROFILE_STORAGE = os.environ.get('PROFILE_STORAGE', 'BUILTIN')
+
+    CUSTODIAN_PROFILE_OBJECT = os.environ.get('CUSTODIAN_PROFILE_OBJECT', None)
+    CUSTODIAN_LINK = os.environ.get('CUSTODIAN_LINK', None)
+
     DATABASES = {
         'default': dj_database_url.config(
             default='pgsql://authorization:authorization@authorization_postgres/authorization')

@@ -859,6 +859,9 @@ paths:
                   format: email
                 password:
                   type: string
+                profile:
+                  type: object
+                  description: 'Additional user information fields'
       responses:
         '200':
           content:
@@ -928,8 +931,12 @@ components:
         cidr:
           type: string
           maxLength: 20
+        profile:
+          type: object
+          description: 'Additional user information fields'
       required:
       - login
+
     Role:
       type: object
       properties:
@@ -1057,6 +1064,7 @@ components:
       required:
       - domain
       - rules
+
   responses:
     Authentication:
       content:
@@ -1085,6 +1093,9 @@ components:
                 format: date-time
               abac:
                 type: object
+              profile:
+                type: object
               linked_object:
                 type: object
+                deprecated: true
       description: ''

@@ -8,14 +8,16 @@ Authentication models
 import datetime
 import uuid
 
-import requests
 from jsonfield import JSONField
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.utils.deprecation import CallableTrue
 from django.utils.translation import ugettext_lazy as _
-from trood_auth_client.authentication import get_service_token
+from rest_framework.exceptions import ValidationError
+from trood.api.custodian.records.model import Record
+from trood.core.utils import get_service_token
+from trood.api.custodian import client
 
 ALLOW = 'allow'
 DENY = 'deny'
@@ -82,29 +84,51 @@ class Account(models.Model):
     type = models.CharField(max_length=12, choices=ACCOUNT_TYPES, default=USER)
     cidr = models.CharField(max_length=20, default="0.0.0.0/0")
 
+    profile_data = JSONField(null=True)
+    profile_id = models.IntegerField(null=True)
+
     @property
     def is_authenticated(self):
         return CallableTrue
 
-    def get_additional_data(self):
-        data = {}
+    def save(self, *args, **kwargs):
+        if settings.PROFILE_STORAGE == "CUSTODIAN":
 
-        token = self.token_set.last()
+            try:
+                custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
+                obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
 
-        if settings.USER_PROFILE_DATA_URL:
-            response = requests.get(
-                settings.USER_PROFILE_DATA_URL.format(self.id),
-                headers={
-                    'Authorization': get_service_token()
-                },
-            )
+                if self.profile_id:
+                    record = custodian.records.get(obj, self.profile_id)
+                    if record:
+                        record.data.update(self.profile_data)
+                        custodian.records.update(record)
+                else:
+                    profile_data = self.profile_data if self.profile_data else {}
+                    record = custodian.records.create(Record(obj, **profile_data))
+                    self.profile_id = record.get_pk()
+            except Exception as e:
+                raise ValidationError({"error": e})
 
-            if response.status_code == 200:
-                response_decoded = response.json()
-                if 'data' in response_decoded and len(response_decoded['data']) == 1:
-                    return response_decoded['data'][0]
+        super(Account, self).save(*args, **kwargs)
 
-        return data
+    @property
+    def profile(self):
+        if settings.PROFILE_STORAGE == "CUSTODIAN":
+            custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
+            obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
+
+            if self.profile_id:
+                record = custodian.records.get(obj, self.profile_id, depth=1)
+                return record.serialize()
+            else:
+                return None
+        else:
+            return self.profile_data
+
+    @profile.setter
+    def profile(self, value):
+        self.profile_data = value
 
 
 class Token(models.Model):
