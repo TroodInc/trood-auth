@@ -14,7 +14,7 @@ COPY ./requirements.txt $APPDIR/
 COPY ./pytest.ini $APPDIR/
 COPY ./docs/_static/swagger.yml $APPDIR/static/
 
-RUN pip install -r $APPDIR/requirements.txt
+RUN pip install --upgrade --force-reinstall -r $APPDIR/requirements.txt
 
 EXPOSE 8000
 

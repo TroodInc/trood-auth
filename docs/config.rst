@@ -4,63 +4,85 @@ Environment variables
 General settings
 ----------------
 
-.. confval:: DATABASE_URL
-    :type: string
+.. envvar:: BASE_URL
 
-.. confval:: SERVICE_DOMAIN
-    :type: string
 
-.. confval:: SERVICE_AUTH_SECRET
-    :type: string
+.. envvar:: SERVICE_DOMAIN
+
+    Service identification used in TroodCore ecosystem, default `AUTHORIZATION`
+
+
+.. envvar:: SERVICE_AUTH_SECRET
+
+    Random generated string for system token authentication purposes, `please keep in secret`
+    
 
 User profile settings
 ---------------------
 
-.. confval:: RECOVERY_LINK
-    :type: string
+.. envvar:: RECOVERY_LINK
 
-.. confval:: PROFILE_STORAGE
-    :type: string
+    Link to be sent for users initiated password recovery process
+    
 
-.. confval:: CUSTODIAN_PROFILE_OBJECT
-    :type: string
+.. envvar:: PROFILE_STORAGE
 
-.. confval:: CUSTODIAN_LINK
-    :type: string
+    Where user profile must be stored, can be set tot `CUSTODIAN` or `BUILTIN`
+    
+
+.. envvar:: CUSTODIAN_PROFILE_OBJECT
+
+    The `name` of Custodian object used for storing user profiles
+    
+
+.. envvar:: CUSTODIAN_LINK
+
+    Url for Custodian endpoints base.
+    
 
 Notification setting
 --------------------
 
-.. confval:: FROM_EMAIL
-    :type: string
+.. envvar:: FROM_EMAIL
+    
 
-.. confval:: EMAIL_HOST
-    :type: string
+.. envvar:: EMAIL_HOST
+    
 
-.. confval:: EMAIL_HOST_PASSWORD
-    :type: string
+.. envvar:: EMAIL_HOST_PASSWORD
+    
 
-.. confval:: EMAIL_HOST_USER
-    :type: string
+.. envvar:: EMAIL_HOST_USER
+    
 
-.. confval:: EMAIL_PORT
-    :type: integer
+.. envvar:: EMAIL_PORT
+    
 
-.. confval:: EMAIL_USE_TLS
-    :type: boolean
+.. envvar:: EMAIL_USE_TLS
+    
 
 
 Debug settings
 --------------
 
-.. confval:: DJANGO_CONFIGURATION
-    :type: string
+.. envvar:: DJANGO_CONFIGURATION
 
-.. confval:: ENABLE_RAVEN
-    :type: boolean
+    | Service mode, cab be `Production` or `Development`.
+    | `Development` mode has additional features enabled:
+    | - Swagger endpoint at  `/swagger/`
+    
 
-.. confval:: RAVEN_CONFIG_DSN
-    :type: string
+.. envvar:: ENABLE_RAVEN
 
-.. confval:: RAVEN_CONFIG_RELEASE
-    :type: string
+    Boolean flag for `Sentry` logging enabled `False` by default
+    
+
+.. envvar:: RAVEN_CONFIG_DSN
+
+    Sentry project DSN URL to log events to
+    
+
+.. envvar:: RAVEN_CONFIG_RELEASE
+
+    String tag for identify events sent into `Sentry` log
+    
