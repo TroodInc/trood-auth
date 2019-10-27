@@ -27,6 +27,8 @@ class VerifyTokenView(APIView):
             # @todo: 'linked_object' is deprecated, remove after 26 NOV
             response['linked_object'] = request.user.profile
 
+            response['profile'] = request.user.profile
+
             policies = ABACPolicy.objects.all()
 
         if request.user.type == Account.SERVICE:
@@ -39,6 +41,8 @@ class VerifyTokenView(APIView):
 
                     # @todo: 'linked_object' is deprecated, remove after 26 NOV
                     response['linked_object'] = token.account.profile
+
+                    response['profile'] = request.user.profile
 
                 except Token.DoesNotExist:
                     raise exceptions.AuthenticationFailed({"error": "User token invalid"})

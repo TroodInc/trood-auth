@@ -29,7 +29,7 @@ class LoginDataVerificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('id', 'login', 'created', 'active', 'status', 'role', 'profile')
+        fields = ('id', 'login', 'created', 'active', 'status', 'role')
 
 
 class RegisterSerializer(serializers.Serializer):
