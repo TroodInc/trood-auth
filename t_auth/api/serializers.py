@@ -29,7 +29,7 @@ class LoginDataVerificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('id', 'login', 'created', 'active', 'status', 'role')
+        fields = ('id', 'login', 'created', 'active', 'status', 'role', 'language')
 
 
 class RegisterSerializer(serializers.Serializer):
@@ -62,7 +62,7 @@ class AccountSerializer(serializers.ModelSerializer):
         model = Account
         fields = (
             'id', 'login', 'created', 'status', 'active', 'role',
-            'pwd_hash', 'type', 'cidr', 'profile',
+            'pwd_hash', 'type', 'cidr', 'profile', 'language',
         )
         read_only_fields = ('id', 'created', 'pwd_hash',)
 
