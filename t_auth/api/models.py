@@ -13,6 +13,7 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from languages.fields import LanguageField
 from rest_framework.exceptions import ValidationError
 from trood.api.custodian.records.model import Record
 from trood.core.utils import get_service_token
@@ -85,6 +86,8 @@ class Account(models.Model):
 
     profile_data = JSONField(null=True)
     profile_id = models.IntegerField(null=True)
+
+    language = LanguageField(null=True)
 
     @property
     def is_authenticated(self):
