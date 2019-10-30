@@ -40,6 +40,11 @@ class LoginView(APIView):
                 if not account.active:
                     raise AuthenticationFailed({"error": "Account not active"})
 
+                lng = request.data.get("language")
+                if lng is not None and lng != account.language:
+                    account.language = lng
+                    account.save()
+
                 data = LoginDataVerificationSerializer(account).data
 
                 token = Token.objects.create(account=account)
