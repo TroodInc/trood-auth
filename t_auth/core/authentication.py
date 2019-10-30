@@ -12,12 +12,12 @@ class TroodTokenAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
 
-        auth = get_authorization_header(request).split()
+        auth = get_authorization_header(request).decode("utf-8").split()
 
         if not auth or len(auth) != 2:
             return None
 
-        if auth[0] == b'Token':
+        if auth[0] == 'Token':
             try:
                 token = Token.objects.get(token=auth[1], type=Token.AUTHORIZATION)
 

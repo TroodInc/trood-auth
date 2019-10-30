@@ -13,14 +13,14 @@ from t_auth.api.views.admin import AccountRoleViewSet, ABACResourceViewSet, ABAC
 
 router = routers.DefaultRouter()
 
-router.register(r'account', api_views.AccountViewSet, base_name='account')
+router.register(r'account', api_views.AccountViewSet, basename='account')
 
-router.register(r'roles', AccountRoleViewSet, base_name='roles')
-router.register(r'resources', ABACResourceViewSet, base_name='resources')
-router.register(r'actions', ABACActionViewSet, base_name='actions')
-router.register(r'attributes', ABACAttributViewSet, base_name='attributes')
-router.register(r'policies', ABACPolicyViewSet, base_name='policies')
-router.register(r'domains', ABACDomainViewSet, base_name='domains')
+router.register(r'roles', AccountRoleViewSet, basename='roles')
+router.register(r'resources', ABACResourceViewSet, basename='resources')
+router.register(r'actions', ABACActionViewSet, basename='actions')
+router.register(r'attributes', ABACAttributViewSet, basename='attributes')
+router.register(r'policies', ABACPolicyViewSet, basename='policies')
+router.register(r'domains', ABACDomainViewSet, basename='domains')
 
 urlpatterns = [
     url(r'^api/v1.0/abac', api_views.system.ABACProvisionAttributeMap.as_view(), name='abac'),
@@ -30,7 +30,7 @@ urlpatterns = [
     url(r'^api/v1.0/verify-token', t_auth.api.views.system.VerifyTokenView.as_view(), name='verify-token'),
     url(r'^api/v1.0/password-recovery', t_auth.api.views.front.RecoveryView.as_view(), name='password-recovery'),
     url(r'^api/v1.0/invalidate-token', t_auth.api.views.system.InvalidateTokenView.as_view(), name='invalidate-token'),
-    url(r'^api/v1.0/', include(router.urls, namespace='api')),
+    url(r'^api/v1.0/', include((router.urls, 'api'), namespace='api')),
 
 ]
 if settings.DEBUG:

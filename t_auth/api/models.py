@@ -12,7 +12,6 @@ from jsonfield import JSONField
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
-from django.utils.deprecation import CallableTrue
 from django.utils.translation import ugettext_lazy as _
 from languages.fields import LanguageField
 from rest_framework.exceptions import ValidationError
@@ -75,7 +74,7 @@ class Account(models.Model):
     unique_token = models.CharField(max_length=128, null=False)
     current_session = models.CharField(max_length=128, null=False)
 
-    role = models.ForeignKey(AccountRole, null=True)
+    role = models.ForeignKey(AccountRole, null=True, on_delete=models.CASCADE)
 
     created = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=32, choices=ACCOUNT_STATUS, default=STATUS_ACTIVE)
@@ -92,7 +91,7 @@ class Account(models.Model):
 
     @property
     def is_authenticated(self):
-        return CallableTrue
+        return True
 
     def save(self, *args, **kwargs):
         if settings.PROFILE_STORAGE == "CUSTODIAN":
@@ -144,7 +143,7 @@ class Token(models.Model):
     )
 
     token = models.CharField(max_length=64, null=False)
-    account = models.ForeignKey(Account)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
     expire = models.DateTimeField(null=False)
     type = models.CharField(_('Type'), max_length=24, choices=TOKEN_TYPES, default=AUTHORIZATION)
 
@@ -162,30 +161,30 @@ class ABACDomain(models.Model):
 
 
 class ABACResource(models.Model):
-    domain = models.ForeignKey(ABACDomain, null=True, related_name="domain")
+    domain = models.ForeignKey(ABACDomain, null=True, related_name="domain", on_delete=models.CASCADE)
     comment = models.TextField()
     name = models.CharField(max_length=64, null=False)
 
 
 class ABACAction(models.Model):
-    resource = models.ForeignKey(ABACResource, null=False, related_name="actions")
+    resource = models.ForeignKey(ABACResource, null=False, related_name="actions", on_delete=models.CASCADE)
     name = models.CharField(max_length=64, null=False)
 
 
 class ABACAttribute(models.Model):
-    resource = models.ForeignKey(ABACResource, null=False, related_name="attributes")
+    resource = models.ForeignKey(ABACResource, null=False, related_name="attributes", on_delete=models.CASCADE)
     name = models.CharField(max_length=64, null=False)
     attr_type = models.CharField(max_length=64, null=False)
 
 
 class ABACPolicy(models.Model):
     domain = models.CharField(max_length=128, null=False)
-    resource = models.ForeignKey(ABACResource, null=True)
-    action = models.ForeignKey(ABACAction, null=True)
+    resource = models.ForeignKey(ABACResource, null=True, on_delete=models.CASCADE)
+    action = models.ForeignKey(ABACAction, null=True, on_delete=models.CASCADE)
 
 
 class ABACRule(models.Model):
     result = models.CharField(max_length=64, choices=RESULT_TYPES, null=False)
     rule = JSONField()
     mask = models.ManyToManyField(ABACAttribute)
-    policy = models.ForeignKey(ABACPolicy, null=True, related_name="rules")
+    policy = models.ForeignKey(ABACPolicy, null=True, related_name="rules", on_delete=models.CASCADE)
