@@ -18,7 +18,8 @@ class LoginViewSetTestCase(APITestCase):
         account = AccountFactory()
         account_data = {
             'login': account.login,
-            'password': account._password
+            'password': account._password,
+            'language': 'en',
         }
 
         response = self.client.post(reverse('login'), data=account_data)
@@ -26,6 +27,7 @@ class LoginViewSetTestCase(APITestCase):
 
         assert_that(response.status_code, equal_to(status.HTTP_200_OK))
         assert_that(decoded_response['data']['id'], equal_to(account.id))
+        assert_that(decoded_response['data']['language'], account_data['language'])
 
         token = Token.objects.filter(token=decoded_response['data']['token']).first()
 
