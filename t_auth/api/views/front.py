@@ -57,6 +57,7 @@ class LoginView(APIView):
 
                 # @todo: 'linked_object' is deprecated, remove after 26 NOV
                 data['linked_object'] = account.profile
+                data['profile'] = account.profile
 
             else:
                 raise AuthenticationFailed({"error": f'Invalid password for user {login}'})
