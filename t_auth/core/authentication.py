@@ -37,7 +37,7 @@ class TroodTokenAuthentication(BaseAuthentication):
             except Token.DoesNotExist:
                 raise exceptions.AuthenticationFailed()
 
-        if auth[0] == b'Service':
+        if auth[0] == 'Service':
             try:
                 creds = force_text(auth[1]).split(':')
                 account = Account.objects.get(login=creds[0])
