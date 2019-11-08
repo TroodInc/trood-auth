@@ -42,7 +42,7 @@ class VerifyTokenView(APIView):
                     # @todo: 'linked_object' is deprecated, remove after 26 NOV
                     response['linked_object'] = token.account.profile
 
-                    response['profile'] = request.user.profile
+                    response['profile'] = token.account.profile
 
                 except Token.DoesNotExist:
                     raise exceptions.AuthenticationFailed({"error": "User token invalid"})
