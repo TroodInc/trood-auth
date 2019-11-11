@@ -1,10 +1,43 @@
-.. trood-auth documentation master file, created by
-   Maxim Krivodaev (maxim.krivodaev@trood.ru) on Mon Aug 12 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Authorization service
+=====================
 
-Welcome to trood-auth documentation!
-========================================
+
+
+Quickstart
+----------
+
+Download and start TroodAuthorization service container:
+
+.. code-block:: bash
+
+    docker pull registry.tools.trood.ru/auth:dev
+    docker run -d -p 127.0.0.1:8000:8000/tcp \
+        --env DJANGO_CONFIGURATION=Development \
+        --env DATABASE_URL=sqlite://./db.sqlite3 \
+        --name=authorization registry.tools.trood.ru/auth:dev
+
+
+Initiate database structure for created container:
+
+.. code-block:: bash
+
+    docker exec authorization python manage.py migrate
+
+
+Register your first User:
+
+.. code-block:: bash
+
+    curl -X POST 'http://127.0.0.1:8000/api/v1.0/register/' \
+        -H 'Content-Type: application/json' \
+        -d '{"login": "admin@demo.com", "password": "password"}'
+
+
+Check other API methods on documentation:
+
+.. code-block:: bash
+
+    open http://127.0.0.1:8000/swagger/
 
 
 
@@ -12,12 +45,8 @@ Contents
 --------
 
 .. toctree::
-    get-started
-    rest-api
+   :maxdepth: 2
+   :glob:
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   rest-api
+   autoapi/index

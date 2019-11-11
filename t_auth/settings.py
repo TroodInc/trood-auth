@@ -1,11 +1,14 @@
 import os
 from configurations import Configuration
 import dj_database_url
-import raven
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def rel(*x):
+    return os.path.normpath(os.path.join(BASE_DIR, * x))
 
 
 class BaseConfiguration(Configuration):
@@ -65,7 +68,7 @@ class BaseConfiguration(Configuration):
     TEMPLATES = [
         {
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [],
+            'DIRS': ['t_auth/templates'],
             'APP_DIRS': True,
             'OPTIONS': {
                 'context_processors': [
@@ -115,6 +118,7 @@ class BaseConfiguration(Configuration):
     # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
     STATIC_URL = '/static/'
+    STATIC_ROOT = os.environ.get('FILE_SERVICE_STATIC_ROOT', rel('static'))
 
     # CROSS-ORIGIN STUFF
     # CORS_ORIGIN_ALLOW_ALL = True

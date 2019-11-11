@@ -12,7 +12,7 @@ def test_creates_account(client: Client):
         'login': 'test@example.com',
         'password': 'some-password',
     }
-    response = client.post(reverse('api:register-list'), data=account_data)
+    response = client.post(reverse('register'), data=account_data)
     # FIXME: Why 200???
     assert response.status_code == 200
     decoded_response = response.json()
@@ -26,7 +26,7 @@ def test_not_creates_registared_account(client: Client):
         'login': 'test@example.com',
         'password': 'some-password',
     }
-    client.post(reverse('api:register-list'), data=account_data)
+    client.post(reverse('register'), data=account_data)
     
-    response = client.post(reverse('api:register-list'), data=account_data)
+    response = client.post(reverse('register'), data=account_data)
     assert response.status_code == 400

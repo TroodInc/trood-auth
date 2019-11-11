@@ -15,11 +15,17 @@ from django.utils.translation import ugettext_lazy as _
 from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
-    ABACAttribute, ABACPolicy, ABACRule
+    ABACAttribute, ABACPolicy, ABACRule, ABACDomain
+
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 class LoginDataVerificationSerializer(serializers.ModelSerializer):
-    role = serializers.CharField(source='role.name')
+    role = serializers.CharField(source='role.name', default=None)
 
     class Meta:
         model = Account
@@ -101,6 +107,12 @@ class AccountRoleSerializer(serializers.ModelSerializer):
         return obj
 
 
+class ABACDomainSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ABACDomain
+        fields = ('id', 'default_result', )
+
+
 class ABACActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ABACAction
@@ -126,10 +138,18 @@ class ABACResourceSerializer(serializers.ModelSerializer):
 
 class ABACRuleSerializer(serializers.ModelSerializer):
     mask = serializers.ListField(child=serializers.CharField())
+    rule = serializers.JSONField()
 
     class Meta:
         model = ABACRule
         fields = ('result', 'rule', 'mask')
+
+    def to_representation(self, instance):
+        return {
+            'result': instance.result,
+            'rule': instance.rule,
+            'mask': [m.name for m in instance.mask.all()]
+        }
 
 
 class ABACPolicySerializer(serializers.ModelSerializer):
@@ -159,6 +179,14 @@ class ABACPolicySerializer(serializers.ModelSerializer):
         policy = ABACPolicy.objects.create(**validated_data)
 
         for rule in rules:
+            mask = []
+            for m in rule['mask']:
+                obj, created = ABACAttribute.objects.get_or_create(
+                    name=m, resource=validated_data.get('resource')
+                )
+                mask.append(obj.id)
+            rule['mask'] = mask
+
             serializer = ABACRuleSerializer(data=rule)
             if serializer.is_valid(raise_exception=True):
                 serializer.save(policy=policy)
