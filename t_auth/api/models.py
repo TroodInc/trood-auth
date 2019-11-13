@@ -94,8 +94,8 @@ class Account(models.Model):
         return True
 
     def save(self, *args, **kwargs):
+        super(Account, self).save(*args, **kwargs)
         if settings.PROFILE_STORAGE == "CUSTODIAN":
-
             try:
                 custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
                 obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
@@ -107,12 +107,13 @@ class Account(models.Model):
                         custodian.records.update(record)
                 else:
                     profile_data = self.profile_data if self.profile_data else {}
-                    record = custodian.records.create(Record(obj, **profile_data))
+                    record = custodian.records.create(Record(obj, id=self.pk, **profile_data))
                     self.profile_id = record.get_pk()
+                    self.save()
+
             except Exception as e:
                 raise ValidationError({"error": e})
 
-        super(Account, self).save(*args, **kwargs)
 
     @property
     def profile(self):
@@ -120,7 +121,7 @@ class Account(models.Model):
             custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
             obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
 
-            if self.profile_id:
+            if self.profile_id is not None:
                 record = custodian.records.get(obj, self.profile_id, depth=1)
                 return record.serialize()
             else:
