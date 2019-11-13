@@ -17,7 +17,7 @@ class BaseConfiguration(Configuration):
 
     # SECURITY WARNING: keep the secret key used in production secret!
     SECRET_KEY = '=y3scd+v+70xtpter(4#2^%fp3f6n^lt_*&gi9cnq0j)p7o@67'
-    RECOVERY_LINK =  os.environ.get('RECOVERY_LINK', "http://127.0.0.1/recovery?token={}")
+    RECOVERY_LINK = os.environ.get('RECOVERY_LINK', "http://127.0.0.1/recovery?token={}")
     FROM_EMAIL = os.environ.get('FROM_EMAIL')
     EMAIL_HOST = os.environ.get('EMAIL_HOST')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
@@ -136,8 +136,10 @@ class BaseConfiguration(Configuration):
             't_auth.api.renderers.AuthJsonRenderer',
         ),
         'DEFAULT_FILTER_BACKENDS': (
+            'trood.contrib.django.filters.TroodRQLFilterBackend',
             'django_filters.rest_framework.DjangoFilterBackend',
         ),
+        'DEFAULT_PAGINATION_CLASS': 'trood.contrib.django.pagination.TroodRQLPagination',
         'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
     }
     SERVICE_DOMAIN = os.environ.get("SERVICE_DOMAIN", "AUTHORIZATION")
