@@ -24,9 +24,6 @@ class VerifyTokenView(APIView):
         if request.user.type == Account.USER:
             response = LoginDataVerificationSerializer(request.user).data
 
-            # @todo: 'linked_object' is deprecated, remove after 26 NOV
-            response['linked_object'] = request.user.profile
-
             response['profile'] = request.user.profile
 
             policies = ABACPolicy.objects.all()
@@ -38,9 +35,6 @@ class VerifyTokenView(APIView):
                     token = Token.objects.get(token=token)
 
                     response = LoginDataVerificationSerializer(token.account).data
-
-                    # @todo: 'linked_object' is deprecated, remove after 26 NOV
-                    response['linked_object'] = token.account.profile
 
                     response['profile'] = token.account.profile
 

@@ -19,7 +19,6 @@ from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
 from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
-from .base import BaseViewSet
 
 
 class LoginView(APIView):
@@ -54,9 +53,6 @@ class LoginView(APIView):
 
                 policies = ABACPolicy.objects.all()
                 data['abac'] = ABACPolicyMapSerializer(policies).data
-
-                # @todo: 'linked_object' is deprecated, remove after 26 NOV
-                data['linked_object'] = account.profile
                 data['profile'] = account.profile
 
             else:
