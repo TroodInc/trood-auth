@@ -6,7 +6,7 @@ Public endpoints (login/logout, authentication, two-factor login, registration)
 """
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
@@ -104,12 +104,12 @@ class RecoveryView(APIView):
                 'link': settings.RECOVERY_LINK.format(token.token),
             })
 
-            send_mail(
-                _('Password recovery email'),
-                message_body,
-                from_email=settings.FROM_EMAIL,
-                recipient_list=[account.login, ]
+            message = EmailMessage(
+                to=[account.login],
+                subject=_('Password recovery email'),
+                body=message_body
             )
+            message.send()
 
             return Response({'detail': 'Recovery link was sent'}, status=status.HTTP_200_OK)
 
