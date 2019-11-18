@@ -1106,9 +1106,6 @@ components:
                 type: object
               profile:
                 type: object
-              linked_object:
-                type: object
-                deprecated: true
               language:
                 type: string
                 example: 'en'

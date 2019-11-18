@@ -27,7 +27,7 @@ User profile settings
 
 .. envvar:: PROFILE_STORAGE
 
-    Where user profile must be stored, can be set tot ``CUSTODIAN`` or ``BUILTIN``
+    Where user profile must be stored, can be set to ``CUSTODIAN`` or ``BUILTIN``
     
 
 .. envvar:: CUSTODIAN_PROFILE_OBJECT
@@ -43,23 +43,32 @@ User profile settings
 Notification setting
 --------------------
 
-.. envvar:: FROM_EMAIL
+.. envvar:: MAILER_TYPE
+
+    Kind of email backend used to send a mails with. Can be set to ``SMTP`` or ``TROOD``
+
+
+.. envvar:: SMTP_FROM_EMAIL
     
 
-.. envvar:: EMAIL_HOST
+.. envvar:: SMTP_EMAIL_HOST
     
 
-.. envvar:: EMAIL_HOST_PASSWORD
+.. envvar:: SMTP_EMAIL_HOST_PASSWORD
     
 
-.. envvar:: EMAIL_HOST_USER
+.. envvar:: SMTP_EMAIL_HOST_USER
     
 
-.. envvar:: EMAIL_PORT
+.. envvar:: SMTP_EMAIL_PORT
     
 
-.. envvar:: EMAIL_USE_TLS
-    
+.. envvar:: SMTP_EMAIL_USE_TLS
+
+
+.. envvar:: TROOD_MAIL_SERVICE_URL
+
+    TroodMail service URL, used while ``MAILER_TYPE`` set to ``TROOD`` value
 
 
 Debug settings
