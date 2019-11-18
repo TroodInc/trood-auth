@@ -77,20 +77,6 @@ class AccountSerializer(serializers.ModelSerializer):
 
         return super(AccountSerializer, self).validate(data)
 
-    def to_internal_value(self, data):
-        password = data.get('password', None)
-        data = super(AccountSerializer, self).to_internal_value(data)
-        if password:
-            token = 'acct' + uuid.uuid4().hex
-            unique_token = hashlib.sha256(token.encode('utf-8')).hexdigest()
-
-            data.update({
-                'unique_token': unique_token,
-                'pwd_hash': AuthenticationService.get_password_hash(password, unique_token),
-            })
-
-        return data
-
     def to_representation(self, instance):
         ret = super(AccountSerializer, self).to_representation(instance)
         if instance.type == Account.USER:
