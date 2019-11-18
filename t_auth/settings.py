@@ -24,17 +24,17 @@ class BaseConfiguration(Configuration):
     if MAILER_TYPE == 'SMTP':
         EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-        FROM_EMAIL = os.environ.get('FROM_EMAIL')
-        EMAIL_HOST = os.environ.get('EMAIL_HOST')
-        EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-        EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-        EMAIL_PORT = os.environ.get('EMAIL_PORT')
-        EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS') == 'True'
+        FROM_EMAIL = os.environ.get('SMTP_FROM_EMAIL')
+        EMAIL_HOST = os.environ.get('SMTP_EMAIL_HOST')
+        EMAIL_HOST_PASSWORD = os.environ.get('SMTP_EMAIL_HOST_PASSWORD')
+        EMAIL_HOST_USER = os.environ.get('SMTP_EMAIL_HOST_USER')
+        EMAIL_PORT = os.environ.get('SMTP_EMAIL_PORT')
+        EMAIL_USE_TLS = os.environ.get('SMTP_EMAIL_USE_TLS') == 'True'
 
     if MAILER_TYPE == 'TROOD':
         EMAIL_BACKEND = 'trood.contrib.django.mail.backends.TroodEmailBackend'
 
-        MAIL_SERVICE_URL = os.environ.get('MAIL_SERVICE_URL', None)
+        MAIL_SERVICE_URL = os.environ.get('TROOD_MAIL_SERVICE_URL', None)
 
 
     PROFILE_STORAGE = os.environ.get('PROFILE_STORAGE', 'BUILTIN')
