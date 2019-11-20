@@ -9,7 +9,7 @@ import datetime
 import uuid
 
 from jsonfield import JSONField
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -93,6 +93,21 @@ class Account(models.Model):
     def is_authenticated(self):
         return True
 
+    @transaction.atomic
+    def delete(self, *args, **kwargs):
+        if settings.PROFILE_STORAGE == "CUSTODIAN":
+            try:
+                custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
+                obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
+
+                if self.profile_id:
+                    custodian.records.delete(Record(obj, id=self.profile_id))
+            except Exception as e:
+                raise ValidationError({"error": e})
+
+        super(Account, self).delete(*args, **kwargs)
+
+    @transaction.atomic
     def save(self, *args, **kwargs):
         super(Account, self).save(*args, **kwargs)
         if settings.PROFILE_STORAGE == "CUSTODIAN":
