@@ -8,6 +8,7 @@ Authentication models
 import datetime
 import uuid
 
+from trood.api.custodian.objects import Object
 from jsonfield import JSONField
 from django.db import models, transaction
 from django.utils import timezone
@@ -134,11 +135,11 @@ class Account(models.Model):
     def profile(self):
         if settings.PROFILE_STORAGE == "CUSTODIAN":
             custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
-            obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
+            obj = Object(name=settings.CUSTODIAN_PROFILE_OBJECT, cas=False, objects_manager=None)
 
             if self.profile_id is not None:
                 record = custodian.records.get(obj, self.profile_id, depth=1)
-                return record.serialize()
+                return record.data
             else:
                 return None
         else:
