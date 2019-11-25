@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.cache import cache
 from django.conf import settings
+from django_redis import get_redis_connection
 
 from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, ABACPolicy, Account
 from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificationSerializer
@@ -35,11 +36,11 @@ class VerifyTokenView(APIView):
             token_type = request.data.get("type")
             if token_type == Account.USER:
                 try:
-                    token = Token.objects.get(token=token)
+                    token_obj = Token.objects.get(token=token)
 
-                    response = LoginDataVerificationSerializer(token.account).data
+                    response = LoginDataVerificationSerializer(token_obj.account).data
 
-                    response['profile'] = token.account.profile
+                    response['profile'] = token_obj.account.profile
 
                 except Token.DoesNotExist:
                     raise exceptions.AuthenticationFailed({"error": "User token invalid"})
@@ -72,7 +73,8 @@ class VerifyTokenView(APIView):
         response['abac'] = ABACPolicyMapSerializer(policies).data
 
         if settings.CACHE_TYPE:
-            cache.set(f"AUTH:{token}", json.dumps(response), settings.CACHE_TTL)
+            redis = get_redis_connection("default")
+            redis.set(f"AUTH:{token}", json.dumps(response), settings.CACHE_TTL)
 
         return Response(response)
 
