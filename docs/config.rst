@@ -38,7 +38,24 @@ User profile settings
 .. envvar:: CUSTODIAN_LINK
 
     Url for Custodian endpoints base.
-    
+
+Cache settings
+--------------
+
+.. envar:: CACHE_TYPE
+
+    Type of cache used, can be ``REDIS`` or ``NONE``
+
+
+.. envar:: CACHE_TTL
+
+    Cache expiration time in seconds, ``3600`` by default
+
+
+.. REDIS_URL
+
+    Redis server used for cache
+
 
 Notification setting
 --------------------

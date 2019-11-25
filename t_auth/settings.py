@@ -48,6 +48,23 @@ class BaseConfiguration(Configuration):
             default='pgsql://authorization:authorization@authorization_postgres/authorization')
     }
 
+    CACHE_TYPE = os.environ.get('CACHE_TYPE', None)
+    CACHE_TTL = os.environ.get('CACHE_TTL', 3600)
+
+    if CACHE_TYPE == 'REDIS':
+        REDIS_URL = os.environ.get('REDIS_URL', None)
+
+        if REDIS_URL:
+            CACHES = {
+                "default": {
+                    "BACKEND": "django_redis.cache.RedisCache",
+                    "LOCATION": REDIS_URL,
+                    "OPTIONS": {
+                        "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                    }
+                }
+            }
+
     ALLOWED_HOSTS = ['*', ]
     # Application definition
 
@@ -103,18 +120,10 @@ class BaseConfiguration(Configuration):
     # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
     AUTH_PASSWORD_VALIDATORS = [
-        {
-            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-        },
+        {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+        {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+        {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+        {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
     ]
 
     # Internationalization
