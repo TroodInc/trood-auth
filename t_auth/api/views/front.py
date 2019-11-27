@@ -19,6 +19,7 @@ from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
 from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
+from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
 
 
 class LoginView(APIView):
@@ -104,12 +105,19 @@ class RecoveryView(APIView):
                 'link': settings.RECOVERY_LINK.format(token.token),
             })
 
-            message = EmailMessage(
-                to=[account.login],
-                subject=str(_('Password recovery email')),
-                body=message_body
-            )
-            message.send()
+            if settings.MAILER_TYPE == 'TROOD':
+                message = TroodEmailMessageTemplate(
+                    to=[account.login], template='PASSWORD_RECOVERY', data={
+                        'link': settings.RECOVERY_LINK.format(token.token)
+                    })
+                message.send()
+            else:
+                message = EmailMessage(
+                    to=[account.login],
+                    subject=str(_('Password recovery email')),
+                    body=message_body
+                )
+                message.send()
 
             return Response({'detail': 'Recovery link was sent'}, status=status.HTTP_200_OK)
 
