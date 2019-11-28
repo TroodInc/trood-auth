@@ -15,7 +15,7 @@ class PermissionViewSetTestCase(APITestCase):
 
         self.account = AccountFactory()
 
-    @pytest.mark.djang_db
+    @pytest.mark.django_db
     def test_recovery_request_was_sent(self):
         response = self.client.post(reverse('password-recovery'), data={'login': self.account.login})
 
@@ -24,7 +24,7 @@ class PermissionViewSetTestCase(APITestCase):
         assert_that(response.status_code, equal_to(status.HTTP_200_OK))
         assert_that(token, not_none())
 
-    @pytest.mark.djang_db
+    @pytest.mark.django_db
     def test_recovery_password_was_changed(self):
         token = Token.objects.create(account=self.account, type=Token.RECOVERY)
 

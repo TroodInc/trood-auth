@@ -6,7 +6,7 @@ Public endpoints (login/logout, authentication, two-factor login, registration)
 """
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
@@ -19,7 +19,7 @@ from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
 from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
-from .base import BaseViewSet
+from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
 
 
 class LoginView(APIView):
@@ -40,6 +40,11 @@ class LoginView(APIView):
                 if not account.active:
                     raise AuthenticationFailed({"error": "Account not active"})
 
+                lng = request.data.get("language")
+                if lng is not None and lng != account.language:
+                    account.language = lng
+                    account.save()
+
                 data = LoginDataVerificationSerializer(account).data
 
                 token = Token.objects.create(account=account)
@@ -49,8 +54,7 @@ class LoginView(APIView):
 
                 policies = ABACPolicy.objects.all()
                 data['abac'] = ABACPolicyMapSerializer(policies).data
-
-                data['linked_object'] = account.get_additional_data()
+                data['profile'] = account.profile
 
             else:
                 raise AuthenticationFailed({"error": f'Invalid password for user {login}'})
@@ -101,12 +105,19 @@ class RecoveryView(APIView):
                 'link': settings.RECOVERY_LINK.format(token.token),
             })
 
-            send_mail(
-                _('Password recovery email'),
-                message_body,
-                from_email=settings.FROM_EMAIL,
-                recipient_list=[account.login, ]
-            )
+            if settings.MAILER_TYPE == 'TROOD':
+                message = TroodEmailMessageTemplate(
+                    to=[account.login], template='PASSWORD_RECOVERY', data={
+                        'link': settings.RECOVERY_LINK.format(token.token)
+                    })
+                message.send()
+            else:
+                message = EmailMessage(
+                    to=[account.login],
+                    subject=str(_('Password recovery email')),
+                    body=message_body
+                )
+                message.send()
 
             return Response({'detail': 'Recovery link was sent'}, status=status.HTTP_200_OK)
 

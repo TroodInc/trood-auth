@@ -29,12 +29,13 @@ class LoginDataVerificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ('id', 'login', 'created', 'active', 'status', 'role', )
+        fields = ('id', 'login', 'created', 'active', 'status', 'role', 'language', 'type')
 
 
 class RegisterSerializer(serializers.Serializer):
     login = fields.EmailField(required=True)
     password = fields.CharField(required=True)
+    profile = fields.JSONField(required=False)
 
     def validate_login(self, login):
         if Account.objects.filter(login=login).exists():
@@ -42,21 +43,26 @@ class RegisterSerializer(serializers.Serializer):
         return login
 
     def save(self, **kwargs):
-        account = AccountFactory.factory(
+        unique_token = AccountFactory._create_token()
+        account = Account.objects.create(
             login=self.validated_data['login'],
-            password=self.validated_data['password']
+            status=Account.STATUS_ACTIVE,
+            profile=self.validated_data.get('profile', {}),
+            unique_token=unique_token,
+            pwd_hash=AuthenticationService.get_password_hash(self.validated_data['password'], unique_token)
         )
 
         return account
 
 
 class AccountSerializer(serializers.ModelSerializer):
+    profile = fields.JSONField(required=False)
 
     class Meta:
         model = Account
         fields = (
             'id', 'login', 'created', 'status', 'active', 'role',
-            'pwd_hash', 'type', 'cidr',
+            'pwd_hash', 'type', 'cidr', 'profile', 'language',
         )
         read_only_fields = ('id', 'created', 'pwd_hash',)
 
@@ -70,20 +76,6 @@ class AccountSerializer(serializers.ModelSerializer):
             validator(data['login'])
 
         return super(AccountSerializer, self).validate(data)
-
-    def to_internal_value(self, data):
-        password = data.get('password', None)
-        data = super(AccountSerializer, self).to_internal_value(data)
-        if password:
-            token = 'acct' + uuid.uuid4().hex
-            unique_token = hashlib.sha256(token.encode('utf-8')).hexdigest()
-
-            data.update({
-                'unique_token': unique_token,
-                'pwd_hash': AuthenticationService.get_password_hash(password, unique_token),
-            })
-
-        return data
 
     def to_representation(self, instance):
         ret = super(AccountSerializer, self).to_representation(instance)

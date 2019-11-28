@@ -701,9 +701,14 @@ paths:
       summary: Authenticate user by credentials
       description: >
         If user was authenticated you receive a `Token` needed to authorize future requests. <br>
+
         For each new authentication unique `Token` would be created. <br>
         So you will have ability to differentiate sessions from devices <br><br>
-        Additinaly you will receive `ABAC` _(Attribute Based Access Control)_ object with rules avaliable in system
+
+        Additinaly you will receive `ABAC` _(Attribute Based Access Control)_ object with rules avaliable in system <br><br>
+
+        Pass `language` param if you want to change user default language
+
       tags:
         - Authorization
       operationId: CreateLogin
@@ -721,6 +726,9 @@ paths:
                   type: string
                   maxLength: 128
                   nullable: false
+                language:
+                  type: string
+                  maxLength: 3
               required:
               - login
               - password
@@ -859,6 +867,9 @@ paths:
                   format: email
                 password:
                   type: string
+                profile:
+                  type: object
+                  description: 'Additional user information fields'
       responses:
         '200':
           content:
@@ -928,8 +939,15 @@ components:
         cidr:
           type: string
           maxLength: 20
+        profile:
+          type: object
+          description: 'Additional user information fields'
+        language:
+          type: string
+          example: 'en'
       required:
       - login
+
     Role:
       type: object
       properties:
@@ -1057,6 +1075,7 @@ components:
       required:
       - domain
       - rules
+
   responses:
     Authentication:
       content:
@@ -1085,6 +1104,9 @@ components:
                 format: date-time
               abac:
                 type: object
-              linked_object:
+              profile:
                 type: object
+              language:
+                type: string
+                example: 'en'
       description: ''

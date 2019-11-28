@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.core import signing
 from django.utils import timezone
@@ -7,6 +8,9 @@ from rest_framework import exceptions
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.core.cache import cache
+from django.conf import settings
+from django_redis import get_redis_connection
 
 from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, ABACPolicy, Account
 from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificationSerializer
@@ -23,7 +27,8 @@ class VerifyTokenView(APIView):
 
         if request.user.type == Account.USER:
             response = LoginDataVerificationSerializer(request.user).data
-            response['linked_object'] = request.user.get_additional_data()
+
+            response['profile'] = request.user.profile
 
             policies = ABACPolicy.objects.all()
 
@@ -31,10 +36,11 @@ class VerifyTokenView(APIView):
             token_type = request.data.get("type")
             if token_type == Account.USER:
                 try:
-                    token = Token.objects.get(token=token)
+                    token_obj = Token.objects.get(token=token)
 
-                    response = LoginDataVerificationSerializer(token.account).data
-                    response['linked_object'] = token.account.get_additional_data()
+                    response = LoginDataVerificationSerializer(token_obj.account).data
+
+                    response['profile'] = token_obj.account.profile
 
                 except Token.DoesNotExist:
                     raise exceptions.AuthenticationFailed({"error": "User token invalid"})
@@ -65,6 +71,10 @@ class VerifyTokenView(APIView):
                 policies = ABACPolicy.objects.filter(domain=parts[0])
 
         response['abac'] = ABACPolicyMapSerializer(policies).data
+
+        if settings.CACHE_TYPE:
+            redis = get_redis_connection("default")
+            redis.set(f"AUTH:{token}", json.dumps(response), settings.CACHE_TTL)
 
         return Response(response)
 
