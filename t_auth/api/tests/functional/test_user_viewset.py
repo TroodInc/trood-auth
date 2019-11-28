@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient, APITestCase
 
-from t_auth.api.models import Token, AccountRole
+from t_auth.api.models import Token, AccountRole, Account
 from t_auth.api.tests.factories import AccountFactory
 
 
@@ -73,3 +73,34 @@ class AccountViewSetTestCase(APITestCase):
         )
 
         assert_that(response.status_code, equal_to(status.HTTP_204_NO_CONTENT))
+
+    @pytest.mark.django_db
+    def test_can_filter_by_rql(self):
+        admin_role = AccountRole.objects.create(name="admin")
+        client_role = AccountRole.objects.create(name="client")
+
+        Account.objects.create(login="admin@test.com", pwd_hash="", unique_token="", role=admin_role)
+        Account.objects.create(login="disabled@test.com", pwd_hash="", unique_token="", role=admin_role, active=False)
+        Account.objects.create(login="client@test.com", pwd_hash="", unique_token="", role=client_role, )
+        Account.objects.create(login="oldclient@test.com", pwd_hash="", unique_token="", role=client_role, active=False)
+
+
+        response = self.client.get(
+            reverse('api:account-list'),
+            data={"rql": "eq(active,False)"}
+        )
+
+        decoded_response = response.json()
+        print(decoded_response)
+
+        assert_that(len(decoded_response['data']), equal_to(2))
+
+        response = self.client.get(
+            reverse('api:account-list'),
+            data={"rql": "and(eq(active,True),eq(role.name,admin))"}
+        )
+        decoded_response = response.json()
+        print(decoded_response)
+
+        assert_that(len(decoded_response['data']), equal_to(1))
+        assert_that(decoded_response['data'][0]['login'], equal_to('admin@test.com'))
