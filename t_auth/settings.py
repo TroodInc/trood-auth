@@ -80,6 +80,7 @@ class BaseConfiguration(Configuration):
 
         'rest_framework',
         'django_filters',
+        'languages',
 
         't_auth.api',
         't_auth.core'
