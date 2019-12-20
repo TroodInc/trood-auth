@@ -117,10 +117,7 @@ class Account(models.Model):
                 obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
 
                 if self.profile_id:
-                    record = custodian.records.get(obj, self.profile_id)
-                    if record:
-                        record.data.update(self.profile_data)
-                        custodian.records.update(record)
+                    custodian.records.partial_update(obj, self.profile_id, self.profile_data, depth=1)
                 else:
                     profile_data = self.profile_data if self.profile_data else {}
                     record = custodian.records.create(Record(obj, id=self.pk, **profile_data))

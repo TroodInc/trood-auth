@@ -5,12 +5,13 @@ Auth Service Backend
 Public endpoints (login/logout, authentication, two-factor login, registration)
 """
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.mail import EmailMessage
+from django.db import DataError
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -43,7 +44,7 @@ class LoginView(APIView):
                 lng = request.data.get("language")
                 if lng is not None and lng != account.language:
                     account.language = lng
-                    account.save()
+                    account.save(update_fields=["language"])
 
                 data = LoginDataVerificationSerializer(account).data
 
@@ -60,6 +61,8 @@ class LoginView(APIView):
                 raise AuthenticationFailed({"error": f'Invalid password for user {login}'})
         except ObjectDoesNotExist:
             raise AuthenticationFailed({"error": f'User with login {login} not found'})
+        except DataError as e:
+            raise ValidationError({"error": e})
         return Response(data, status=status.HTTP_200_OK)
 
 
