@@ -116,7 +116,7 @@ class Account(models.Model):
                 custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
                 obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
 
-                if self.profile_id:
+                if self.profile_id and self.profile_data:
                     custodian.records.partial_update(obj, self.profile_id, self.profile_data, depth=1)
                 else:
                     profile_data = self.profile_data if self.profile_data else {}
