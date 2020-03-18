@@ -11,6 +11,8 @@ from t_auth.api import views as api_views
 from t_auth.api.views.admin import AccountRoleViewSet, ABACResourceViewSet, ABACActionViewSet, ABACAttributViewSet, \
     ABACPolicyViewSet, ABACDomainViewSet
 
+from trood.contrib.django.apps.fixtures.views import TroodFixturesViewSet
+
 router = routers.DefaultRouter()
 
 router.register(r'account', api_views.AccountViewSet, basename='account')
@@ -22,6 +24,9 @@ router.register(r'attributes', ABACAttributViewSet, basename='attributes')
 router.register(r'policies', ABACPolicyViewSet, basename='policies')
 router.register(r'domains', ABACDomainViewSet, basename='domains')
 
+if settings.DEBUG:
+    router.register(r'fixtures', TroodFixturesViewSet, basename='fixtures')
+
 urlpatterns = [
     url(r'^api/v1.0/abac', api_views.system.ABACProvisionAttributeMap.as_view(), name='abac'),
     url(r'^api/v1.0/login', api_views.front.LoginView.as_view(), name='login'),
@@ -31,8 +36,8 @@ urlpatterns = [
     url(r'^api/v1.0/password-recovery', t_auth.api.views.front.RecoveryView.as_view(), name='password-recovery'),
     url(r'^api/v1.0/invalidate-token', t_auth.api.views.system.InvalidateTokenView.as_view(), name='invalidate-token'),
     url(r'^api/v1.0/', include((router.urls, 'api'), namespace='api')),
-
 ]
+
 if settings.DEBUG:
     urlpatterns += [
         url('swagger/', TemplateView.as_view(template_name='swagger_ui.html'), name='swagger-ui'),
