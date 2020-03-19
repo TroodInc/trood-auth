@@ -77,7 +77,7 @@ class Account(models.Model):
 
     role = models.ForeignKey(AccountRole, null=True, on_delete=models.CASCADE)
 
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=32, choices=ACCOUNT_STATUS, default=STATUS_ACTIVE)
 
     active = models.BooleanField(_('Active'), default=True)
