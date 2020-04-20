@@ -21,7 +21,13 @@ from t_auth.api.models import Account, AccountRole, Token, ABACResource, ABACAct
 from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
 
 
-class AccountRoleViewSet(viewsets.ModelViewSet):
+class BaseViewSet(viewsets.ModelViewSet):
+
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+
+class AccountRoleViewSet(BaseViewSet):
     """
     Provides CRUD for AccountRole
     """
@@ -51,6 +57,7 @@ class AccountViewSet(viewsets.ModelViewSet):
         unique_token = hashlib.sha256(token.encode('utf-8')).hexdigest()
 
         account = serializer.save(
+            creator=self.request.user,
             unique_token=unique_token,
             pwd_hash=AuthenticationService.get_password_hash(password, unique_token)
         )
@@ -64,7 +71,7 @@ class AccountViewSet(viewsets.ModelViewSet):
             message.send()
 
 
-class ABACResourceViewSet(viewsets.ModelViewSet):
+class ABACResourceViewSet(BaseViewSet):
     queryset = ABACResource.objects.all()
     serializer_class = ABACResourceSerializer
 
@@ -73,7 +80,7 @@ class ABACResourceViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, )
 
 
-class ABACActionViewSet(viewsets.ModelViewSet):
+class ABACActionViewSet(BaseViewSet):
     queryset = ABACAction.objects.all()
     serializer_class = ABACActionSerializer
 
@@ -82,7 +89,7 @@ class ABACActionViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, )
 
 
-class ABACAttributViewSet(viewsets.ModelViewSet):
+class ABACAttributViewSet(BaseViewSet):
     queryset = ABACAttribute.objects.all()
     serializer_class = ABACAttributeSerializer
 
@@ -91,13 +98,13 @@ class ABACAttributViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, )
 
 
-class ABACDomainViewSet(viewsets.ModelViewSet):
+class ABACDomainViewSet(BaseViewSet):
     queryset = ABACDomain.objects.all()
     serializer_class = ABACDomainSerializer
     permission_classes = (IsAuthenticated, )
 
 
-class ABACPolicyViewSet(viewsets.ModelViewSet):
+class ABACPolicyViewSet(BaseViewSet):
     queryset = ABACPolicy.objects.all()
     serializer_class = ABACPolicySerializer
 

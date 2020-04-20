@@ -28,7 +28,14 @@ RESULT_TYPES = (
     (DENY, _('Deny'))
 )
 
-class AccountRole(models.Model):
+
+class BaseModel(models.Model):
+    creator = models.ForeignKey('Account', on_delete=models.SET_NULL, null=True)
+    class Meta:
+        abstract = True
+
+
+class AccountRole(BaseModel):
     STATUS_ACTIVE = 'active'
     STATUS_DISABLED = 'disabled'
     STATUS_DELETED = 'deleted'
@@ -46,7 +53,7 @@ class AccountRole(models.Model):
     status = models.CharField(max_length=32, choices=ROLE_STATUS, default=STATUS_ACTIVE)
 
 
-class Account(models.Model):
+class Account(BaseModel):
     """
     One account in our system
     """
@@ -169,35 +176,35 @@ class Token(models.Model):
             super(Token, self).save()
 
 
-class ABACDomain(models.Model):
+class ABACDomain(BaseModel):
     id = models.CharField(max_length=128, primary_key=True)
     default_result = models.CharField(max_length=64, choices=RESULT_TYPES, null=True)
 
 
-class ABACResource(models.Model):
+class ABACResource(BaseModel):
     domain = models.ForeignKey(ABACDomain, null=True, related_name="domain", on_delete=models.CASCADE)
     comment = models.TextField()
     name = models.CharField(max_length=64, null=False)
 
 
-class ABACAction(models.Model):
+class ABACAction(BaseModel):
     resource = models.ForeignKey(ABACResource, null=False, related_name="actions", on_delete=models.CASCADE)
     name = models.CharField(max_length=64, null=False)
 
 
-class ABACAttribute(models.Model):
+class ABACAttribute(BaseModel):
     resource = models.ForeignKey(ABACResource, null=False, related_name="attributes", on_delete=models.CASCADE)
     name = models.CharField(max_length=64, null=False)
     attr_type = models.CharField(max_length=64, null=False)
 
 
-class ABACPolicy(models.Model):
+class ABACPolicy(BaseModel):
     domain = models.CharField(max_length=128, null=False)
     resource = models.ForeignKey(ABACResource, null=True, on_delete=models.CASCADE)
     action = models.ForeignKey(ABACAction, null=True, on_delete=models.CASCADE)
 
 
-class ABACRule(models.Model):
+class ABACRule(BaseModel):
     result = models.CharField(max_length=64, choices=RESULT_TYPES, null=False)
     rule = JSONField()
     mask = models.ManyToManyField(ABACAttribute)
