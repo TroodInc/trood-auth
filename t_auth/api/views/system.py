@@ -1,5 +1,7 @@
 import datetime
 import json
+import time
+import os
 
 from django.core import signing
 from django.utils import timezone
@@ -8,6 +10,7 @@ from rest_framework import exceptions
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 from django.core.cache import cache
 from django.conf import settings
 from django_redis import get_redis_connection
@@ -142,3 +145,26 @@ class ABACProvisionAttributeMap(APIView):
                 count_results('attribute', created)
 
         return Response(result)
+
+
+class ProbeViewset(ViewSet):
+    permission_classes = (AllowAny, )
+
+    def list(self, request):
+        return Response(data={
+            "status": self.get_status(),
+            "version": self.get_version(),
+            "uptime": self.get_uptime()
+        })
+
+    def get_status(self):
+        return "healthy"
+
+    def get_version(self):
+        filepath = os.path.join(settings.BASE_DIR, "VERSION")
+        with open(filepath, "r") as version_file:
+            version = version_file.readlines()
+        return "".join(version).strip()
+
+    def get_uptime(self):
+        return int(time.time() - settings.START_TIME) 
