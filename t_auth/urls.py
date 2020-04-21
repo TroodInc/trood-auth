@@ -11,6 +11,8 @@ from t_auth.api import views as api_views
 from t_auth.api.views.admin import AccountRoleViewSet, ABACResourceViewSet, ABACActionViewSet, ABACAttributViewSet, \
     ABACPolicyViewSet, ABACDomainViewSet
 
+from t_auth.api.views.system import ProbeViewset
+
 from trood.contrib.django.apps.fixtures.views import TroodFixturesViewSet
 
 router = routers.DefaultRouter()
@@ -23,6 +25,8 @@ router.register(r'actions', ABACActionViewSet, basename='actions')
 router.register(r'attributes', ABACAttributViewSet, basename='attributes')
 router.register(r'policies', ABACPolicyViewSet, basename='policies')
 router.register(r'domains', ABACDomainViewSet, basename='domains')
+
+router.register(r'probe', ProbeViewset, basename='probe')
 
 if settings.DEBUG:
     router.register(r'fixtures', TroodFixturesViewSet, basename='fixtures')

@@ -10,12 +10,15 @@ COPY ./manage.py $APPDIR/
 COPY ./requirements.txt $APPDIR/
 COPY ./pytest.ini $APPDIR/
 COPY ./docs/_static/swagger.yml $APPDIR/static/
+COPY ./VERSION $APPDIR/
 
 RUN apk update \
 &&  apk add --no-cache --virtual .build-deps postgresql-dev gcc python3-dev musl-dev git \
 &&  pip install --upgrade --force-reinstall --no-cache-dir -r $APPDIR/requirements.txt \
 &&  apk del --no-cache .build-deps \
 &&  apk --no-cache add libpq
+
+RUN echo $TAG > ${APPDIR}/VERSION
 
 EXPOSE 8000
 

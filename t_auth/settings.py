@@ -1,4 +1,5 @@
 import os
+import time
 from configurations import Configuration
 import dj_database_url
 
@@ -12,6 +13,8 @@ def rel(*x):
 
 
 class BaseConfiguration(Configuration):
+    START_TIME = time.time()
+
     # Django environ
     # DOTENV = os.path.join(BASE_DIR, '.env')
 
