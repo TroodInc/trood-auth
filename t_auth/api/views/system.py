@@ -23,7 +23,6 @@ class VerifyTokenView(APIView):
     """
     Provides external API /auth method
     """
-    permission_classes = (IsAuthenticated, )
 
     def post(self, request):
         token = request.data.get("token", False)
@@ -86,7 +85,6 @@ class InvalidateTokenView(APIView):
     """
     Provides service link for cleaning up tokens
     """
-    permission_classes = (IsAuthenticated, )
 
     def get(self, request):
         if 'all' in request.data:

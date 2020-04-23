@@ -33,7 +33,6 @@ class AccountRoleViewSet(BaseViewSet):
     """
     queryset = AccountRole.objects.all()
     serializer_class = AccountRoleSerializer
-    permission_classes = (IsAuthenticated, )
 
 
 class AccountViewSet(viewsets.ModelViewSet):
@@ -42,7 +41,6 @@ class AccountViewSet(viewsets.ModelViewSet):
     """
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
-    permission_classes = (IsAuthenticated, )
 
     def perform_update(self, serializer):
         acc = serializer.save()
@@ -77,7 +75,6 @@ class ABACResourceViewSet(BaseViewSet):
 
     # @todo: direct filtering is deprecated, use RQL instead
     filter_fields = ("domain", "name", )
-    permission_classes = (IsAuthenticated, )
 
 
 class ABACActionViewSet(BaseViewSet):
@@ -86,7 +83,6 @@ class ABACActionViewSet(BaseViewSet):
 
     # @todo: direct filtering is deprecated, use RQL instead
     filter_fields = ("resource", )
-    permission_classes = (IsAuthenticated, )
 
 
 class ABACAttributViewSet(BaseViewSet):
@@ -95,13 +91,11 @@ class ABACAttributViewSet(BaseViewSet):
 
     # @todo: direct filtering is deprecated, use RQL instead
     filter_fields = ("resource",)
-    permission_classes = (IsAuthenticated, )
 
 
 class ABACDomainViewSet(BaseViewSet):
     queryset = ABACDomain.objects.all()
     serializer_class = ABACDomainSerializer
-    permission_classes = (IsAuthenticated, )
 
 
 class ABACPolicyViewSet(BaseViewSet):
@@ -110,4 +104,3 @@ class ABACPolicyViewSet(BaseViewSet):
 
     # @todo: direct filtering is deprecated, use RQL instead
     filter_fields = ("resource", "domain", "action", )
-    permission_classes = (IsAuthenticated, )
