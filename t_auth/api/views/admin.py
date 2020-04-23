@@ -24,7 +24,7 @@ from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
 class BaseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        serializer.save(owner=self.request.user)
 
 
 class AccountRoleViewSet(BaseViewSet):
@@ -55,7 +55,7 @@ class AccountViewSet(viewsets.ModelViewSet):
         unique_token = hashlib.sha256(token.encode('utf-8')).hexdigest()
 
         account = serializer.save(
-            creator=self.request.user,
+            owner=self.request.user,
             unique_token=unique_token,
             pwd_hash=AuthenticationService.get_password_hash(password, unique_token)
         )
