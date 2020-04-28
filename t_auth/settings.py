@@ -175,26 +175,8 @@ class BaseConfiguration(Configuration):
 
     ABAC_DEFAULT_RESOLUTION = os.environ.get("ABAC_DEFAULT_RESOLUTION", "allow")
 
-    TROOD_AUTH_SERVICE_URL = os.environ.get('TROOD_AUTH_SERVICE_URL', 'http://authorization.trood:8000/')
-
-    TROOD_ABAC = {
-        'RULES_SOURCE': os.environ.get("ABAC_RULES_SOURCE", "URL"),
-        'RULES_PATH': os.environ.get("ABAC_RULES_PATH", "{}api/v1.0/abac/".format(TROOD_AUTH_SERVICE_URL))
-    }
-
     AUTH_TYPE = os.environ.get('AUTHENTICATION_TYPE')
-
     if AUTH_TYPE == 'TROOD':
-        TROOD_AUTH_SERVICE_URL = os.environ.get(
-            'TROOD_AUTH_SERVICE_URL', 'http://authorization.trood:8000/'
-        )
-        SERVICE_DOMAIN = os.environ.get("SERVICE_DOMAIN", "FILESERVICE")
-        SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
-
-        REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = (
-            'trood.contrib.django.auth.authentication.TroodTokenAuthentication',
-        )
-
         REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = (
             'rest_framework.permissions.IsAuthenticated',
             'trood.contrib.django.auth.permissions.TroodABACPermission',
@@ -203,10 +185,6 @@ class BaseConfiguration(Configuration):
         REST_FRAMEWORK['DEFAULT_FILTER_BACKENDS'] += (
             'trood.contrib.django.auth.filter.TroodABACFilterBackend',
         )
-
-        MIDDLEWARE = MIDDLEWARE + [
-            'trood.contrib.django.auth.middleware.TroodABACMiddleware',
-        ]
 
     ENABLE_RAVEN = os.environ.get('ENABLE_RAVEN', "False")
 

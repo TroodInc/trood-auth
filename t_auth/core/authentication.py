@@ -5,15 +5,15 @@ from django.utils.encoding import force_text
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 
-from t_auth.api.models import Token, Account
+from t_auth.core.engine import AuthABACEngine
 
+from t_auth.api.models import Token, Account, ABACPolicy
+from t_auth.api.serializers import ABACPolicyMapSerializer
 
 class TroodTokenAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
-
         auth = get_authorization_header(request).decode("utf-8").split()
-
         if not auth or len(auth) != 2:
             return None
 
@@ -30,6 +30,9 @@ class TroodTokenAuthentication(BaseAuthentication):
                     ip = IPv4Address(request.META.get('REMOTE_ADDR'))
 
                 if ip in network:
+                    policies = ABACPolicy.objects.all()
+                    policy_serializer = ABACPolicyMapSerializer(policies)
+                    request.abac = AuthABACEngine(policy_serializer.data)
                     return token.account, token
 
                 raise exceptions.AuthenticationFailed()
@@ -47,6 +50,9 @@ class TroodTokenAuthentication(BaseAuthentication):
                 try:
                     original = signer.unsign(auth[1])
                     if original == creds[0]:
+                        policies = ABACPolicy.objects.filter(domain=auth[0])
+                        policy_serializer = ABACPolicyMapSerializer(policies)
+                        request.abac = AuthABACEngine(policy_serializer.data)
                         # TODO: inconsistent with Token case return types(Account and Token instances)
                         return account, Token(token=auth[1], account=account)
 
