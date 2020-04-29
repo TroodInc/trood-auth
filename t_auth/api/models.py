@@ -142,7 +142,7 @@ class Account(BaseModel):
             obj = Object(name=settings.CUSTODIAN_PROFILE_OBJECT, cas=False, objects_manager=None)
 
             if self.profile_id is not None:
-                record = custodian.records.get(obj, self.profile_id, depth=1)
+                record = custodian.records.get(obj, self.profile_id, depth=settings.CUSTODIAN_PROFILE_DEPTH)
                 return record.data
             else:
                 return None
