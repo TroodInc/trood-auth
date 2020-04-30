@@ -22,7 +22,7 @@ class TroodTokenAuthentication(BaseAuthentication):
         request.abac = TroodABACEngine(policy_serializer.data)
 
         if not auth or len(auth) != 2:
-            return AnonymousUser
+            return AnonymousUser(), None
 
         if auth[0] == 'Token':
             try:
