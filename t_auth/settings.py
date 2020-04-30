@@ -156,6 +156,9 @@ class BaseConfiguration(Configuration):
         'DEFAULT_AUTHENTICATION_CLASSES': (
             't_auth.core.authentication.TroodTokenAuthentication',
         ),
+        'DEFAULT_PERMISSION_CLASSES': (
+            'rest_framework.permissions.IsAuthenticated',
+        ),
         'DEFAULT_RENDERER_CLASSES': (
             't_auth.api.renderers.AuthJsonRenderer',
         ),
@@ -166,10 +169,22 @@ class BaseConfiguration(Configuration):
         'DEFAULT_PAGINATION_CLASS': 'trood.contrib.django.pagination.TroodRQLPagination',
         'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
     }
+
     SERVICE_DOMAIN = os.environ.get("SERVICE_DOMAIN", "AUTHORIZATION")
     SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
 
     ABAC_DEFAULT_RESOLUTION = os.environ.get("ABAC_DEFAULT_RESOLUTION", "allow")
+
+    AUTH_TYPE = os.environ.get('AUTHENTICATION_TYPE')
+    if AUTH_TYPE == 'TROOD':
+        REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = (
+            'rest_framework.permissions.IsAuthenticated',
+            'trood.contrib.django.auth.permissions.TroodABACPermission',
+        )
+
+        REST_FRAMEWORK['DEFAULT_FILTER_BACKENDS'] += (
+            'trood.contrib.django.auth.filter.TroodABACFilterBackend',
+        )
 
     ENABLE_RAVEN = os.environ.get('ENABLE_RAVEN', "False")
 

@@ -24,7 +24,7 @@ from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
 class BaseViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        serializer.save(owner=self.request.user)
 
 
 class AccountRoleViewSet(BaseViewSet):
@@ -33,7 +33,6 @@ class AccountRoleViewSet(BaseViewSet):
     """
     queryset = AccountRole.objects.all()
     serializer_class = AccountRoleSerializer
-    permission_classes = (IsAuthenticated, )
 
 
 class AccountViewSet(viewsets.ModelViewSet):
@@ -42,7 +41,6 @@ class AccountViewSet(viewsets.ModelViewSet):
     """
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
-    permission_classes = (IsAuthenticated, )
 
     def perform_update(self, serializer):
         acc = serializer.save()
@@ -57,7 +55,7 @@ class AccountViewSet(viewsets.ModelViewSet):
         unique_token = hashlib.sha256(token.encode('utf-8')).hexdigest()
 
         account = serializer.save(
-            creator=self.request.user,
+            owner=self.request.user,
             unique_token=unique_token,
             pwd_hash=AuthenticationService.get_password_hash(password, unique_token)
         )
@@ -77,7 +75,6 @@ class ABACResourceViewSet(BaseViewSet):
 
     # @todo: direct filtering is deprecated, use RQL instead
     filter_fields = ("domain", "name", )
-    permission_classes = (IsAuthenticated, )
 
 
 class ABACActionViewSet(BaseViewSet):
@@ -86,7 +83,6 @@ class ABACActionViewSet(BaseViewSet):
 
     # @todo: direct filtering is deprecated, use RQL instead
     filter_fields = ("resource", )
-    permission_classes = (IsAuthenticated, )
 
 
 class ABACAttributViewSet(BaseViewSet):
@@ -95,13 +91,11 @@ class ABACAttributViewSet(BaseViewSet):
 
     # @todo: direct filtering is deprecated, use RQL instead
     filter_fields = ("resource",)
-    permission_classes = (IsAuthenticated, )
 
 
 class ABACDomainViewSet(BaseViewSet):
     queryset = ABACDomain.objects.all()
     serializer_class = ABACDomainSerializer
-    permission_classes = (IsAuthenticated, )
 
 
 class ABACPolicyViewSet(BaseViewSet):
@@ -110,4 +104,3 @@ class ABACPolicyViewSet(BaseViewSet):
 
     # @todo: direct filtering is deprecated, use RQL instead
     filter_fields = ("resource", "domain", "action", )
-    permission_classes = (IsAuthenticated, )

@@ -1,21 +1,28 @@
 from ipaddress import IPv4Network, IPv4Address
 
+from django.contrib.auth.models import AnonymousUser
 from django.core import signing
+from django.conf import settings
 from django.utils.encoding import force_text
 from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 
-from t_auth.api.models import Token, Account
+from trood.contrib.django.auth.engine import TroodABACEngine
+
+from t_auth.api.models import Token, Account, ABACPolicy
+from t_auth.api.serializers import ABACPolicyMapSerializer
 
 
 class TroodTokenAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
-
         auth = get_authorization_header(request).decode("utf-8").split()
+        policies = ABACPolicy.objects.filter(domain=settings.SERVICE_DOMAIN)
+        policy_serializer = ABACPolicyMapSerializer(policies)
+        request.abac = TroodABACEngine(policy_serializer.data)
 
         if not auth or len(auth) != 2:
-            return None
+            return AnonymousUser(), None
 
         if auth[0] == 'Token':
             try:

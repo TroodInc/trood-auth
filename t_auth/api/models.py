@@ -30,7 +30,7 @@ RESULT_TYPES = (
 
 
 class BaseModel(models.Model):
-    creator = models.ForeignKey('Account', on_delete=models.SET_NULL, null=True)
+    owner = models.ForeignKey('Account', on_delete=models.SET_NULL, null=True)
     class Meta:
         abstract = True
 
