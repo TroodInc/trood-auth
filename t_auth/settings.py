@@ -44,6 +44,7 @@ class BaseConfiguration(Configuration):
 
     if PROFILE_STORAGE == 'CUSTODIAN':
         CUSTODIAN_PROFILE_OBJECT = os.environ.get('CUSTODIAN_PROFILE_OBJECT', None)
+        CUSTODIAN_PROFILE_DEPTH = os.environ.get('CUSTODIAN_LINK', 1)
         CUSTODIAN_LINK = os.environ.get('CUSTODIAN_LINK', None)
 
     DATABASES = {
