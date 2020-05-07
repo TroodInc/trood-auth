@@ -179,7 +179,6 @@ class BaseConfiguration(Configuration):
     AUTH_TYPE = os.environ.get('AUTHENTICATION_TYPE')
     if AUTH_TYPE == 'TROOD':
         REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = (
-            'rest_framework.permissions.IsAuthenticated',
             'trood.contrib.django.auth.permissions.TroodABACPermission',
         )
 
