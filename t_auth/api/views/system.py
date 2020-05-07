@@ -19,12 +19,12 @@ from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, AB
 from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificationSerializer
 
 
-class VerifyTokenView(APIView):
+class VerifyTokenViewSet(ViewSet):
     """
     Provides external API /auth method
     """
 
-    def post(self, request):
+    def create(self, request):
         token = request.data.get("token", False)
 
         if request.user.type == Account.USER:
@@ -165,4 +165,4 @@ class ProbeViewset(ViewSet):
         return "".join(version).strip()
 
     def get_uptime(self):
-        return int(time.time() - settings.START_TIME) 
+        return int(time.time() - settings.START_TIME)
