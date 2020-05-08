@@ -24,8 +24,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class AccountRoleSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AccountRole
+        fields = ('id', 'name', 'status', )
+
+
 class LoginDataVerificationSerializer(serializers.ModelSerializer):
-    role = serializers.CharField(source='role.name', default=None)
+    role = AccountRoleSerializer()
 
     class Meta:
         model = Account
@@ -85,18 +92,6 @@ class AccountSerializer(serializers.ModelSerializer):
         ret['role'] = AccountRoleSerializer(instance.role).data
 
         return ret
-
-
-class AccountRoleSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = AccountRole
-        fields = ('id', 'name', 'status', )
-
-    def to_representation(self, instance):
-        obj = super(AccountRoleSerializer, self).to_representation(instance)
-
-        return obj
 
 
 class ABACDomainSerializer(serializers.ModelSerializer):
