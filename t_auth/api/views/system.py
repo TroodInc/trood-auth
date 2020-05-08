@@ -81,12 +81,12 @@ class VerifyTokenViewSet(ViewSet):
         return Response(response)
 
 
-class InvalidateTokenView(APIView):
+class InvalidateTokenViewSet(ViewSet):
     """
     Provides service link for cleaning up tokens
     """
 
-    def get(self, request):
+    def list(self, request):
         if 'all' in request.data:
             count, _ = Token.objects.all().delete()
         else:

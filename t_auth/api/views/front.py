@@ -68,6 +68,8 @@ class LoginView(APIView):
 
 class LogoutView(APIView):
 
+    permission_classes = (IsAuthenticated, )
+
     def post(self, request):
         if 'all' in request.data:
             Token.objects.filter(account_id=request.user.id).delete()
