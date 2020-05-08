@@ -11,7 +11,7 @@ from t_auth.api import views as api_views
 from t_auth.api.views.admin import AccountRoleViewSet, ABACResourceViewSet, ABACActionViewSet, ABACAttributViewSet, \
     ABACPolicyViewSet, ABACDomainViewSet
 
-from t_auth.api.views.system import ProbeViewset, VerifyTokenViewSet
+from t_auth.api.views.system import ProbeViewset, VerifyTokenViewSet, InvalidateTokenViewSet
 
 from trood.contrib.django.apps.fixtures.views import TroodFixturesViewSet
 
@@ -27,6 +27,7 @@ router.register(r'policies', ABACPolicyViewSet, basename='policies')
 router.register(r'domains', ABACDomainViewSet, basename='domains')
 
 router.register(r'verify-token', VerifyTokenViewSet, basename='verify-token')
+router.register(r'invalidate-token', InvalidateTokenViewSet, basename='invalidate-token')
 
 router.register(r'probe', ProbeViewset, basename='probe')
 
@@ -39,7 +40,6 @@ urlpatterns = [
     url(r'^api/v1.0/logout', api_views.front.LogoutView.as_view(), name='logout'),
     url(r'^api/v1.0/register', api_views.RegistrationViewSet.as_view(), name='register'),
     url(r'^api/v1.0/password-recovery', t_auth.api.views.front.RecoveryView.as_view(), name='password-recovery'),
-    url(r'^api/v1.0/invalidate-token', t_auth.api.views.system.InvalidateTokenView.as_view(), name='invalidate-token'),
     url(r'^api/v1.0/', include((router.urls, 'api'), namespace='api')),
 ]
 
