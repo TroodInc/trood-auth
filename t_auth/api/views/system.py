@@ -97,7 +97,9 @@ class InvalidateTokenViewSet(ViewSet):
 
 
 class ABACProvisionAttributeMap(APIView):
-
+    """
+    Display the ABAC.
+    """
     permission_classes = (AllowAny, )
 
     def get(self, request):
