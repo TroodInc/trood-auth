@@ -38,8 +38,7 @@ class BaseModel(models.Model):
 
 class AccountRole(BaseModel):
     """
-    One role in our system
-    Role acts as a scope for permissions.
+    Existing roles in our system for the account.
 
     It contains:
     name        name of roll
@@ -198,7 +197,7 @@ class ABACDomain(BaseModel):
     ABAC domain model
     It contains:
     id                  A unique value identifying this abac domain.
-    default_result      default resault for the domain
+    default_result      default result for the domain
     """
     id = models.CharField(max_length=128, primary_key=True)
     default_result = models.CharField(max_length=64, choices=RESULT_TYPES, null=True)
