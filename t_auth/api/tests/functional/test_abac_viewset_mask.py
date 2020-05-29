@@ -54,7 +54,7 @@ class ABACViewSetMaskTestCase(APITestCase):
         rule["mask"] = ["profile"]
         data.update({"rules": [rule]})
         response = self.client.patch(
-            reverse('api:policies-detail', kwargs={'pk': self.account.id}),
+            reverse('api:policies-detail', kwargs={'pk': response.json()['data']['id']}),
             data=data,
             format='json'
         )
