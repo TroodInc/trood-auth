@@ -31,11 +31,19 @@ RESULT_TYPES = (
 
 class BaseModel(models.Model):
     owner = models.ForeignKey('Account', on_delete=models.SET_NULL, null=True)
+
     class Meta:
         abstract = True
 
 
 class AccountRole(BaseModel):
+    """
+    Existing roles in our system for the account.
+
+    It contains:
+    name        name of roll
+    status      status of the roll(active/disabled/deleted)
+    """
     STATUS_ACTIVE = 'active'
     STATUS_DISABLED = 'disabled'
     STATUS_DELETED = 'deleted'
@@ -45,10 +53,6 @@ class AccountRole(BaseModel):
         (STATUS_DISABLED, _('Disabled')),
         (STATUS_DELETED, _('Deleted'))
     )
-    """
-    One role in our system
-    Role acts as a scope for permissions
-    """
     name = models.CharField(max_length=128, null=False)
     status = models.CharField(max_length=32, choices=ROLE_STATUS, default=STATUS_ACTIVE)
 
@@ -56,6 +60,18 @@ class AccountRole(BaseModel):
 class Account(BaseModel):
     """
     One account in our system
+
+    It contains:
+    login           login for the account in our system
+    pwd_hash        hashed password
+    unique_token    an unique token
+    role            account role
+    created         date of creation
+    status          account status
+    active          activation status
+    type            type of account(user/service)
+    cidr            CIDR
+    language        language parameter
     """
 
     USER = 'user'
@@ -177,34 +193,74 @@ class Token(models.Model):
 
 
 class ABACDomain(BaseModel):
+    """
+    ABAC domain model
+    It contains:
+    id                  A unique value identifying this abac domain.
+    default_result      default result for the domain
+    """
     id = models.CharField(max_length=128, primary_key=True)
     default_result = models.CharField(max_length=64, choices=RESULT_TYPES, null=True)
 
 
 class ABACResource(BaseModel):
+    """
+    ABAC model for resource.
+    It contains:
+    domain                  domain id.
+    comment                 resource comments
+    name                    name of the resource
+    """
     domain = models.ForeignKey(ABACDomain, null=True, related_name="domain", on_delete=models.CASCADE)
     comment = models.TextField()
     name = models.CharField(max_length=64, null=False)
 
 
 class ABACAction(BaseModel):
+    """
+    ABAC model for the actions.
+    It contains:
+    resource                resource id
+    name                    name of the action
+    """
     resource = models.ForeignKey(ABACResource, null=False, related_name="actions", on_delete=models.CASCADE)
     name = models.CharField(max_length=64, null=False)
 
 
 class ABACAttribute(BaseModel):
+    """
+    ABAC model for the attributes.
+    It contains:
+    resource                resource id
+    name                    name of the attribute
+    attr_type               type of the attribute
+    """
     resource = models.ForeignKey(ABACResource, null=False, related_name="attributes", on_delete=models.CASCADE)
     name = models.CharField(max_length=64, null=False)
     attr_type = models.CharField(max_length=64, null=False)
 
 
 class ABACPolicy(BaseModel):
+    """
+    ABAC model for the policies.
+    It contains:
+    domain                  domain id.
+    resource                resource id
+    action                  action's id
+    """
     domain = models.CharField(max_length=128, null=False)
     resource = models.ForeignKey(ABACResource, null=True, on_delete=models.CASCADE)
     action = models.ForeignKey(ABACAction, null=True, on_delete=models.CASCADE)
 
 
 class ABACRule(BaseModel):
+    """
+    ABAC model for the rules.
+    It contains:
+    result                  result of the rules.
+    mask                    a mask attribute to the rule
+    policy                  policy's id
+    """
     result = models.CharField(max_length=64, choices=RESULT_TYPES, null=False)
     rule = JSONField()
     mask = models.ManyToManyField(ABACAttribute)

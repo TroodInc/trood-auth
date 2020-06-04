@@ -70,6 +70,9 @@ class AccountViewSet(viewsets.ModelViewSet):
 
 
 class ABACResourceViewSet(BaseViewSet):
+    """
+    Display the ABAC resource.
+    """
     queryset = ABACResource.objects.all()
     serializer_class = ABACResourceSerializer
 
@@ -78,6 +81,9 @@ class ABACResourceViewSet(BaseViewSet):
 
 
 class ABACActionViewSet(BaseViewSet):
+    """
+    Display the ABAC action.
+    """
     queryset = ABACAction.objects.all()
     serializer_class = ABACActionSerializer
 
@@ -86,6 +92,9 @@ class ABACActionViewSet(BaseViewSet):
 
 
 class ABACAttributViewSet(BaseViewSet):
+    """
+    Display the ABAC attribute.
+    """
     queryset = ABACAttribute.objects.all()
     serializer_class = ABACAttributeSerializer
 
@@ -94,11 +103,17 @@ class ABACAttributViewSet(BaseViewSet):
 
 
 class ABACDomainViewSet(BaseViewSet):
+    """
+    Display the ABAC domain.
+    """
     queryset = ABACDomain.objects.all()
     serializer_class = ABACDomainSerializer
 
 
 class ABACPolicyViewSet(BaseViewSet):
+    """
+    Display the ABAC policy.
+    """
     queryset = ABACPolicy.objects.all()
     serializer_class = ABACPolicySerializer
 

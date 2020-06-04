@@ -14,8 +14,13 @@ from t_auth.api.serializers import ABACPolicyMapSerializer
 
 
 class TroodTokenAuthentication(BaseAuthentication):
-
+    """
+    Trood Token Authentication.
+    """
     def authenticate(self, request):
+        """
+        Returns Token and Account.
+        """
         auth = get_authorization_header(request).decode("utf-8").split()
         policies = ABACPolicy.objects.filter(domain=settings.SERVICE_DOMAIN)
         policy_serializer = ABACPolicyMapSerializer(policies)
@@ -23,7 +28,7 @@ class TroodTokenAuthentication(BaseAuthentication):
 
         if not auth or len(auth) != 2:
             return AnonymousUser(), None
-
+        # checks if the auth is Token or a Service, so returns the account and token.
         if auth[0] == 'Token':
             try:
                 token = Token.objects.get(token=auth[1], type=Token.AUTHORIZATION)
