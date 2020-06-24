@@ -8,7 +8,6 @@ Authentication models
 import datetime
 import uuid
 
-from trood.api.custodian.objects import Object
 from jsonfield import JSONField
 from django.db import models, transaction
 from django.utils import timezone
@@ -122,7 +121,7 @@ class Account(BaseModel):
         if settings.PROFILE_STORAGE == "CUSTODIAN":
             try:
                 custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
-                obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
+                obj = settings.CUSTODIAN_PROFILE_OBJECT
 
                 if self.profile_id:
                     custodian.records.delete(Record(obj, id=self.profile_id))
@@ -137,7 +136,7 @@ class Account(BaseModel):
         if settings.PROFILE_STORAGE == "CUSTODIAN":
             try:
                 custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
-                obj = custodian.objects.get(settings.CUSTODIAN_PROFILE_OBJECT)
+                obj = settings.CUSTODIAN_PROFILE_OBJECT
 
                 if self.profile_id and self.profile_data:
                     custodian.records.partial_update(obj, self.profile_id, self.profile_data, depth=1)
@@ -155,7 +154,7 @@ class Account(BaseModel):
     def profile(self):
         if settings.PROFILE_STORAGE == "CUSTODIAN":
             custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
-            obj = Object(name=settings.CUSTODIAN_PROFILE_OBJECT, cas=False, objects_manager=None)
+            obj = settings.CUSTODIAN_PROFILE_OBJECT
 
             if self.profile_id is not None:
                 record = custodian.records.get(obj, self.profile_id, depth=settings.CUSTODIAN_PROFILE_DEPTH)
