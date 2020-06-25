@@ -32,4 +32,4 @@ raven==6.9.0
 django-language-field
 
 teamcity-messages==1.21
-trood==2020.4.dev30
+trood==2020.6.dev39
