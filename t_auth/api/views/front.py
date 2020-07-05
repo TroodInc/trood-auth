@@ -91,7 +91,11 @@ class RegistrationViewSet(APIView):
         if serializer.is_valid(raise_exception=True):
             account = serializer.save()
 
-            return Response(LoginDataVerificationSerializer(account).data)
+            result = LoginDataVerificationSerializer(account).data
+            token = Token.objects.create(account=account)
+            result['token'] = token.token
+
+            return Response(result)
 
 
 class RecoveryView(APIView):
