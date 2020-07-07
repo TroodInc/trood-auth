@@ -37,7 +37,7 @@ if settings.DEBUG:
 
 urlpatterns = [
     url(r'^api/v1.0/abac', api_views.system.ABACProvisionAttributeMap.as_view(), name='abac'),
-    url(r'^api/v1.0/login$', api_views.front.LoginView.as_view(), name='login'),
+    url(r'^api/v1.0/login/$', api_views.front.LoginView.as_view(), name='login'),
     url(r'^api/v1.0/', include('rest_framework_social_oauth2.urls')),
     url(r'^api/v1.0/logout', api_views.front.LogoutView.as_view(), name='logout'),
     url(r'^api/v1.0/register', api_views.RegistrationViewSet.as_view(), name='register'),
