@@ -55,6 +55,8 @@ class TroodOauth2Authentication(BaseOAuth2):
         self.process_error(self.data)
 
         access_token = self.strategy.session_get('token')
+        if access_token is None:
+            return JsonResponse({"status": "error", "data": "Token is not valid"}, status=status.HTTP_403_FORBIDDEN)
 
         data = {}
 
@@ -68,7 +70,7 @@ class TroodOauth2Authentication(BaseOAuth2):
 
             data = response.json()['data']
         except HTTPError as e:
-            return JsonResponse(e.response, status=e.response.status_code)
+            return JsonResponse(e.response.json(), status=e.response.status_code)
 
         account, _ = Account.objects.get_or_create(
             login=data['login'], type=Account.USER, active=True
