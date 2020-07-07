@@ -23,8 +23,13 @@ class TroodOauth2Authentication(BaseOAuth2):
     AUTHORIZATION_URL = '/api/v1.0/o/authorize'
     ACCESS_TOKEN_URL = '/api/v1.0/o/token/'
 
-    def get_redirect_uri(self, state=None):
-        return self.redirect_uri.rstrip("/") + "/?"
+    def start(self):
+        access_token = get_authorization_header(self.strategy.request).decode('utf-8').strip('Token ')
+        self.strategy.session_set('token', access_token)
+        if self.uses_redirect():
+            return self.strategy.redirect(self.auth_url())
+        else:
+            return self.strategy.html(self.auth_html())
 
     @staticmethod
     def api_url(path):
@@ -41,7 +46,7 @@ class TroodOauth2Authentication(BaseOAuth2):
         """Completes login process, must return user instance"""
         self.process_error(self.data)
 
-        access_token = kwargs['request'].GET.get('token')
+        access_token = self.strategy.session_get('token')
 
         data = {}
 
