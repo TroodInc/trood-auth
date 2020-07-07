@@ -4,11 +4,10 @@ import time
 import os
 
 from django.core import signing
-from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.encoding import force_text
 from rest_framework import exceptions
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
@@ -23,6 +22,7 @@ class VerifyTokenViewSet(ViewSet):
     """
     Provides external API /auth method
     """
+    permission_classes = (IsAuthenticated,)
 
     def create(self, request):
         token = request.data.get("token", False)
