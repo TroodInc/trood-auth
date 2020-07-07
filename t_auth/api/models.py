@@ -73,6 +73,9 @@ class Account(BaseModel):
     language        language parameter
     """
 
+    REQUIRED_FIELDS = ()
+    USERNAME_FIELD = 'login'
+
     USER = 'user'
     SERVICE = 'service'
 
@@ -115,6 +118,10 @@ class Account(BaseModel):
     @property
     def is_authenticated(self):
         return True
+
+    @property
+    def is_anonymous(self):
+        return False
 
     @transaction.atomic
     def delete(self, *args, **kwargs):
@@ -178,17 +185,19 @@ class Token(models.Model):
         (AUTHORIZATION, _('Authorization'))
     )
 
-    token = models.CharField(max_length=64, null=False)
+    token = models.CharField(max_length=64, null=False, unique=True)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     expire = models.DateTimeField(null=False)
     type = models.CharField(_('Type'), max_length=24, choices=TOKEN_TYPES, default=AUTHORIZATION)
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        if not self.id:
-            self.expire = datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(days=1)
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.token:
             self.token = uuid.uuid4().hex
-            super(Token, self).save()
+
+        if not self.expire:
+            self.expire = datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(days=1)
+
+        super(Token, self).save()
 
 
 class ABACDomain(BaseModel):

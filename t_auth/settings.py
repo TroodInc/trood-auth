@@ -39,7 +39,6 @@ class BaseConfiguration(Configuration):
 
         MAIL_SERVICE_URL = os.environ.get('TROOD_MAIL_SERVICE_URL', None)
 
-
     PROFILE_STORAGE = os.environ.get('PROFILE_STORAGE', 'BUILTIN')
 
     if PROFILE_STORAGE == 'CUSTODIAN':
@@ -81,6 +80,10 @@ class BaseConfiguration(Configuration):
         'django.contrib.staticfiles',
         'corsheaders',
         'raven.contrib.django.raven_compat',
+
+        'social_django',
+        'rest_framework_social_oauth2',
+        'oauth2_provider',
 
         'rest_framework',
         'django_filters',
@@ -155,6 +158,7 @@ class BaseConfiguration(Configuration):
 
     REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework_social_oauth2.authentication.SocialAuthentication',
             't_auth.core.authentication.TroodTokenAuthentication',
         ),
         'DEFAULT_PERMISSION_CLASSES': (
@@ -166,25 +170,30 @@ class BaseConfiguration(Configuration):
         'DEFAULT_FILTER_BACKENDS': (
             'trood.contrib.django.filters.TroodRQLFilterBackend',
             'django_filters.rest_framework.DjangoFilterBackend',
+            'trood.contrib.django.auth.filter.TroodABACFilterBackend',
         ),
         'DEFAULT_PAGINATION_CLASS': 'trood.contrib.django.pagination.TroodRQLPagination',
         'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
     }
+
+    AUTHENTICATION_BACKENDS = (
+        't_auth.core.authentication.TroodOauth2Authentication',
+    )
+
+    SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ['next']
+
+    AUTH_USER_MODEL = 'api.Account'
 
     SERVICE_DOMAIN = os.environ.get("SERVICE_DOMAIN", "AUTHORIZATION")
     SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
 
     ABAC_DEFAULT_RESOLUTION = os.environ.get("ABAC_DEFAULT_RESOLUTION", "allow")
 
-    AUTH_TYPE = os.environ.get('AUTHENTICATION_TYPE')
-    if AUTH_TYPE == 'TROOD':
-        REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = (
-            'trood.contrib.django.auth.permissions.TroodABACPermission',
-        )
+    TROOD_OAUTH_URL = os.environ.get('TROOD_OAUTH_URL')
 
-        REST_FRAMEWORK['DEFAULT_FILTER_BACKENDS'] += (
-            'trood.contrib.django.auth.filter.TroodABACFilterBackend',
-        )
+    REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = (
+        'trood.contrib.django.auth.permissions.TroodABACPermission',
+    )
 
     ENABLE_RAVEN = os.environ.get('ENABLE_RAVEN', "False")
 
