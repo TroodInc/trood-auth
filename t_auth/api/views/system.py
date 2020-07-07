@@ -4,14 +4,14 @@ import time
 import os
 
 from django.core import signing
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.encoding import force_text
 from rest_framework import exceptions
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
-from django.core.cache import cache
 from django.conf import settings
 from django_redis import get_redis_connection
 

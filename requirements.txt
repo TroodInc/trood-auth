@@ -33,3 +33,6 @@ django-language-field
 
 teamcity-messages==1.21
 trood==2020.6.dev39
+
+social-auth-app-django
+django-rest-framework-social-oauth2
