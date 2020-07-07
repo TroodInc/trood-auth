@@ -38,7 +38,7 @@ class TroodOauth2Authentication(BaseOAuth2):
         """Completes login process, must return user instance"""
         self.process_error(self.data)
 
-        access_token = get_authorization_header(kwargs['request']).decode("utf-8")
+        access_token = kwargs['request'].GET.get('token')
 
         data = {}
 
@@ -46,19 +46,19 @@ class TroodOauth2Authentication(BaseOAuth2):
             response = self.request(
                 self.access_token_url(),
                 method='POST',
-                headers={'Authorization': access_token},
-                json={"token": access_token.strip('Token '), "type": "user"}
+                headers={'Authorization': f'Token {access_token}'},
+                json={"token": access_token, "type": "user"}
             )
 
             data = response.json()['data']
         except HTTPError as e:
-            return JsonResponse(e.response.json(), status=e.response.status_code)
+            return JsonResponse(e.response, status=e.response.status_code)
 
         account, _ = Account.objects.get_or_create(
             login=data['login'], type=Account.USER, active=True
         )
 
-        Token.objects.get_or_create(type=Token.AUTHORIZATION, token=access_token.strip('Token '), account=account)
+        Token.objects.get_or_create(type=Token.AUTHORIZATION, token=access_token, account=account)
 
         next = self.strategy.session_get('next')
         if next:
