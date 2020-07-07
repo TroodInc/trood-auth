@@ -10,7 +10,7 @@ from requests import HTTPError
 from rest_framework import exceptions, status
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from social_core.backends.oauth import BaseOAuth2
-from social_core.utils import handle_http_errors
+from social_core.utils import handle_http_errors, url_add_parameters
 
 from trood.contrib.django.auth.engine import TroodABACEngine
 
@@ -22,6 +22,7 @@ class TroodOauth2Authentication(BaseOAuth2):
     name = 'trood'
     AUTHORIZATION_URL = '/api/v1.0/o/authorize'
     ACCESS_TOKEN_URL = '/api/v1.0/o/token/'
+    REDIRECT_URL = '/authorization/api/v1.0/complete/trood/'
 
     def start(self):
         access_token = get_authorization_header(self.strategy.request).decode('utf-8').strip('Token ')
@@ -30,6 +31,13 @@ class TroodOauth2Authentication(BaseOAuth2):
             return self.strategy.redirect(self.auth_url())
         else:
             return self.strategy.html(self.auth_html())
+
+    def get_redirect_uri(self, state=None):
+        """Build redirect with redirect_state parameter."""
+        uri = self.strategy.absolute_uri(self.REDIRECT_URL)
+        if self.REDIRECT_STATE and state:
+            uri = url_add_parameters(uri, {'redirect_state': state})
+        return uri
 
     @staticmethod
     def api_url(path):
