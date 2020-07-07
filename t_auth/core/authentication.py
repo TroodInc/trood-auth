@@ -23,6 +23,9 @@ class TroodOauth2Authentication(BaseOAuth2):
     AUTHORIZATION_URL = '/api/v1.0/o/authorize'
     ACCESS_TOKEN_URL = '/api/v1.0/o/token/'
 
+    def get_redirect_uri(self, state=None):
+        return self.redirect_uri.rstrip("/") + "/?"
+
     @staticmethod
     def api_url(path):
         return '{}{}'.format(settings.TROOD_OAUTH_URL.rstrip("/"), path)
