@@ -23,18 +23,17 @@ from t_auth.api.serializers import ABACPolicyMapSerializer
 def register_by_access_token(request):
     access_token = get_authorization_header(request).decode('utf-8').replace('Token ', '')
 
-    try:
-        response = requests.request(
-            url='{}/api/v1.0/o/token/'.format(settings.TROOD_OAUTH_URL.rstrip("/")),
-            method='POST',
-            headers={'Authorization': f'Token {access_token}'},
-            json={"token": access_token, "type": "user"}
-        )
+    response = requests.request(
+        url='{}/api/v1.0/o/token/'.format(settings.TROOD_OAUTH_URL.rstrip("/")),
+        method='POST',
+        headers={'Authorization': f'Token {access_token}'},
+        json={"token": access_token, "type": "user"}
+    )
 
-        data = response.json()['data']
-    except HTTPError as e:
-        return JsonResponse(e.response.json(), status=e.response.status_code)
+    if response.status_code != 200:
+        return JsonResponse(response.json(), status=response.status_code)
 
+    data = response.json()['data']
     account, _ = Account.objects.get_or_create(
         login=data['login'], type=Account.USER, active=True
     )
