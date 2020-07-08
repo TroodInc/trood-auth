@@ -25,7 +25,7 @@ class TroodOauth2Authentication(BaseOAuth2):
     REDIRECT_URL = '/authorization/api/v1.0/complete/trood/'
 
     def start(self):
-        access_token = get_authorization_header(self.strategy.request).decode('utf-8').strip('Token ')
+        access_token = get_authorization_header(self.strategy.request).decode('utf-8').replace('Token ', '')
         self.strategy.session_set('token', access_token)
         if self.uses_redirect():
             return self.strategy.redirect(self.auth_url())
