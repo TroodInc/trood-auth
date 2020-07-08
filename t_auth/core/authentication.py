@@ -1,5 +1,6 @@
 from ipaddress import IPv4Network, IPv4Address
 
+import requests
 from django.contrib.auth.models import AnonymousUser
 from django.core import signing
 from django.conf import settings
@@ -11,12 +12,36 @@ from rest_framework import exceptions, status
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from social_core.backends.oauth import BaseOAuth2
 from social_core.utils import handle_http_errors, url_add_parameters
+from social_django.utils import psa
 
 from trood.contrib.django.auth.engine import TroodABACEngine
 
 from t_auth.api.models import Token, Account, ABACPolicy
 from t_auth.api.serializers import ABACPolicyMapSerializer
 
+
+def register_by_access_token(request):
+    access_token = get_authorization_header(request).decode('utf-8').replace('Token ', '')
+
+    try:
+        response = requests.request(
+            url='{}/api/v1.0/o/token/'.format(settings.TROOD_OAUTH_URL.rstrip("/")),
+            method='POST',
+            headers={'Authorization': f'Token {access_token}'},
+            json={"token": access_token, "type": "user"}
+        )
+
+        data = response.json()['data']
+    except HTTPError as e:
+        return JsonResponse(e.response.json(), status=e.response.status_code)
+
+    account, _ = Account.objects.get_or_create(
+        login=data['login'], type=Account.USER, active=True
+    )
+
+    Token.objects.get_or_create(type=Token.AUTHORIZATION, token=access_token, account=account)
+
+    return JsonResponse({"status": "OK"}, status=status.HTTP_200_OK)
 
 class TroodOauth2Authentication(BaseOAuth2):
     name = 'trood'

@@ -13,6 +13,7 @@ from t_auth.api.views.admin import AccountRoleViewSet, ABACResourceViewSet, ABAC
     ABACPolicyViewSet, ABACDomainViewSet
 
 from t_auth.api.views.system import ProbeViewset, VerifyTokenViewSet, InvalidateTokenViewSet
+from t_auth.core.authentication import register_by_access_token
 
 from trood.contrib.django.apps.fixtures.views import TroodFixturesViewSet
 
@@ -38,7 +39,7 @@ if settings.DEBUG:
 urlpatterns = [
     url(r'^api/v1.0/abac', api_views.system.ABACProvisionAttributeMap.as_view(), name='abac'),
     url(r'^api/v1.0/login/$', api_views.front.LoginView.as_view(), name='login'),
-    url(r'^api/v1.0/', include('rest_framework_social_oauth2.urls')),
+    url(r'^api/v1.0/login/trood', register_by_access_token),
     url(r'^api/v1.0/logout', api_views.front.LogoutView.as_view(), name='logout'),
     url(r'^api/v1.0/register', api_views.RegistrationViewSet.as_view(), name='register'),
     url(r'^api/v1.0/password-recovery', t_auth.api.views.front.RecoveryView.as_view(), name='password-recovery'),
