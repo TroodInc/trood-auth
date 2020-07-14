@@ -94,6 +94,7 @@ class RegistrationViewSet(APIView):
             result = LoginDataVerificationSerializer(account).data
             token = Token.objects.create(account=account)
             result['token'] = token.token
+            result['profile'] = account.profile
 
             return Response(result)
 
