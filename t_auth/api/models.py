@@ -147,9 +147,8 @@ class Account(BaseModel):
 
                 if self.profile_id and self.profile_data:
                     custodian.records.partial_update(obj, self.profile_id, self.profile_data, depth=1)
-                else:
-                    profile_data = self.profile_data if self.profile_data else {}
-                    record = custodian.records.create(Record(obj, id=self.pk, **profile_data))
+                elif self.profile_data is not None:
+                    record = custodian.records.create(Record(obj, id=self.pk, **self.profile_data))
                     self.profile_id = record.get_pk()
                     self.save()
 
