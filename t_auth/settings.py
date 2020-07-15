@@ -24,6 +24,9 @@ class BaseConfiguration(Configuration):
 
     MAILER_TYPE = os.environ.get('MAILER_TYPE')
 
+    PROJECT_NAME = os.environ.get('PROJECT_NAME')
+    PROJECT_LINK = os.environ.get('PROJECT_LINK')
+
     if MAILER_TYPE == 'SMTP':
         EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 

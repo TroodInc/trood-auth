@@ -20,6 +20,7 @@ from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
 from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
+from t_auth.api.utils import send_registration_mail
 from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
 
 
@@ -95,6 +96,13 @@ class RegistrationViewSet(APIView):
             token = Token.objects.create(account=account)
             result['token'] = token.token
             result['profile'] = account.profile
+
+            send_registration_mail({
+                'login': account.login,
+                'password': serializer.data['password'],
+                'project': settings.PROJECT_NAME,
+                'link': settings.PROJECT_LINK,
+            })
 
             return Response(result)
 

@@ -10,7 +10,6 @@ import uuid
 
 from django.conf import settings
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
 from django.utils.crypto import get_random_string
 
 from t_auth.api.domain.services import AuthenticationService
@@ -18,7 +17,7 @@ from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, ABA
     ABACActionSerializer, ABACAttributeSerializer, ABACPolicySerializer, ABACDomainSerializer
 from t_auth.api.models import Account, AccountRole, Token, ABACResource, ABACAction, \
     ABACAttribute, ABACPolicy, ABACDomain
-from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
+from t_auth.api.utils import send_registration_mail
 
 
 class BaseViewSet(viewsets.ModelViewSet):
@@ -60,13 +59,12 @@ class AccountViewSet(viewsets.ModelViewSet):
             pwd_hash=AuthenticationService.get_password_hash(password, unique_token)
         )
 
-        if settings.MAILER_TYPE == 'TROOD':
-            message = TroodEmailMessageTemplate(to=[account.login], template='ACCOUNT_REGISTERED', data={
-                'username': account.profile['name'],
-                'login': account.login,
-                'password': password
-            })
-            message.send()
+        send_registration_mail({
+            'login': account.login,
+            'password': password,
+            'project': settings.PROJECT_NAME,
+            'link': settings.PROJECT_LINK
+        })
 
 
 class ABACResourceViewSet(BaseViewSet):
