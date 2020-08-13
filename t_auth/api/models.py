@@ -137,12 +137,12 @@ class Account(BaseModel):
 
         super(Account, self).delete(*args, **kwargs)
 
-    @transaction.atomic
     def save(self, *args, **kwargs):
         super(Account, self).save(*args, **kwargs)
         if settings.PROFILE_STORAGE == "CUSTODIAN":
             try:
-                custodian = client.Client(settings.CUSTODIAN_LINK, get_service_token())
+                token = Token.objects.create(account=self)
+                custodian = client.Client(settings.CUSTODIAN_LINK, f'Token {token.token}')
                 obj = settings.CUSTODIAN_PROFILE_OBJECT
 
                 if self.profile_id and self.profile_data:
@@ -153,6 +153,8 @@ class Account(BaseModel):
                     self.save()
 
             except Exception as e:
+                if self.profile_id is None:
+                    self.delete()
                 raise ValidationError({"error": e})
 
 
