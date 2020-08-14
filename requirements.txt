@@ -12,6 +12,7 @@ PyYAML==5.1.2
 jsonfield==2.0.2
 
 pytest==5.2.2
+coverage < 5 # Remove when will bug https://youtrack.jetbrains.com/issue/PY-41830 be fixed or local Teamcity instance updated
 pytest-cov==2.8.1
 pytest-django==3.6.0
 
@@ -31,4 +32,7 @@ raven==6.9.0
 django-language-field
 
 teamcity-messages==1.21
-git+https://07de0218088728b42ee60f155c71990f1dc6a717:x-oauth-basic@github.com/Q-CIS-DEV/trood-sdk.git#egg=trood
+trood==2020.6.dev39
+
+social-auth-app-django
+django-rest-framework-social-oauth2

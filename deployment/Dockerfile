@@ -1,10 +1,7 @@
-FROM python:3.6
+FROM python:3.6-alpine
 
 ENV APPDIR=/home/src
 ENV PYTHONPATH=$PYTHONPATH:$APPDIR
-
-RUN apt-get update && \
-    apt-get install gcc g++ make libffi-dev libssl-dev -y && mkdir -p $APPDIR
 
 WORKDIR $APPDIR
 
@@ -13,8 +10,15 @@ COPY ./manage.py $APPDIR/
 COPY ./requirements.txt $APPDIR/
 COPY ./pytest.ini $APPDIR/
 COPY ./docs/_static/swagger.yml $APPDIR/static/
+COPY ./VERSION $APPDIR/
 
-RUN pip install --upgrade --force-reinstall -r $APPDIR/requirements.txt
+RUN apk update \
+&&  apk add --no-cache --virtual .build-deps postgresql-dev gcc python3-dev musl-dev libffi-dev git \
+&&  pip install --upgrade --force-reinstall --no-cache-dir -r $APPDIR/requirements.txt \
+&&  apk del --no-cache .build-deps \
+&&  apk --no-cache add libpq
+
+RUN echo $TAG > ${APPDIR}/VERSION
 
 EXPOSE 8000
 

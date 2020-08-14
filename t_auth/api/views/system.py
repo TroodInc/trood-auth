@@ -1,14 +1,16 @@
 import datetime
 import json
+import time
+import os
 
 from django.core import signing
 from django.utils import timezone
 from django.utils.encoding import force_text
 from rest_framework import exceptions
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.core.cache import cache
+from rest_framework.viewsets import ViewSet
 from django.conf import settings
 from django_redis import get_redis_connection
 
@@ -16,13 +18,13 @@ from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, AB
 from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificationSerializer
 
 
-class VerifyTokenView(APIView):
+class VerifyTokenViewSet(ViewSet):
     """
     Provides external API /auth method
     """
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
-    def post(self, request):
+    def create(self, request):
         token = request.data.get("token", False)
 
         if request.user.type == Account.USER:
@@ -79,13 +81,12 @@ class VerifyTokenView(APIView):
         return Response(response)
 
 
-class InvalidateTokenView(APIView):
+class InvalidateTokenViewSet(ViewSet):
     """
     Provides service link for cleaning up tokens
     """
-    permission_classes = (IsAuthenticated, )
 
-    def get(self, request):
+    def list(self, request):
         if 'all' in request.data:
             count, _ = Token.objects.all().delete()
         else:
@@ -96,7 +97,9 @@ class InvalidateTokenView(APIView):
 
 
 class ABACProvisionAttributeMap(APIView):
-
+    """
+    Display the ABAC.
+    """
     permission_classes = (AllowAny, )
 
     def get(self, request):
@@ -142,3 +145,26 @@ class ABACProvisionAttributeMap(APIView):
                 count_results('attribute', created)
 
         return Response(result)
+
+
+class ProbeViewset(ViewSet):
+    permission_classes = (AllowAny, )
+
+    def list(self, request):
+        return Response(data={
+            "status": self.get_status(),
+            "version": self.get_version(),
+            "uptime": self.get_uptime()
+        })
+
+    def get_status(self):
+        return "healthy"
+
+    def get_version(self):
+        filepath = os.path.join(settings.BASE_DIR, "VERSION")
+        with open(filepath, "r") as version_file:
+            version = version_file.readlines()
+        return "".join(version).strip()
+
+    def get_uptime(self):
+        return int(time.time() - settings.START_TIME)

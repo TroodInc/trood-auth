@@ -1,4 +1,5 @@
 import os
+import time
 from configurations import Configuration
 import dj_database_url
 
@@ -12,6 +13,8 @@ def rel(*x):
 
 
 class BaseConfiguration(Configuration):
+    START_TIME = time.time()
+
     # Django environ
     # DOTENV = os.path.join(BASE_DIR, '.env')
 
@@ -20,6 +23,9 @@ class BaseConfiguration(Configuration):
     RECOVERY_LINK = os.environ.get('RECOVERY_LINK', "http://127.0.0.1/recovery?token={}")
 
     MAILER_TYPE = os.environ.get('MAILER_TYPE')
+
+    PROJECT_NAME = os.environ.get('PROJECT_NAME')
+    PROJECT_LINK = os.environ.get('PROJECT_LINK')
 
     if MAILER_TYPE == 'SMTP':
         EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -36,11 +42,11 @@ class BaseConfiguration(Configuration):
 
         MAIL_SERVICE_URL = os.environ.get('TROOD_MAIL_SERVICE_URL', None)
 
-
     PROFILE_STORAGE = os.environ.get('PROFILE_STORAGE', 'BUILTIN')
 
     if PROFILE_STORAGE == 'CUSTODIAN':
         CUSTODIAN_PROFILE_OBJECT = os.environ.get('CUSTODIAN_PROFILE_OBJECT', None)
+        CUSTODIAN_PROFILE_DEPTH = os.environ.get('CUSTODIAN_PROFILE_DEPTH', 1)
         CUSTODIAN_LINK = os.environ.get('CUSTODIAN_LINK', None)
 
     DATABASES = {
@@ -78,8 +84,13 @@ class BaseConfiguration(Configuration):
         'corsheaders',
         'raven.contrib.django.raven_compat',
 
+        'social_django',
+        'rest_framework_social_oauth2',
+        'oauth2_provider',
+
         'rest_framework',
         'django_filters',
+        'languages',
 
         't_auth.api',
         't_auth.core'
@@ -150,7 +161,11 @@ class BaseConfiguration(Configuration):
 
     REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework_social_oauth2.authentication.SocialAuthentication',
             't_auth.core.authentication.TroodTokenAuthentication',
+        ),
+        'DEFAULT_PERMISSION_CLASSES': (
+            'rest_framework.permissions.IsAuthenticated',
         ),
         'DEFAULT_RENDERER_CLASSES': (
             't_auth.api.renderers.AuthJsonRenderer',
@@ -158,14 +173,30 @@ class BaseConfiguration(Configuration):
         'DEFAULT_FILTER_BACKENDS': (
             'trood.contrib.django.filters.TroodRQLFilterBackend',
             'django_filters.rest_framework.DjangoFilterBackend',
+            'trood.contrib.django.auth.filter.TroodABACFilterBackend',
         ),
         'DEFAULT_PAGINATION_CLASS': 'trood.contrib.django.pagination.TroodRQLPagination',
         'EXCEPTION_HANDLER': 't_auth.api.exception_handler.custom_exception_handler'
     }
+
+    AUTHENTICATION_BACKENDS = (
+        't_auth.core.authentication.TroodOauth2Authentication',
+    )
+
+    SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ['next']
+
+    AUTH_USER_MODEL = 'api.Account'
+
     SERVICE_DOMAIN = os.environ.get("SERVICE_DOMAIN", "AUTHORIZATION")
     SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
 
     ABAC_DEFAULT_RESOLUTION = os.environ.get("ABAC_DEFAULT_RESOLUTION", "allow")
+
+    TROOD_OAUTH_URL = os.environ.get('TROOD_OAUTH_URL')
+
+    REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = (
+        'trood.contrib.django.auth.permissions.TroodABACPermission',
+    )
 
     ENABLE_RAVEN = os.environ.get('ENABLE_RAVEN', "False")
 
