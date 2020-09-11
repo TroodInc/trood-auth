@@ -9,6 +9,7 @@ import uuid
 
 from django.conf import settings
 from django.core.validators import EmailValidator
+from django.utils.crypto import get_random_string
 from rest_framework import serializers, fields, exceptions
 from django.utils.translation import ugettext_lazy as _
 
@@ -41,7 +42,7 @@ class LoginDataVerificationSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.Serializer):
     login = fields.EmailField(required=True)
-    password = fields.CharField(required=True)
+    password = fields.CharField(default=get_random_string())
     profile = fields.JSONField(required=False)
 
     def validate_login(self, login):
