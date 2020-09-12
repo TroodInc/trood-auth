@@ -42,7 +42,7 @@ class LoginDataVerificationSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.Serializer):
     login = fields.EmailField(required=True)
-    password = fields.CharField(default=get_random_string(), write_only=True)
+    password = fields.CharField(default=get_random_string())
     profile = fields.JSONField(required=False)
 
     def validate_login(self, login):
