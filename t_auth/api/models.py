@@ -150,7 +150,7 @@ class Account(BaseModel):
                 elif self.profile_data is not None:
                     record = custodian.records.create(Record(obj, id=self.pk, **self.profile_data))
                     self.profile_id = record.get_pk()
-                    self.save()
+                    super(Account, self).save()
 
             except Exception as e:
                 if self.profile_id is None:
