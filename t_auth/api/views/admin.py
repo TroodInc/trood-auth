@@ -63,7 +63,8 @@ class AccountViewSet(viewsets.ModelViewSet):
             'login': account.login,
             'password': password,
             'project': settings.PROJECT_NAME,
-            'link': settings.PROJECT_LINK
+            'link': settings.PROJECT_LINK,
+            'profile': account.profile
         })
 
 

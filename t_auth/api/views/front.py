@@ -102,6 +102,7 @@ class RegistrationViewSet(APIView):
                 'password': serializer.data['password'],
                 'project': settings.PROJECT_NAME,
                 'link': settings.PROJECT_LINK,
+                'profile': account.profile
             })
 
             return Response(result)
