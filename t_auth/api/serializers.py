@@ -44,6 +44,7 @@ class RegisterSerializer(serializers.Serializer):
     login = fields.EmailField(required=True)
     password = fields.CharField(default=get_random_string())
     profile = fields.JSONField(required=False)
+    role = fields.IntegerField(required=False)
 
     def validate_login(self, login):
         if Account.objects.filter(login=login).exists():
@@ -57,6 +58,7 @@ class RegisterSerializer(serializers.Serializer):
             status=Account.STATUS_ACTIVE,
             profile=self.validated_data.get('profile', {}),
             unique_token=unique_token,
+            role_id=self.validated_data.get('role'),
             pwd_hash=AuthenticationService.get_password_hash(self.validated_data['password'], unique_token)
         )
 
