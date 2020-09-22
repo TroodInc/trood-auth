@@ -27,6 +27,6 @@ def test_not_creates_registared_account(client: Client):
         'password': 'some-password',
     }
     client.post(reverse('register'), data=account_data)
-    
+
     response = client.post(reverse('register'), data=account_data)
     assert response.status_code == 400
