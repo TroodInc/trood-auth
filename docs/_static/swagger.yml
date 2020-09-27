@@ -13,8 +13,11 @@ tags:
     # Administrator endpoints
   - name: Account
     description: "Provides CRUD for Account"
-  - name: Roles
+  - name: Role
     description: "Provides CRUD for Roles"
+
+  - name: ABAC Domain
+    description: "Domain is a logical category for incapsulating rules and other configuration data. Usually domains are related to whole Application Service or it parts, a.e.  MAIL, CUSTODIAN, FRONTEND"
   - name: ABAC Resource
     description: "Resource is any endpoint, object or callable that can be accessed by user using and API. In common cases it used in meaning of endpoint. Resources must be unique for a single Domain."
   - name: ABAC Action
@@ -24,8 +27,8 @@ tags:
     description: "Attribute is just an attributes your using to build conditions that needs to be resolve while applying access rules to allow or deny any requested actions for the resource. "
   - name: ABAC Policy
     description: "A set of rules that can be applied while resolving permissions on a resource for target action."
-  - name: ABAC Domain
-    description: "Domain is a logical category for incapsulating rules and other configuration data. Usually domains are related to whole Application Service or it parts, a.e.  MAIL, CUSTODIAN, FRONTEND"
+  - name: ABAC
+      description: ""
 
     # System endpoints
   - name: System
@@ -191,7 +194,9 @@ paths:
     post:
       summary: Initiate recovery process
       description: >
-        After submiting user `login` system will generate one time `recovery Token` and send it to user email
+        After submitting user `login` system will generate one time `recovery Token` and send it to user email
+        Then, you will receive a link on email, that have a recovery token in it - http://.../recovery?token=0cf1fb45cc444fb5b0b31e0018faf8c3.
+        Next, you need to send an PATCH request with token, new password and it confirmation to set a new user password
       tags:
         - Recovery
       operationId: CreateRecovery
@@ -214,7 +219,7 @@ paths:
     patch:
       summary: Updating user password
       description: >
-        A fter password update `recovery Token` will be removed <br>
+        After password update `recovery Token` will be removed <br>
       tags:
         - Recovery
       operationId: PartialUpdateRecovery
@@ -357,6 +362,9 @@ paths:
                 cidr:
                   type: string
                   maxLength: 20
+                password:
+                  type: string
+                  description: If you updating account with new password all related Token-s will be removed automatically, forcing user to re-login with new password on all devices
       responses:
         '200':
           content:
@@ -973,7 +981,7 @@ paths:
     get:
       summary: Display the ABAC
       tags:
-        - Authorization
+        - ABAC
       operationId: listABAC
       parameters:
         - name: domain
@@ -987,14 +995,22 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ABACResource"
+                type: object
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      _default_resolution:
+                        enum:
+                          - allow
+                          - deny
           description: ''
     post:
+      summary: Group creation of ABAC resource
       tags:
-        - ABAC Resource
-      operationId: createABACResource
+        - ABAC
+      operationId: createABAC
       parameters: []
       requestBody:
         content:
@@ -1004,14 +1020,6 @@ paths:
                 domain:
                   type: string
                   nullable: true
-                comment:
-                  type: string
-                name:
-                  type: string
-                  maxLength: 64
-              required:
-                - comment
-                - name
       responses:
         '200':
           content:
@@ -1272,11 +1280,22 @@ components:
                 nullable: true
               rule:
                 type: object
-                description: it is possible to pass an empty object
+                description: Rule is defined as condition that must be satisfied to return a access resolution ( allow or deny ) . Rules can include both logical and comparison operators.
+                example: "[{
+                              result: allow,
+                              rule: {
+                                  or: [
+                                      {obj.owner: sbj.id},
+                                      {obj.status: new, obj.protected: {not: true}, sbj.role: {in: [manager, director]}}
+                                  ]
+                              }
+                          }]"
               mask:
                 type: array
                 items:
                   type: string
+                description: If you want to hide some fields from result data or restrict updates add a mask attribute to the rule
+                example: "[total_payment, default_ratio]"
             required:
             - result
             - rule
