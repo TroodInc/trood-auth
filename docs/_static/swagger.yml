@@ -27,8 +27,6 @@ tags:
     description: "Attribute is just an attributes your using to build conditions that needs to be resolve while applying access rules to allow or deny any requested actions for the resource. "
   - name: ABAC Policy
     description: "A set of rules that can be applied while resolving permissions on a resource for target action."
-  - name: ABAC
-      description: ""
 
     # System endpoints
   - name: System
@@ -996,6 +994,7 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
                   status:
                     type: string
                   data:
@@ -1163,7 +1162,7 @@ components:
       required:
       - login
 
-    sRole:
+    Role:
       type: object
       properties:
         id:
