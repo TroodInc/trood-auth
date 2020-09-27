@@ -3,11 +3,245 @@ info:
   title: ''
   version: ''
 tags:
+
+    # Public endpoints
   - name: Authorization
-    description: "Base endpoints used to enter the system"
+    description: "Base endpoints used to enter the system. Can be used without additional user role or permissions."
   - name: Recovery
-    description: "Action for getting lost password back"
+    description: "Action for getting lost password back. Can be used without additional user role or permissions"
+
+    # Administrator endpoints
+  - name: Account
+    description: "Provides CRUD for Account"
+  - name: Roles
+    description: "Provides CRUD for Roles"
+  - name: ABAC Resource
+    description: "Resource is any endpoint, object or callable that can be accessed by user using and API. In common cases it used in meaning of endpoint. Resources must be unique for a single Domain."
+  - name: ABAC Action
+    description: "Actions that provided by and strongly related to the resources, it can be any type and any amount of actions. Probably - actions is a general thing you are configuring access for.
+                  For django applications common actions could be:  list, retrieve, update, create, destroy for model CRUD endpoints, get, put, delete, post for standard viewsets and can be expanded by any named action configured as django 'path actions' "
+  - name: ABAC Attribute
+    description: "Attribute is just an attributes your using to build conditions that needs to be resolve while applying access rules to allow or deny any requested actions for the resource. "
+  - name: ABAC Policy
+    description: "A set of rules that can be applied while resolving permissions on a resource for target action."
+  - name: ABAC Domain
+    description: "Domain is a logical category for incapsulating rules and other configuration data. Usually domains are related to whole Application Service or it parts, a.e.  MAIL, CUSTODIAN, FRONTEND"
+
+    # System endpoints
+  - name: System
+    description: "Section with technical endpoints for service ↔ service interaction, hooks and system information."
+
+
 paths:
+
+  #################
+  # AUTHORIZATION #
+  #################
+
+  /api/v1.0/register/:
+    post:
+      summary: Registering new user
+      description: >
+        If user was authenticated you receive a `Token` needed to authorize future requests
+      tags:
+        - Authorization
+      operationId: createRegistrationViewSet
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  format: email
+                  maxLength: 128
+                password:
+                  type: string
+                profile:
+                  type: object
+                  description: 'Additional user information fields. Free-form'
+                  nullable: true
+                role:
+                  type: string
+                  nullable: true
+                  description: "Foreign key. An existing role is required"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      login:
+                        type: string
+                        format: email
+                      created:
+                        type: string
+                        format: date-time
+                      active:
+                        type: boolean
+                      status:
+                        type: string
+                        enum:
+                          - active
+                          - disabled
+                          - deleted
+                      role:
+                        type: string
+                        nullable: true
+                        example: null
+                      language:
+                        type: string
+                        nullable: true
+                        example: null
+                      type:
+                        type: string
+                      token:
+                        type: string
+                      profile:
+                        type: object
+
+
+  /api/v1.0/login:
+    post:
+      summary: Authenticate user by credentials
+      description: >
+        If user was authenticated you receive a `Token` needed to authorize future requests.
+
+        For each new authentication unique `Token` would be created.
+        So you will have ability to differentiate sessions from devices
+
+        Additinaly you will receive `ABAC` _(Attribute Based Access Control)_ object with rules avaliable in system
+
+        Pass `language` param if you want to change user default language
+
+      tags:
+        - Authorization
+      operationId: CreateLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  maxLength: 128
+                  nullable: false
+                  format: email
+                password:
+                  type: string
+                  maxLength: 128
+                  nullable: false
+                language:
+                  type: string
+                  maxLength: 3
+                  example: 'en1'
+              required:
+                - login
+                - password
+      responses:
+        '200':
+          $ref: "#/components/responses/Authentication"
+
+
+
+  /api/v1.0/logout:
+    post:
+      summary: Close user session
+      description: >
+        Logout routine discards current user Token, by default it removes only current Token.
+        If you want to remove all Token-s (to logout on all devices) you can use
+        `all` option
+      tags:
+        - Authorization
+      operationId: CreateLogout[]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                all:
+                  type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+                  data:
+                    type: object
+          description: ''
+
+  ############
+  # RECOVERY #
+  ############
+
+  /api/v1.0/password-recovery:
+    post:
+      summary: Initiate recovery process
+      description: >
+        After submiting user `login` system will generate one time `recovery Token` and send it to user email
+      tags:
+        - Recovery
+      operationId: CreateRecovery
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: string
+                  maxLength: 128
+                  nullable: false
+                  format: email
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+    patch:
+      summary: Updating user password
+      description: >
+        A fter password update `recovery Token` will be removed <br>
+      tags:
+        - Recovery
+      operationId: PartialUpdateRecovery
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                token:
+                  type: string
+                  maxLength: 128
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+
+
+  ###########
+  # ACCOUNT #
+  ###########
+
   /api/v1.0/account/:
     get:
       tags:
@@ -19,9 +253,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Account'
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Account'
+                  status:
+                    type: string
+                    example: "OK"
           description: ''
     post:
       tags:
@@ -62,6 +301,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Account'
           description: ''
+
   /api/v1.0/account/{id}/:
     get:
       tags:
@@ -138,6 +378,11 @@ paths:
       responses:
         '204':
           description: ''
+
+  #########
+  # ROLES #
+  #########
+
   /api/v1.0/roles/:
     get:
       tags:
@@ -234,6 +479,11 @@ paths:
       responses:
         '204':
           description: ''
+
+  #################
+  # ABAC RESOURSE #
+  #################
+
   /api/v1.0/resources/:
     get:
       tags:
@@ -254,7 +504,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ABACResource"
-          description: ''
+          description: 'Use GET request on  /api/v1.0/resources/ to list all available resources. You can filter resources by ?domain=_DOMAIN_'
     post:
       tags:
         - ABAC Resource
@@ -268,6 +518,7 @@ paths:
                 domain:
                   type: string
                   nullable: true
+                  description: an existing domain is required
                 comment:
                   type: string
                 name:
@@ -347,6 +598,11 @@ paths:
       responses:
         '204':
           description: ''
+
+  ###############
+  # ABAC ACTION #
+  ###############
+
   /api/v1.0/actions/:
     get:
       tags:
@@ -434,6 +690,11 @@ paths:
       responses:
         '204':
           description: ''
+
+  ##################
+  # ABAC ATTRIBUTE #
+  ##################
+
   /api/v1.0/attributes/:
     get:
       tags:
@@ -447,7 +708,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/ABACAttribute"
-          description: ''
+          description: 'You can filter resources by ?domain=_DOMAIN_'
     post:
       tags:
         - ABAC Attribute
@@ -521,6 +782,11 @@ paths:
       responses:
         '204':
           description: ''
+
+  ###############
+  # ABAC POLICY #
+  ###############
+
   /api/v1.0/policies/:
     get:
       tags:
@@ -551,7 +817,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ABACPolicy"
-          description: ''
+          description: 'List all available policies. You can filter policies by resource, domain or action'
   /api/v1.0/policies/{id}/:
     get:
       tags:
@@ -608,6 +874,11 @@ paths:
       responses:
         '204':
           description: ''
+
+  ################
+  # ABAC DOMAINS #
+  ################
+
   /api/v1.0/domains/:
     get:
       tags:
@@ -696,62 +967,75 @@ paths:
       responses:
         '204':
           description: ''
-  /api/v1.0/login:
-    post:
-      summary: Authenticate user by credentials
-      description: >
-        If user was authenticated you receive a `Token` needed to authorize future requests. <br>
 
-        For each new authentication unique `Token` would be created. <br>
-        So you will have ability to differentiate sessions from devices <br><br>
 
-        Additinaly you will receive `ABAC` _(Attribute Based Access Control)_ object with rules avaliable in system <br><br>
-
-        Pass `language` param if you want to change user default language
-
+  /api/v1.0/abac/:
+    get:
+      summary: Display the ABAC
       tags:
         - Authorization
-      operationId: CreateLogin
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                login:
-                  type: string
-                  maxLength: 128
-                  nullable: false
-                  format: email
-                password:
-                  type: string
-                  maxLength: 128
-                  nullable: false
-                language:
-                  type: string
-                  maxLength: 3
-              required:
-              - login
-              - password
+      operationId: listABAC
+      parameters:
+        - name: domain
+          required: false
+          in: query
+          description: domain
+          schema:
+            type: string
       responses:
         '200':
-          $ref: "#/components/responses/Authentication"
-  /api/v1.0/logout:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ABACResource"
+          description: ''
     post:
-      summary: Close user session
-      description: >
-        Logout routine discards current user Token, by default it removes only current Token.<br>
-        If you want to remove all Token-s (to logout on all devices) you can use
-        `all` option
       tags:
-        - Authorization
-      operationId: CreateLogout[]
+        - ABAC Resource
+      operationId: createABACResource
+      parameters: []
       requestBody:
         content:
           application/json:
             schema:
               properties:
-                all:
-                  type: boolean
+                domain:
+                  type: string
+                  nullable: true
+                comment:
+                  type: string
+                name:
+                  type: string
+                  maxLength: 64
+              required:
+                - comment
+                - name
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ABACResource"
+          description: ''
+
+  ##########
+  # SYSTEM #
+  ##########
+
+  /api/v1.0/invalidate-token:
+    get:
+      summary: System endpoint for removing expired tokens
+      tags:
+        - System
+      operationId: listInvalidateTokens
+      parameters:
+        - name: all
+          in: query
+          description: Flag for removing all not only expired tokens
+          schema:
+            type: boolean
       responses:
         '200':
           content:
@@ -762,34 +1046,17 @@ paths:
                     type: string
                   data:
                     type: object
+                    properties:
+                      tokens_removed:
+                        type: integer
+                        readOnly: true
           description: ''
-  /api/v1.0/invalidate-token:
-    get:
-      summary: System endpoint for removing expired tokens
-      tags:
-        - Token
-      operationId: listInvalidateTokens
-      parameters:
-      - name: all
-        in: query
-        description: Flag for removing all not only expired tokens
-        schema:
-          type: boolean
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  removed_tokens:
-                    type: integer
 
-          description: ''
   /api/v1.0/verify-token:
     post:
       summary: System endpoint for cros-service authorization
       tags:
-        - Token
+        - System
       operationId: CreateVerifyToken
       requestBody:
         content:
@@ -801,108 +1068,40 @@ paths:
       responses:
         '200':
           $ref: "#/components/responses/Authentication"
-  /api/v1.0/password-recovery:
-    post:
-      summary: Initiate recovery process
-      description: >
-        After submiting user `login` system will generate one time `recovery Token` and send it to user email
+
+  /api/v1.0/probe/:
+    get:
+      summary: Returns system info (status, version, uptime)
       tags:
-        - Recovery
-      operationId: CreateRecovery
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                login:
-                  type: string
-                  maxLength: 128
-                  nullable: false
-                  format: email
-      responses:
-        '200':
-          content:
-            application/json:
-              schema: {}
-          description: ''
-    patch:
-      summary: Updating user password
-      description: >
-        A fter password update `recovery Token` will be removed <br>
-      tags:
-        - Recovery
-      operationId: PartialUpdateRecovery
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                token:
-                  type: string
-                  maxLength: 128
-                password:
-                  type: string
-                password_confirmation:
-                  type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema: {}
-          description: ''
-  /api/v1.0/register/:
-    post:
-      summary: Registering new user
-      tags:
-        - Authorization
-      operationId: createRegistrationViewSet
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                login:
-                  type: string
-                  format: email
-                password:
-                  type: string
-                profile:
-                  type: object
-                  description: 'Additional user information fields'
+        - System
+      operationId: probe
       responses:
         '200':
           content:
             application/json:
               schema:
+                type: object
                 properties:
-                  status:
-                    type: string
-                    example: "OK"
                   data:
                     type: object
                     properties:
-                      id:
-                        type: integer
-                      login:
-                        type: string
-                        format: email
-                      created:
-                        type: string
-                        format: date-time
-                      active:
-                        type: boolean
                       status:
                         type: string
-                        enum:
-                        - active
-                        - disabled
-                        - deleted
-                      role:
+                        readOnly: true
+                      version:
                         type: string
-                        nullable: true
-                        example: null
+                        readOnly: true
+                      uptime:
+                        type: integer
+                        readOnly: true
+                  status:
+                    type: string
+                    maxLength: 64
           description: ''
+
+  ##############
+  # COMPONENTS #
+  ##############
 
 components:
   schemas:
@@ -927,11 +1126,19 @@ components:
         active:
           type: boolean
         role:
-          type: integer
-          nullable: true
-        pwd_hash:
-          type: string
+          type: object
           readOnly: true
+          properties:
+            name:
+              maxLength: 128
+              type: string
+              readOnly: true
+            status:
+              enum:
+                - active
+                - disabled
+                - deleted
+          nullable: true
         type:
           enum:
           - user
@@ -948,7 +1155,7 @@ components:
       required:
       - login
 
-    Role:
+    sRole:
       type: object
       properties:
         id:
@@ -990,6 +1197,7 @@ components:
           maxLength: 64
         resource:
           type: integer
+          description: an existing resource is required
       required:
       - name
       - resource
@@ -1050,7 +1258,6 @@ components:
           maxLength: 128
         resource:
           type: integer
-          nullable: true
         action:
           type: integer
           nullable: true
@@ -1062,8 +1269,10 @@ components:
                 enum:
                 - allow
                 - deny
+                nullable: true
               rule:
                 type: object
+                description: it is possible to pass an empty object
               mask:
                 type: array
                 items:
@@ -1075,6 +1284,7 @@ components:
       required:
       - domain
       - rules
+
 
   responses:
     Authentication:
@@ -1106,7 +1316,12 @@ components:
                 type: object
               profile:
                 type: object
+                properties:
+                  _default_resolution:
+                    type: string
               language:
                 type: string
                 example: 'en'
+              type:
+                type: string
       description: ''
