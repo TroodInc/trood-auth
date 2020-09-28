@@ -109,6 +109,8 @@ paths:
                         type: string
                       profile:
                         type: object
+          description: ""
+
 
 
   /api/v1.0/login:
