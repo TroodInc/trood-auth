@@ -60,9 +60,9 @@ paths:
                   maxLength: 64
                 status:
                   enum:
-                    - active
-                    - disabled
-                    - deleted
+                  - active
+                  - disabled
+                  - deleted
                 active:
                   type: boolean
                 role:
@@ -70,13 +70,13 @@ paths:
                   nullable: true
                 type:
                   enum:
-                    - user
-                    - service
+                  - user
+                  - service
                 cidr:
                   type: string
                   maxLength: 20
               required:
-                - login
+              - login
       responses:
         '200':
           content:
@@ -90,12 +90,12 @@ paths:
         - Account
       operationId: retrieveAccount
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this account.
-          schema:
-            type: string
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account.
+        schema:
+          type: string
       responses:
         '200':
           content:
@@ -108,12 +108,12 @@ paths:
         - Account
       operationId: partial_updateAccount
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this account.
-          schema:
-            type: string
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account.
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -124,9 +124,9 @@ paths:
                   maxLength: 64
                 status:
                   enum:
-                    - active
-                    - disabled
-                    - deleted
+                  - active
+                  - disabled
+                  - deleted
                 active:
                   type: boolean
                 role:
@@ -134,8 +134,8 @@ paths:
                   nullable: true
                 type:
                   enum:
-                    - user
-                    - service
+                  - user
+                  - service
                 cidr:
                   type: string
                   maxLength: 20
@@ -154,12 +154,12 @@ paths:
         - Account
       operationId: destroyAccount
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this account.
-          schema:
-            type: string
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account.
+        schema:
+          type: string
       responses:
         '204':
           description: ''
@@ -201,12 +201,12 @@ paths:
         - Role
       operationId: retrieveAccountRole
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this account role.
-          schema:
-            type: string
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account role.
+        schema:
+          type: string
       responses:
         '200':
           content:
@@ -219,12 +219,12 @@ paths:
         - Role
       operationId: partial_updateAccountRole
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this account role.
-          schema:
-            type: string
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account role.
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -235,9 +235,9 @@ paths:
                   maxLength: 128
                 status:
                   enum:
-                    - active
-                    - disabled
-                    - deleted
+                  - active
+                  - disabled
+                  - deleted
       responses:
         '200':
           content:
@@ -250,12 +250,12 @@ paths:
         - Role
       operationId: destroyAccountRole
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this account role.
-          schema:
-            type: string
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this account role.
+        schema:
+          type: string
       responses:
         '204':
           description: ''
@@ -265,12 +265,12 @@ paths:
         - ABAC Resource
       operationId: listABACResources
       parameters:
-        - name: domain
-          required: false
-          in: query
-          description: domain
-          schema:
-            type: string
+      - name: domain
+        required: false
+        in: query
+        description: domain
+        schema:
+          type: string
       responses:
         '200':
           content:
@@ -300,8 +300,8 @@ paths:
                   type: string
                   maxLength: 64
               required:
-                - comment
-                - name
+              - comment
+              - name
       responses:
         '200':
           content:
@@ -315,12 +315,12 @@ paths:
         - ABAC Resource
       operationId: retrieveABACResource
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac resource.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac resource.
+        schema:
+          type: integer
       responses:
         '200':
           content:
@@ -333,12 +333,12 @@ paths:
         - ABAC Resource
       operationId: partial_updateABACResource
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac resource.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac resource.
+        schema:
+          type: integer
       requestBody:
         content:
           application/json:
@@ -364,12 +364,12 @@ paths:
         - ABAC Resource
       operationId: destroyABACResource
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac resource.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac resource.
+        schema:
+          type: integer
       responses:
         '204':
           description: ''
@@ -410,12 +410,12 @@ paths:
         - ABAC Action
       operationId: retrieveABACAction
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac action.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac action.
+        schema:
+          type: integer
       responses:
         '200':
           content:
@@ -428,12 +428,12 @@ paths:
         - ABAC Action
       operationId: partial_updateABACAction
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac action.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac action.
+        schema:
+          type: integer
       requestBody:
         content:
           application/json:
@@ -451,12 +451,12 @@ paths:
         - ABAC Action
       operationId: destroyABACAction
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac action.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac action.
+        schema:
+          type: integer
       responses:
         '204':
           description: ''
@@ -497,12 +497,12 @@ paths:
         - ABAC Attribute
       operationId: retrieveABACAttribute
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac attribute.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac attribute.
+        schema:
+          type: integer
       responses:
         '200':
           content:
@@ -515,17 +515,17 @@ paths:
         - ABAC Attribute
       operationId: partial_updateABACAttribute
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac attribute.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac attribute.
+        schema:
+          type: integer
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ABACAttribute"
+               $ref: "#/components/schemas/ABACAttribute"
       responses:
         '200':
           content:
@@ -538,12 +538,12 @@ paths:
         - ABAC Attribute
       operationId: destroyABACAttribute
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac attribute.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac attribute.
+        schema:
+          type: integer
       responses:
         '204':
           description: ''
@@ -584,12 +584,12 @@ paths:
         - ABAC Policy
       operationId: retrieveABACPolicy
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac policy.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac policy.
+        schema:
+          type: integer
       responses:
         '200':
           content:
@@ -602,12 +602,12 @@ paths:
         - ABAC Policy
       operationId: partial_updateABACPolicy
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac policy.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac policy.
+        schema:
+          type: integer
       requestBody:
         content:
           application/json:
@@ -625,12 +625,12 @@ paths:
         - ABAC Policy
       operationId: destroyABACPolicy
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique integer value identifying this abac policy.
-          schema:
-            type: integer
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this abac policy.
+        schema:
+          type: integer
       responses:
         '204':
           description: ''
@@ -672,12 +672,12 @@ paths:
         - ABAC Domain
       operationId: retrieveABACDomain
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique value identifying this abac domain.
-          schema:
-            type: string
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac domain.
+        schema:
+          type: string
       responses:
         '200':
           content:
@@ -690,12 +690,12 @@ paths:
         - ABAC Domain
       operationId: partial_updateABACDomain
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique value identifying this abac domain.
-          schema:
-            type: string
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac domain.
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -713,12 +713,12 @@ paths:
         - ABAC Domain
       operationId: destroyABACDomain
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: A unique value identifying this abac domain.
-          schema:
-            type: string
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac domain.
+        schema:
+          type: string
       responses:
         '204':
           description: ''
@@ -757,8 +757,8 @@ paths:
                   maxLength: 3
                   example: 'en'
               required:
-                - login
-                - password
+              - login
+              - password
       responses:
         '200':
           $ref: "#/components/responses/Authentication"
@@ -798,11 +798,11 @@ paths:
         - Token
       operationId: listInvalidateTokens
       parameters:
-        - name: all
-          in: query
-          description: Flag for removing all not only expired tokens
-          schema:
-            type: boolean
+      - name: all
+        in: query
+        description: Flag for removing all not only expired tokens
+        schema:
+          type: boolean
       responses:
         '200':
           content:
@@ -938,9 +938,9 @@ paths:
                       status:
                         type: string
                         enum:
-                          - active
-                          - disabled
-                          - deleted
+                        - active
+                        - disabled
+                        - deleted
                       role:
                         type: string
                         nullable: true
@@ -960,7 +960,7 @@ paths:
     get:
       summary: Returns system info (status, version, uptime)
       tags:
-      - System
+        - System
       operationId: probe
       responses:
         '200':
@@ -1053,9 +1053,9 @@ components:
           readOnly: true
         status:
           enum:
-            - active
-            - disabled
-            - deleted
+          - active
+          - disabled
+          - deleted
         active:
           type: boolean
         role:
@@ -1073,8 +1073,8 @@ components:
                 - deleted
         type:
           enum:
-            - user
-            - service
+          - user
+          - service
         cidr:
           type: string
           maxLength: 20
@@ -1085,7 +1085,7 @@ components:
           type: string
           example: 'en'
       required:
-        - login
+      - login
 
     Role:
       type: object
@@ -1098,11 +1098,11 @@ components:
           maxLength: 128
         status:
           enum:
-            - active
-            - disabled
-            - deleted
+          - active
+          - disabled
+          - deleted
       required:
-        - name
+      - name
 
     ABACDomain:
       type: object
@@ -1112,11 +1112,11 @@ components:
           maxLength: 128
         default_result:
           enum:
-            - allow
-            - deny
+          - allow
+          - deny
           nullable: true
       required:
-        - id
+      - id
 
     ABACAction:
       type: object
@@ -1131,8 +1131,8 @@ components:
           type: integer
           description: an existing resource is required
       required:
-        - name
-        - resource
+      - name
+      - resource
 
     ABACAttribute:
       type: object
@@ -1148,9 +1148,9 @@ components:
         resource:
           type: integer
       required:
-        - name
-        - type
-        - resource
+      - name
+      - type
+      - resource
 
     ABACResource:
       type: object
@@ -1177,8 +1177,8 @@ components:
             $ref: "#/components/schemas/ABACAction"
           readOnly: true
       required:
-        - comment
-        - name
+      - comment
+      - name
 
     ABACPolicy:
       properties:
@@ -1200,8 +1200,8 @@ components:
             properties:
               result:
                 enum:
-                  - allow
-                  - deny
+                - allow
+                - deny
               rule:
                 type: object
               mask:
@@ -1211,12 +1211,12 @@ components:
                 description: If you want to hide some fields from result data or restrict updates add a mask attribute to the rule
                 example: "[total_payment, default_ratio]"
             required:
-              - result
-              - rule
-              - mask
+            - result
+            - rule
+            - mask
       required:
-        - domain
-        - rules
+      - domain
+      - rules
 
   responses:
     Authentication:
