@@ -1080,7 +1080,7 @@ components:
           maxLength: 20
         profile:
           type: object
-          description: 'Additional user information fields'
+          description: 'Additional users information fields'
         language:
           type: string
           example: 'en'
