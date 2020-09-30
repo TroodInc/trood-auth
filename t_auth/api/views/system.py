@@ -148,9 +148,6 @@ class ABACProvisionAttributeMap(APIView):
 
 
 class ProbeViewset(ViewSet):
-    """
-    Display system info.
-    """
     permission_classes = (AllowAny, )
 
     def list(self, request):
