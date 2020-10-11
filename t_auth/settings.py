@@ -207,16 +207,9 @@ class BaseConfiguration(Configuration):
         }
 
 
-try:
-    from .custom_configuration import CustomConfiguration
-except ImportError:
-    class CustomConfiguration:
-        pass
-
-
-class Development(CustomConfiguration, BaseConfiguration):
+class Development(BaseConfiguration):
     DEBUG = True
 
 
-class Production(CustomConfiguration, BaseConfiguration):
+class Production(BaseConfiguration):
     DEBUG = False
