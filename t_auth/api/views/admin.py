@@ -117,4 +117,4 @@ class ABACPolicyViewSet(BaseViewSet):
     serializer_class = ABACPolicySerializer
 
     # @todo: direct filtering is deprecated, use RQL instead
-    filter_fields = ("resource", "domain", "action", )
+    filterset_fields = ("resource", "domain", "action", )
