@@ -206,16 +206,10 @@ class BaseConfiguration(Configuration):
             'release': os.environ.get('RAVEN_CONFIG_RELEASE')
         }
 
-try:
-    from custom_configuration import CustomConfiguration
-except ImportError:
-    class CustomConfiguration:
-        pass
-
 
 class Development(BaseConfiguration):
     DEBUG = True
 
 
-class Production(CustomConfiguration, BaseConfiguration):
+class Production(BaseConfiguration):
     DEBUG = False

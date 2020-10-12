@@ -76,8 +76,8 @@ class AccountViewSetTestCase(APITestCase):
 
     @pytest.mark.django_db
     def test_can_filter_by_rql(self):
-        admin_role = AccountRole.objects.create(name="admin")
-        client_role = AccountRole.objects.create(name="client")
+        admin_role = AccountRole.objects.create(id="admin", name="Admin")
+        client_role = AccountRole.objects.create(id="client", name="Client")
 
         Account.objects.create(login="admin@test.com", pwd_hash="", unique_token="", role=admin_role)
         Account.objects.create(login="disabled@test.com", pwd_hash="", unique_token="", role=admin_role, active=False)
@@ -97,7 +97,7 @@ class AccountViewSetTestCase(APITestCase):
 
         response = self.client.get(
             reverse('api:account-list'),
-            data={"rql": "and(eq(active,True),eq(role.name,admin))"}
+            data={"rql": "and(eq(active,True),eq(role,admin))"}
         )
         decoded_response = response.json()
         print(decoded_response)

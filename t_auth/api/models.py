@@ -52,6 +52,11 @@ class AccountRole(BaseModel):
         (STATUS_DISABLED, _('Disabled')),
         (STATUS_DELETED, _('Deleted'))
     )
+    """
+    One role in our system
+    Role acts as a scope for permissions
+    """
+    id = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=128, null=False)
     status = models.CharField(max_length=32, choices=ROLE_STATUS, default=STATUS_ACTIVE)
 
