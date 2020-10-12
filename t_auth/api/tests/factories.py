@@ -28,7 +28,8 @@ class AccountFactory(factory.DjangoModelFactory):
 
 
 class AccountRoleFactory(factory.DjangoModelFactory):
-    name = factory.Sequence(lambda n: 'Role#{}'.format(n))
+    id = factory.Sequence(lambda n: 'role_{}'.format(n))
+    name = factory.Sequence(lambda n: 'role_{}'.format(n))
     status = AccountRole.STATUS_ACTIVE
 
     class Meta:
