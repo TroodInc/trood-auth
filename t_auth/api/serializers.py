@@ -13,6 +13,8 @@ from django.utils.crypto import get_random_string
 from rest_framework import serializers, fields, exceptions
 from django.utils.translation import ugettext_lazy as _
 
+from trood.contrib.django.serializers import TroodDynamicSerializer
+
 from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
@@ -65,8 +67,9 @@ class RegisterSerializer(serializers.Serializer):
         return account
 
 
-class AccountSerializer(serializers.ModelSerializer):
+class AccountSerializer(TroodDynamicSerializer):
     profile = fields.JSONField(required=False)
+    role = AccountRoleSerializer()
 
     class Meta:
         model = Account
@@ -89,10 +92,8 @@ class AccountSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super(AccountSerializer, self).to_representation(instance)
-        if instance.type == Account.USER:
+        if instance.type == Account.USER and 'pwd_hash' in ret:
             ret.pop('pwd_hash')
-
-        ret['role'] = AccountRoleSerializer(instance.role).data
 
         return ret
 
