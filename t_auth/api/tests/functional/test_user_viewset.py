@@ -36,7 +36,7 @@ class AccountViewSetTestCase(APITestCase):
 
     @pytest.mark.django_db
     def test_create_account(self):
-        role = AccountRole.objects.create(name='Test role', status=AccountRole.STATUS_ACTIVE)
+        role = AccountRole.objects.create(id="user", name='User', status=AccountRole.STATUS_ACTIVE)
         response = self.client.post(
             reverse('api:account-list'), data={
                 'login': 'test@example.com',
@@ -49,6 +49,7 @@ class AccountViewSetTestCase(APITestCase):
         decoded_response = response.json()
         assert_that(response.status_code, equal_to(status.HTTP_201_CREATED))
         assert_that(decoded_response['status'], equal_to('OK'))
+        assert_that(decoded_response['data']['role']['id'], equal_to(role.id))
 
     @pytest.mark.django_db
     def test_update_account(self):
