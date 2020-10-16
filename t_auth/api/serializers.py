@@ -69,7 +69,7 @@ class RegisterSerializer(serializers.Serializer):
 
 class AccountSerializer(TroodDynamicSerializer):
     profile = fields.JSONField(required=False)
-    role = AccountRoleSerializer()
+    role = AccountRoleSerializer(required=False, read_only=True)
 
     class Meta:
         model = Account
@@ -89,6 +89,14 @@ class AccountSerializer(TroodDynamicSerializer):
             validator(data['login'])
 
         return super(AccountSerializer, self).validate(data)
+
+    def to_internal_value(self, data):
+        role = data.get('role')
+        res = super(AccountSerializer, self).to_internal_value(data)
+        if role:
+            res['role_id'] = role
+
+        return res
 
     def to_representation(self, instance):
         ret = super(AccountSerializer, self).to_representation(instance)
