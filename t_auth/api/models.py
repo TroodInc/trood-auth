@@ -198,6 +198,7 @@ class ABACPolicy(models.Model):
     domain = models.CharField(max_length=128, null=False)
     resource = models.ForeignKey(ABACResource, null=True, on_delete=models.CASCADE)
     action = models.ForeignKey(ABACAction, null=True, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
 
 
 class ABACRule(models.Model):
@@ -205,3 +206,4 @@ class ABACRule(models.Model):
     rule = JSONField()
     mask = models.ManyToManyField(ABACAttribute)
     policy = models.ForeignKey(ABACPolicy, null=True, related_name="rules", on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)

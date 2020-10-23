@@ -9,13 +9,14 @@ import t_auth.api.views.front
 import t_auth.api.views.system
 from t_auth.api import views as api_views
 from t_auth.api.views.admin import AccountRoleViewSet, ABACResourceViewSet, ABACActionViewSet, ABACAttributViewSet, \
-    ABACPolicyViewSet, ABACDomainViewSet
+    ABACPolicyViewSet, ABACDomainViewSet, ABACRuleViewSet
 
 router = routers.DefaultRouter()
 
 router.register(r'account', api_views.AccountViewSet, basename='account')
 
 router.register(r'roles', AccountRoleViewSet, basename='roles')
+router.register(r'rules', ABACRuleViewSet, basename='rules')
 router.register(r'resources', ABACResourceViewSet, basename='resources')
 router.register(r'actions', ABACActionViewSet, basename='actions')
 router.register(r'attributes', ABACAttributViewSet, basename='attributes')
