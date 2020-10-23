@@ -118,7 +118,7 @@ class TroodTokenAuthentication(BaseAuthentication):
         Returns Token and Account.
         """
         auth = get_authorization_header(request).decode("utf-8").split()
-        policies = ABACPolicy.objects.filter(domain=settings.SERVICE_DOMAIN)
+        policies = ABACPolicy.objects.filter(domain=settings.SERVICE_DOMAIN, active=True)
         policy_serializer = ABACPolicyMapSerializer(policies)
         request.abac = TroodABACEngine(policy_serializer.data)
 
