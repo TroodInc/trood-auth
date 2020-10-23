@@ -141,13 +141,14 @@ class ABACRuleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ABACRule
-        fields = ('result', 'rule', 'mask')
+        fields = ('result', 'rule', 'mask', 'active')
 
     def to_representation(self, instance):
         return {
             'result': instance.result,
             'rule': instance.rule,
-            'mask': [m.name for m in instance.mask.all()]
+            'mask': [m.name for m in instance.mask.all()],
+            'active': instance.active
         }
 
 
@@ -156,7 +157,7 @@ class ABACPolicySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ABACPolicy
-        fields = ('id', 'domain', 'resource', 'action', 'rules')
+        fields = ('id', 'domain', 'resource', 'action', 'rules', 'active')
 
     def update(self, instance, validated_data):
         rules = validated_data.pop('rules', [])
@@ -220,7 +221,7 @@ class ABACPolicyMapSerializer(serializers.Serializer):
                 result[policy.domain][policy.resource.name][policy.action.name] = []
 
             result[policy.domain][policy.resource.name][policy.action.name] += [
-                ABACRuleSerializer(instance=rule).data for rule in policy.rules.all()
+                ABACRuleSerializer(instance=rule).data for rule in policy.rules.filter(active=True)
             ]
 
         return result

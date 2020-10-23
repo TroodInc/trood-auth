@@ -54,7 +54,7 @@ class LoginView(APIView):
                 data['token'] = token.token
                 data['expire'] = token.expire.strftime('%Y-%m-%dT%H-%M')
 
-                policies = ABACPolicy.objects.all()
+                policies = ABACPolicy.objects.filter(active=True)
                 data['abac'] = ABACPolicyMapSerializer(policies).data
                 data['profile'] = account.profile
 
