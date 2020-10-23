@@ -32,7 +32,7 @@ class VerifyTokenViewSet(ViewSet):
 
             response['profile'] = request.user.profile
 
-            policies = ABACPolicy.objects.all()
+            policies = ABACPolicy.objects.filter(active=True)
 
         if request.user.type == Account.SERVICE:
             token_type = request.data.get("type")
@@ -47,7 +47,7 @@ class VerifyTokenViewSet(ViewSet):
                 except Token.DoesNotExist:
                     raise exceptions.AuthenticationFailed({"error": "User token invalid"})
 
-                policies = ABACPolicy.objects.all()
+                policies = ABACPolicy.objects.filter(active=True)
 
             if token_type == Account.SERVICE:
 
@@ -70,7 +70,7 @@ class VerifyTokenViewSet(ViewSet):
                 except Account.DoesNotExist:
                     raise exceptions.AuthenticationFailed({"error": "Service token invalid"})
 
-                policies = ABACPolicy.objects.filter(domain=parts[0])
+                policies = ABACPolicy.objects.filter(domain=parts[0], active=True)
 
         response['abac'] = ABACPolicyMapSerializer(policies).data
 
@@ -106,9 +106,9 @@ class ABACProvisionAttributeMap(APIView):
         domain = request.GET.get('domain', None)
 
         if domain:
-            policies = ABACPolicy.objects.filter(domain=domain)
+            policies = ABACPolicy.objects.filter(domain=domain, active=True)
         else:
-            policies = ABACPolicy.objects.all()
+            policies = ABACPolicy.objects.filter(active=True)
 
         return Response(ABACPolicyMapSerializer(policies).data)
 

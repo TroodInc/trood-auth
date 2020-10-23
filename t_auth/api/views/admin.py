@@ -14,9 +14,9 @@ from django.utils.crypto import get_random_string
 
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, ABACResourceSerializer, \
-    ABACActionSerializer, ABACAttributeSerializer, ABACPolicySerializer, ABACDomainSerializer
+    ABACActionSerializer, ABACAttributeSerializer, ABACPolicySerializer, ABACDomainSerializer, ABACRuleSerializer
 from t_auth.api.models import Account, AccountRole, Token, ABACResource, ABACAction, \
-    ABACAttribute, ABACPolicy, ABACDomain
+    ABACAttribute, ABACPolicy, ABACDomain, ABACRule
 from t_auth.api.utils import send_registration_mail
 
 
@@ -118,3 +118,11 @@ class ABACPolicyViewSet(BaseViewSet):
 
     # @todo: direct filtering is deprecated, use RQL instead
     filter_fields = ("resource", "domain", "action", )
+
+
+class ABACRuleViewSet(BaseViewSet):
+    """
+    Display the ABAC rule.
+    """
+    queryset = ABACRule.objects.all()
+    serializer_class = ABACRuleSerializer
