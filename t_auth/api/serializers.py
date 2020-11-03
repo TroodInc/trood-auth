@@ -67,6 +67,11 @@ class RegisterSerializer(serializers.Serializer):
         return account
 
 
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+
 class AccountSerializer(TroodDynamicSerializer):
     profile = fields.JSONField(required=False)
     role = AccountRoleSerializer(required=False, read_only=True)

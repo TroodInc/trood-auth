@@ -19,7 +19,7 @@ from rest_framework.views import APIView
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
-from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
+from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer, ChangePasswordSerializer
 from t_auth.api.utils import send_registration_mail
 from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
 
@@ -167,3 +167,27 @@ class RecoveryView(APIView):
                 {'detail': 'Recovery token {} not found'.format(token_str)},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+
+class ChangePasswordView(APIView):
+    """Provides external API /password-change method."""
+    permission_classes = (IsAuthenticated, )
+
+    def patch(self, request, *args, **kwargs):
+        account = self.request.user
+        serializer = ChangePasswordSerializer(data=request.data)
+        token = Token.objects.filter(token=request.auth.token).first()
+        if serializer.is_valid():
+            old_password = serializer.data.get("old_password")
+            new_password = serializer.data.get("new_password")
+
+            if not account.pwd_hash == AuthenticationService.get_password_hash(old_password, token.account.unique_token):
+                return Response({"detail": ["Old password is incorrect"]}, status=status.HTTP_400_BAD_REQUEST)
+            if old_password == new_password:
+                return Response({"detail": ["Passwords can not be the same"]}, status=status.HTTP_400_BAD_REQUEST)
+
+            account.pwd_hash = AuthenticationService.get_password_hash(new_password, token.account.unique_token)
+            account.save()
+            return Response({'detail': 'Password was changed successfuly'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
