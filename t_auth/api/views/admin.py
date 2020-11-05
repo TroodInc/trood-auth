@@ -42,17 +42,10 @@ class AccountViewSet(viewsets.ModelViewSet):
     """
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
-    permission_classes = (IsAuthenticated, )
-
-    # def perform_update(self, serializer):
-    #     acc = serializer.save()
-
-    #     if 'password' in serializer.initial_data:
-    #         Token.objects.filter(account=acc).delete()
 
     def perform_update(self, serializer):
-        account = self.request.user
-        token = Token.objects.filter(token=self.request.auth.token).first()
+        account = self.get_object()
+        token = Token.objects.filter(account=account).first()
         old_password = self.request.data.get("old_password")
         new_password = self.request.data.get("new_password")
         if old_password and new_password:
@@ -62,7 +55,6 @@ class AccountViewSet(viewsets.ModelViewSet):
                 raise APIException(detail="Passwords can not be the same")
             serializer.save(pwd_hash=AuthenticationService.get_password_hash(new_password, token.account.unique_token))
         serializer.save()
-
 
     def perform_create(self, serializer):
         password = serializer.initial_data.get('password', get_random_string())
