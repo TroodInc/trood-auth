@@ -11,6 +11,8 @@ import uuid
 from django.conf import settings
 from rest_framework import viewsets
 from django.utils.crypto import get_random_string
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import APIException
 
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, ABACResourceSerializer, \
@@ -40,12 +42,27 @@ class AccountViewSet(viewsets.ModelViewSet):
     """
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
+    permission_classes = (IsAuthenticated, )
+
+    # def perform_update(self, serializer):
+    #     acc = serializer.save()
+
+    #     if 'password' in serializer.initial_data:
+    #         Token.objects.filter(account=acc).delete()
 
     def perform_update(self, serializer):
-        acc = serializer.save()
+        account = self.request.user
+        token = Token.objects.filter(token=self.request.auth.token).first()
+        old_password = self.request.data.get("old_password")
+        new_password = self.request.data.get("new_password")
+        if old_password and new_password:
+            if not account.pwd_hash == AuthenticationService.get_password_hash(old_password, token.account.unique_token):
+                raise APIException(detail="Incorrect password")
+            if old_password == new_password:
+                raise APIException(detail="Passwords can not be the same")
+            serializer.save(pwd_hash=AuthenticationService.get_password_hash(new_password, token.account.unique_token))
+        serializer.save()
 
-        if 'password' in serializer.initial_data:
-            Token.objects.filter(account=acc).delete()
 
     def perform_create(self, serializer):
         password = serializer.initial_data.get('password', get_random_string())
