@@ -45,15 +45,18 @@ class AccountViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         account = self.get_object()
-        token = Token.objects.filter(account=account).first()
         old_password = self.request.data.get("old_password")
         new_password = self.request.data.get("new_password")
+
         if old_password and new_password:
-            if not account.pwd_hash == AuthenticationService.get_password_hash(old_password, token.account.unique_token):
-                raise ValidationError(detail="Incorrect password")
-            if old_password == new_password:
-                raise ValidationError(detail="Passwords can not be the same")
-            serializer.save(pwd_hash=AuthenticationService.get_password_hash(new_password, token.account.unique_token))
+            if self.request.auth:
+                if not self.request.auth.account.pwd_hash == AuthenticationService.get_password_hash(old_password, self.request.auth.account.unique_token):
+                    raise ValidationError(detail="Incorrect password")
+                serializer.save(pwd_hash=AuthenticationService.get_password_hash(new_password, account.unique_token))
+            else:
+                if not account.pwd_hash == AuthenticationService.get_password_hash(old_password, account.unique_token):
+                    raise ValidationError(detail="Incorrect password")
+                serializer.save(pwd_hash=AuthenticationService.get_password_hash(new_password, account.unique_token))
         serializer.save()
 
     def perform_create(self, serializer):

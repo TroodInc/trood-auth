@@ -19,7 +19,7 @@ from rest_framework.views import APIView
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
-from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer, ChangePasswordSerializer
+from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
 from t_auth.api.utils import send_registration_mail
 from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
 

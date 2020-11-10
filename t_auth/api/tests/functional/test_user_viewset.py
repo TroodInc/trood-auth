@@ -67,14 +67,19 @@ class AccountViewSetTestCase(APITestCase):
     def test_update_another_acccount_password(self):
         account_data = {
             'login': 'test@example.com',
-            'password': 'password',
+            'password': 'oldpassword',
         }
         response = self.client.post(reverse('register'), data=account_data)
+
+        pwd_hash = AuthenticationService.get_password_hash("admin_pass", "1")
+        account = Account.objects.create(login="admin@example.com", pwd_hash=pwd_hash, unique_token="1")
+        token = Token.objects.create(account=account)
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(token.token))
 
         response = self.client.patch(
             reverse('api:account-detail', kwargs={'pk': response.data['id']}),
             data={
-                'old_password': 'password',
+                'old_password': 'admin_pass',
                 'new_password': 'new_password'
             })
         account = Account.objects.filter(login="test@example.com").first()
