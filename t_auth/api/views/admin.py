@@ -53,10 +53,7 @@ class AccountViewSet(viewsets.ModelViewSet):
                 if not self.request.auth.account.pwd_hash == AuthenticationService.get_password_hash(old_password, self.request.auth.account.unique_token):
                     raise ValidationError(detail="Incorrect password")
                 serializer.save(pwd_hash=AuthenticationService.get_password_hash(new_password, account.unique_token))
-            else:
-                if not account.pwd_hash == AuthenticationService.get_password_hash(old_password, account.unique_token):
-                    raise ValidationError(detail="Incorrect password")
-                serializer.save(pwd_hash=AuthenticationService.get_password_hash(new_password, account.unique_token))
+                Token.objects.filter(account=self.request.auth.account).delete()
         serializer.save()
 
     def perform_create(self, serializer):
