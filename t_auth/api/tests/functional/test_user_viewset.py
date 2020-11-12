@@ -6,6 +6,7 @@ from rest_framework.test import APIClient, APITestCase
 
 from t_auth.api.models import Token, AccountRole, Account
 from t_auth.api.tests.factories import AccountFactory
+from t_auth.api.domain.services import AuthenticationService
 
 
 class AccountViewSetTestCase(APITestCase):
@@ -56,14 +57,51 @@ class AccountViewSetTestCase(APITestCase):
         response = self.client.patch(
             reverse('api:account-detail', kwargs={'pk': self.account.id}), data={
                 'status': AccountRole.STATUS_DISABLED,
-                'password': 'new_password'
             }
         )
 
         decoded_response = response.json()
         assert_that(decoded_response['data']['status'], is_not(self.account.status))
 
-        assert_that(Token.objects.count(), equal_to(0))
+    @pytest.mark.django_db
+    def test_update_another_acccount_password(self):
+        account_data = {
+            'login': 'test@example.com',
+            'password': 'oldpassword',
+        }
+        response = self.client.post(reverse('register'), data=account_data)
+
+        pwd_hash = AuthenticationService.get_password_hash("admin_pass", "1")
+        account = Account.objects.create(login="admin@example.com", pwd_hash=pwd_hash, unique_token="1")
+        token = Token.objects.create(account=account)
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(token.token))
+
+        response = self.client.patch(
+            reverse('api:account-detail', kwargs={'pk': response.data['id']}),
+            data={
+                'old_password': 'admin_pass',
+                'new_password': 'new_password'
+            })
+        account = Account.objects.filter(login="test@example.com").first()
+        token = Token.objects.filter(account=account).first()
+        assert account.pwd_hash == AuthenticationService.get_password_hash('new_password', token.account.unique_token)
+        assert response.status_code == status.HTTP_200_OK
+
+    @pytest.mark.django_db
+    def test_update_acccount_password(self):
+        pwd_hash = AuthenticationService.get_password_hash("password", "1")
+        account = Account.objects.create(login="admin@test.com", pwd_hash=pwd_hash, unique_token="1")
+        token = Token.objects.create(account=account)
+        self.client.credentials(HTTP_AUTHORIZATION='Token {}'.format(token.token))
+        response = self.client.patch(
+            reverse('api:account-detail', kwargs={'pk': account.id}),
+            data={
+                'old_password': 'password',
+                'new_password': 'new'
+            })
+        account = Account.objects.filter(id=account.id).first()
+        assert account.pwd_hash == AuthenticationService.get_password_hash('new', token.account.unique_token)
+        assert response.status_code == status.HTTP_200_OK
 
     @pytest.mark.django_db
     def test_delete_account(self):

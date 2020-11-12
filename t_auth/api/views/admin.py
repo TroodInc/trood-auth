@@ -11,6 +11,8 @@ import uuid
 from django.conf import settings
 from rest_framework import viewsets
 from django.utils.crypto import get_random_string
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
 
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.serializers import AccountSerializer, AccountRoleSerializer, ABACResourceSerializer, \
@@ -42,10 +44,17 @@ class AccountViewSet(viewsets.ModelViewSet):
     serializer_class = AccountSerializer
 
     def perform_update(self, serializer):
-        acc = serializer.save()
+        account = self.get_object()
+        old_password = self.request.data.get("old_password")
+        new_password = self.request.data.get("new_password")
 
-        if 'password' in serializer.initial_data:
-            Token.objects.filter(account=acc).delete()
+        if old_password and new_password:
+            if self.request.auth:
+                if not self.request.auth.account.pwd_hash == AuthenticationService.get_password_hash(old_password, self.request.auth.account.unique_token):
+                    raise ValidationError(detail="Incorrect password")
+                serializer.save(pwd_hash=AuthenticationService.get_password_hash(new_password, account.unique_token))
+                Token.objects.filter(account=self.request.auth.account).delete()
+        serializer.save()
 
     def perform_create(self, serializer):
         password = serializer.initial_data.get('password', get_random_string())
