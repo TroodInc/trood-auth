@@ -82,6 +82,10 @@ paths:
                 $ref: '#/components/schemas/Account'
           description: ''
     patch:
+      summary: Update account
+      description: >
+        If you want to change the password to another user, you have to use your current password in old_password field. <br>
+        If you updating account with new password all related Token-s will be removed automatically, forcing user to re-login with new password on all devices
       tags:
         - Account
       operationId: partial_updateAccount
@@ -117,6 +121,10 @@ paths:
                 cidr:
                   type: string
                   maxLength: 20
+                old_password:
+                  type: string
+                new_password:
+                  type: string
       responses:
         '200':
           content:
