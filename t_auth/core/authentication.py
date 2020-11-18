@@ -148,7 +148,10 @@ class TroodTokenAuthentication(BaseAuthentication):
         if auth[0] == 'Service':
             try:
                 creds = force_text(auth[1]).split(':')
-                account = Account.objects.get(login=creds[0])
+                account = Account.objects.filter(login=creds[0]).first()
+
+                if not account:
+                    raise exceptions.NotFound(detail="Account was not found")
 
                 signer = signing.Signer(account.pwd_hash, salt="trood.")
 
