@@ -4,6 +4,7 @@ import time
 import os
 
 from django.core import signing
+from django.db.models import Prefetch
 from django.utils import timezone
 from django.utils.encoding import force_text
 from rest_framework import exceptions
@@ -14,7 +15,7 @@ from rest_framework.viewsets import ViewSet
 from django.conf import settings
 from django_redis import get_redis_connection
 
-from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, ABACPolicy, Account
+from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, ABACPolicy, Account, ABACRule
 from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificationSerializer
 
 
@@ -27,12 +28,14 @@ class VerifyTokenViewSet(ViewSet):
     def create(self, request):
         token = request.data.get("token", False)
 
+        policies = ABACPolicy.objects.prefetch_related(
+            Prefetch("rules", queryset=ABACRule.objects.filter(active=True))
+        ).filter(active=True)
+
         if request.user.type == Account.USER:
             response = LoginDataVerificationSerializer(request.user).data
 
             response['profile'] = request.user.profile
-
-            policies = ABACPolicy.objects.filter(active=True)
 
         if request.user.type == Account.SERVICE:
             token_type = request.data.get("type")
@@ -46,8 +49,6 @@ class VerifyTokenViewSet(ViewSet):
 
                 except Token.DoesNotExist:
                     raise exceptions.AuthenticationFailed({"error": "User token invalid"})
-
-                policies = ABACPolicy.objects.filter(active=True)
 
             if token_type == Account.SERVICE:
 
@@ -70,7 +71,7 @@ class VerifyTokenViewSet(ViewSet):
                 except Account.DoesNotExist:
                     raise exceptions.AuthenticationFailed({"error": "Service token invalid"})
 
-                policies = ABACPolicy.objects.filter(domain=parts[0], active=True)
+                policies = policies.filter(domain=parts[0])
 
         response['abac'] = ABACPolicyMapSerializer(policies).data
 
@@ -105,10 +106,14 @@ class ABACProvisionAttributeMap(APIView):
     def get(self, request):
         domain = request.GET.get('domain', None)
 
+        q = ABACPolicy.objects.prefetch_related(
+            Prefetch("rules", queryset=ABACRule.objects.filter(active=True))
+        ).filter(active=True)
+
         if domain:
-            policies = ABACPolicy.objects.filter(domain=domain, active=True)
+            policies = q.filter(domain=domain)
         else:
-            policies = ABACPolicy.objects.filter(active=True)
+            policies = q.all()
 
         return Response(ABACPolicyMapSerializer(policies).data)
 

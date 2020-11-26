@@ -1,9 +1,8 @@
-import json
-
 import pytest
 
 from unittest.mock import patch
 
+from django.db.models import Prefetch
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient, APITestCase
 
@@ -84,9 +83,11 @@ class ABACViewSetTurnOffRuleTestCase(APITestCase):
     def test_serealize_only_active_rules(self):
         ABACRule.objects.create(result="allow", rule={}, active=True, policy=self.policy)
         ABACRule.objects.create(result="allow", rule={}, active=False, policy=self.policy)
-        policies = ABACPolicy.objects.filter(domain=self.domain.pk, active=True)
-        policy_serializer = ABACPolicyMapSerializer(policies)
-        active_rule_count = len(policy_serializer.data[self.domain.pk][self.resource.name][self.action.name]) 
-        assert active_rule_count == 1
 
-        
+        policies = ABACPolicy.objects.prefetch_related(
+            Prefetch("rules", queryset=ABACRule.objects.filter(active=True))
+        ).filter(domain=self.domain.pk, active=True)
+
+        policy_serializer = ABACPolicyMapSerializer(policies)
+        active_rule_count = len(policy_serializer.data[self.domain.pk][self.resource.name][self.action.name])
+        assert active_rule_count == 1

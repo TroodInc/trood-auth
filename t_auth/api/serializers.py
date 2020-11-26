@@ -220,8 +220,8 @@ class ABACPolicyMapSerializer(serializers.Serializer):
             if policy.action.name not in result[policy.domain][policy.resource.name]:
                 result[policy.domain][policy.resource.name][policy.action.name] = []
 
-            result[policy.domain][policy.resource.name][policy.action.name] += [
-                ABACRuleSerializer(instance=rule).data for rule in policy.rules.filter(active=True)
-            ]
+            result[policy.domain][policy.resource.name][policy.action.name] = ABACRuleSerializer(
+                instance=policy.rules, many=True
+            ).data
 
         return result
