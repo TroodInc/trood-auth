@@ -11,8 +11,6 @@ services:
       RAVEN_CONFIG_DSN: "YOUR_DSN_HERE"
       RAVEN_CONFIG_RELEASE: "dev"
       ENABLE_RAVEN: "False"
-    volumes:
-      - ../t_auth:/home/src/t_auth
     networks:
       - test-network
 
@@ -27,12 +25,9 @@ services:
       POSTGRES_DB: authorization
       POSTGRES_USER: authorization
       POSTGRES_PASSWORD: authorization
-    ports:
-    - "5432:5432"
 
     networks:
       - test-network
 
 networks:
   test-network:
-    driver: bridge
