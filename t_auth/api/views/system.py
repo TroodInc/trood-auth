@@ -29,8 +29,9 @@ class VerifyTokenViewSet(ViewSet):
         token = request.data.get("token", False)
 
         policies = ABACPolicy.objects.prefetch_related(
-            Prefetch("rules", queryset=ABACRule.objects.filter(active=True))
-        ).filter(active=True)
+            Prefetch("rules", queryset=ABACRule.objects.filter(active=True)),
+            "rules__mask"
+        ).select_related("resource", "action").filter(active=True)
 
         if request.user.type == Account.USER:
             response = LoginDataVerificationSerializer(request.user).data
@@ -107,8 +108,9 @@ class ABACProvisionAttributeMap(APIView):
         domain = request.GET.get('domain', None)
 
         q = ABACPolicy.objects.prefetch_related(
-            Prefetch("rules", queryset=ABACRule.objects.filter(active=True))
-        ).filter(active=True)
+            Prefetch("rules", queryset=ABACRule.objects.filter(active=True)),
+            "rules__mask"
+        ).select_related("resource", "action").filter(active=True)
 
         if domain:
             policies = q.filter(domain=domain)
