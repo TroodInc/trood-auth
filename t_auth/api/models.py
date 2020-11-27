@@ -146,8 +146,12 @@ class Account(BaseModel):
         super(Account, self).save(*args, **kwargs)
         if settings.PROFILE_STORAGE == "CUSTODIAN":
             try:
-                token = Token.objects.create(account=self)
-                custodian = client.Client(settings.CUSTODIAN_LINK, f'Token {token.token}')
+                if not self.request.auth.token:
+                    raise ValidationError({"error": "Not authorized to perform this action"})
+                token = Token.objects.filter(account=self).first()
+                if not token:
+                    token = Token.objects.create(account=self)
+                custodian = client.Client(settings.CUSTODIAN_LINK, f'Token {self.request.auth.token}')
                 obj = settings.CUSTODIAN_PROFILE_OBJECT
 
                 if self.profile_id and self.profile_data:

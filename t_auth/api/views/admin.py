@@ -54,7 +54,7 @@ class AccountViewSet(viewsets.ModelViewSet):
                     raise ValidationError(detail="Incorrect password")
                 serializer.save(pwd_hash=AuthenticationService.get_password_hash(new_password, account.unique_token))
                 Token.objects.filter(account=self.request.auth.account).delete()
-        serializer.save()
+        serializer.save(request=self.request)
 
     def perform_create(self, serializer):
         password = serializer.initial_data.get('password', get_random_string())

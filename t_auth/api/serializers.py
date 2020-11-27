@@ -79,6 +79,14 @@ class AccountSerializer(TroodDynamicSerializer):
         )
         read_only_fields = ('id', 'created', 'pwd_hash',)
 
+    def save(self, **kwargs):
+        if 'request' in kwargs:
+            instance = super().save(request=kwargs['request'])
+        else:
+            instance = super().save(**kwargs)
+        instance.save()
+        return instance
+
     def validate(self, data):
         if data.get('type', None) == Account.SERVICE:
             return super(AccountSerializer, self).validate(data)
