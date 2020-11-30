@@ -83,8 +83,7 @@ class AccountViewSetTestCase(APITestCase):
                 'new_password': 'new_password'
             })
         account = Account.objects.filter(login="test@example.com").first()
-        token = Token.objects.filter(account=account).first()
-        assert account.pwd_hash == AuthenticationService.get_password_hash('new_password', token.account.unique_token)
+        assert account.pwd_hash == AuthenticationService.get_password_hash('new_password', account.unique_token)
         assert response.status_code == status.HTTP_200_OK
 
     @pytest.mark.django_db
