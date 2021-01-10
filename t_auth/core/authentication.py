@@ -12,7 +12,6 @@ from rest_framework import exceptions, status
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from social_core.backends.oauth import BaseOAuth2
 from social_core.utils import handle_http_errors, url_add_parameters
-from social_django.utils import psa
 
 from trood.contrib.django.auth.engine import TroodABACEngine
 
@@ -41,6 +40,7 @@ def register_by_access_token(request):
     Token.objects.get_or_create(type=Token.AUTHORIZATION, token=access_token, account=account)
 
     return JsonResponse({"status": "OK"}, status=status.HTTP_200_OK)
+
 
 class TroodOauth2Authentication(BaseOAuth2):
     name = 'trood'

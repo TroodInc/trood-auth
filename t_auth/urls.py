@@ -4,7 +4,6 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from rest_framework import routers
-from social_django.urls import app_name
 
 import t_auth.api.views.front
 import t_auth.api.views.system
@@ -41,6 +40,7 @@ urlpatterns = [
     url(r'^api/v1.0/abac', api_views.system.ABACProvisionAttributeMap.as_view(), name='abac'),
     url(r'^api/v1.0/login/$', api_views.front.LoginView.as_view(), name='login'),
     url(r'^api/v1.0/login/trood', register_by_access_token),
+    url(r'^api/v1.0/login/facebook', api_views.front.FacebookAuth.as_view(), name='facebook-login'),
     url(r'^api/v1.0/logout', api_views.front.LogoutView.as_view(), name='logout'),
     url(r'^api/v1.0/register', api_views.RegistrationViewSet.as_view(), name='register'),
     url(r'^api/v1.0/password-recovery', t_auth.api.views.front.RecoveryView.as_view(), name='password-recovery'),
