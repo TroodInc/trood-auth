@@ -58,7 +58,7 @@ class AccountViewSet(viewsets.ModelViewSet):
             raise ValidationError(detail="old_password field is required")
         elif not new_password and old_password:
             raise ValidationError(detail="new_password field is required")
-        serializer.save()
+        serializer.save(request=self.request)
 
     def perform_create(self, serializer):
         password = serializer.initial_data.get('password', get_random_string())
