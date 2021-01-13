@@ -704,94 +704,6 @@ paths:
       responses:
         '204':
           description: ''
-  /api/v1.0/rules/:
-    get:
-      tags:
-        - ABAC Rules
-      operationId: listABACRules
-      parameters: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ABACRule'
-          description: ''
-    post:
-      tags:
-        - ABAC Rules
-      operationId: createABACRule
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ABACRule'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ABACRule'
-          description: ''
-  /api/v1.0/rules/{id}/:
-    get:
-      tags:
-        - ABAC Rules
-      operationId: retrieveABACRule
-      parameters:
-      - name: id
-        in: path
-        required: true
-        description: A unique value identifying this abac rule.
-        schema:
-          type: string
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ABACRule'
-          description: ''
-    patch:
-      tags:
-        - ABAC Rules
-      operationId: partial_updateABACRule
-      parameters:
-      - name: id
-        in: path
-        required: true
-        description: A unique value identifying this abac rule.
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ABACRule'
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ABACRule'
-          description: ''
-    delete:
-      tags:
-        - ABAC Rules
-      operationId: destroyABACRule
-      parameters:
-      - name: id
-        in: path
-        required: true
-        description: A unique value identifying this abac rule.
-        schema:
-          type: string
-      responses:
-        '204':
-          description: ''
   /api/v1.0/login:
     post:
       summary: Authenticate user by credentials
@@ -1000,7 +912,6 @@ paths:
                         example: null
           description: ''
 
-        
 components:
   schemas:
     Account:
@@ -1172,23 +1083,6 @@ components:
       required:
       - domain
       - rules
-    ABACRule:
-      properties:
-        result:
-          type: string
-        rule:
-          type: object
-        mask:
-          type: array
-          items:
-            type: string
-        active:
-          type:
-            boolean
-      required:
-      - result
-      - rule
-      - mask
 
   responses:
     Authentication:
