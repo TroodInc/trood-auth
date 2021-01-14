@@ -244,6 +244,7 @@ paths:
           description: ''
   /api/v1.0/resources/:
     get:
+      description: Resource is any endpoint, object or callable that can be accessed by user using and API. In common cases it used in meaning of endpoint. Resources must be unique for a single domain.
       tags:
         - ABAC Resource
       operationId: listABACResources
@@ -357,6 +358,7 @@ paths:
           description: ''
   /api/v1.0/actions/:
     get:
+      description: Actions that provided by and strongly related to the resources, it can be any type and any amount of actions. Probably - action is a general thing you are configuring access for.
       tags:
         - ABAC Action
       operationId: listABACActions
@@ -444,6 +446,7 @@ paths:
           description: ''
   /api/v1.0/attributes/:
     get:
+      description: Attribute is just an attributes you are using to build conditions that needs to be resolved while applying access rules to allow or deny any requested actions for the resource
       tags:
         - ABAC Attribute
       operationId: listABACAttributes
@@ -531,6 +534,7 @@ paths:
           description: ''
   /api/v1.0/policies/:
     get:
+      description: Policy is a set of rules that can be applied while resolving permissions on a resource for target action
       tags:
         - ABAC Policy
       operationId: listABACPolicys
@@ -618,6 +622,7 @@ paths:
           description: ''
   /api/v1.0/domains/:
     get:
+      description: Domain is a logical category for incapsulating rules and other configuration data. Usually domains are related to whole Application Service or it parts, a.e.  **MAIL**, **CUSTODIAN**, **FRONTEND**.
       tags:
         - ABAC Domain
       operationId: listABACDomains
@@ -706,6 +711,7 @@ paths:
           description: ''
   /api/v1.0/rules/:
     get:
+      description: Rule is defined as condition that must be satisfied to return an access resolution (allow or deny). Rules can include both logical and comparison operators.
       tags:
         - ABAC Rules
       operationId: listABACRules
