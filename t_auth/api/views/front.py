@@ -38,13 +38,21 @@ class FacebookAuth(APIView):
             account, _ = Account.objects.get_or_create(
                 login=fb_user['email'], type=Account.USER, active=True
             )
-            token = Token.objects.create(type=Token.AUTHORIZATION, account=account)
-            return JsonResponse({"status": "OK", "token": token.token}, status=status.HTTP_200_OK)
 
-        return JsonResponse(
-            {"status": "Error", "message": "Facebook user needs to have an email"},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+            data = LoginDataVerificationSerializer(account).data
+
+            token = Token.objects.create(account=account)
+
+            data['token'] = token.token
+            data['expire'] = token.expire.strftime('%Y-%m-%dT%H-%M')
+
+            policies = ABACPolicy.objects.filter(active=True)
+            data['abac'] = ABACPolicyMapSerializer(policies).data
+            data['profile'] = account.profile
+
+            return Response(data, status=status.HTTP_200_OK)
+
+        raise AuthenticationFailed({"error": "Facebook user needs to have an email"})
 
 
 class LoginView(APIView):
