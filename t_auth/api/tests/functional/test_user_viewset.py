@@ -3,6 +3,7 @@ from hamcrest import *
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient, APITestCase
+from django.test.utils import override_settings
 
 from t_auth.api.models import Token, AccountRole, Account
 from t_auth.api.tests.factories import AccountFactory
@@ -142,3 +143,22 @@ class AccountViewSetTestCase(APITestCase):
 
         assert_that(len(decoded_response['data']), equal_to(1))
         assert_that(decoded_response['data'][0]['login'], equal_to('admin@test.com'))
+
+    @pytest.mark.django_db
+    def test_create_and_patch_account_authorized_user(self):
+        assert Token.objects.count() == 1
+        account_data = {
+            'login': 'test@example.com',
+            'active': 'true',
+            'profile': '{"name":"Test User"}'
+        }
+        response = self.client.post(reverse('register'), data=account_data)
+        account = Account.objects.filter(login="test@example.com").first()
+        response = self.client.patch(reverse('api:account-detail', kwargs={'pk': account.id}),
+                                     data={"language": "en", 'profile': '{"name":"Another Test"}'})
+
+        token = Token.objects.filter(account=account).first()
+        assert response.data['profile']['name'] == "Another Test"
+        assert token.account == account
+        assert response.status_code == status.HTTP_200_OK
+        assert Token.objects.count() == 2
