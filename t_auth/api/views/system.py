@@ -33,9 +33,9 @@ class VerifyTokenViewSet(ViewSet):
             "rules__mask"
         ).select_related("resource", "action").filter(active=True)
 
-        if request.user.type == Account.USER:
-            response = LoginDataVerificationSerializer(request.user).data
+        response = LoginDataVerificationSerializer(request.user).data
 
+        if request.user.type == Account.USER:
             response['profile'] = request.user.profile
 
         if request.user.type == Account.SERVICE:
@@ -63,8 +63,6 @@ class VerifyTokenViewSet(ViewSet):
                         original = signer.unsign(token)
                         if original != parts[0]:
                             raise exceptions.AuthenticationFailed({"error": "Service token invalid"})
-
-                        response = LoginDataVerificationSerializer(account).data
 
                     except signing.BadSignature:
                         raise exceptions.AuthenticationFailed({"error": "Incorrect (faked?) token"})
