@@ -9,8 +9,8 @@ from t_auth.api.tests.factories import AccountFactory
 
 from django.core import signing
 
-class RoleViewSetTestCase(APITestCase):
 
+class RoleViewSetTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.account = AccountFactory()
