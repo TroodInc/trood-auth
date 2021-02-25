@@ -191,6 +191,7 @@ class BaseConfiguration(Configuration):
     SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
 
     ABAC_DEFAULT_RESOLUTION = os.environ.get("ABAC_DEFAULT_RESOLUTION", "allow")
+    ACCOUNT_DEFAULT_LANGUAGE = os.environ.get("ACCOUNT_DEFAULT_LANGUAGE", "en")
 
     TROOD_OAUTH_URL = os.environ.get('TROOD_OAUTH_URL')
 

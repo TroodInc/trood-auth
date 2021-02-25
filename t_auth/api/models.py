@@ -118,7 +118,7 @@ class Account(BaseModel):
     profile_data = JSONField(null=True)
     profile_id = models.IntegerField(null=True)
 
-    language = LanguageField(null=True)
+    language = LanguageField(null=True, default=settings.ACCOUNT_DEFAULT_LANGUAGE)
 
     @property
     def is_authenticated(self):
