@@ -191,6 +191,7 @@ class BaseConfiguration(Configuration):
     SERVICE_AUTH_SECRET = os.environ.get("SERVICE_AUTH_SECRET")
 
     ABAC_DEFAULT_RESOLUTION = os.environ.get("ABAC_DEFAULT_RESOLUTION", "allow")
+    ACCOUNT_DEFAULT_LANGUAGE = os.environ.get("ACCOUNT_DEFAULT_LANGUAGE", "en")
 
     TROOD_OAUTH_URL = os.environ.get('TROOD_OAUTH_URL')
 
@@ -206,16 +207,10 @@ class BaseConfiguration(Configuration):
             'release': os.environ.get('RAVEN_CONFIG_RELEASE')
         }
 
-try:
-    from custom_configuration import CustomConfiguration
-except ImportError:
-    class CustomConfiguration:
-        pass
-
 
 class Development(BaseConfiguration):
     DEBUG = True
 
 
-class Production(CustomConfiguration, BaseConfiguration):
+class Production(BaseConfiguration):
     DEBUG = False

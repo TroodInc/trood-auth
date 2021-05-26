@@ -42,6 +42,7 @@ class RoleViewSetTestCase(APITestCase):
     def test_create_role(self):
         response = self.client.post(
             reverse('api:roles-list'), data={
+                'id': 'test_role',
                 'name': 'Test role',
                 'status': AccountRole.STATUS_ACTIVE,
             }

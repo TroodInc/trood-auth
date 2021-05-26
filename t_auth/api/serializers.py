@@ -13,6 +13,8 @@ from django.utils.crypto import get_random_string
 from rest_framework import serializers, fields, exceptions
 from django.utils.translation import ugettext_lazy as _
 
+from trood.contrib.django.serializers import TroodDynamicSerializer
+
 from t_auth.api.domain.factories import AccountFactory
 from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import AccountRole, Account, ABACResource, ABACAction, \
@@ -65,8 +67,9 @@ class RegisterSerializer(serializers.Serializer):
         return account
 
 
-class AccountSerializer(serializers.ModelSerializer):
+class AccountSerializer(TroodDynamicSerializer):
     profile = fields.JSONField(required=False)
+    role = AccountRoleSerializer(required=False, read_only=True)
 
     class Meta:
         model = Account
@@ -75,6 +78,14 @@ class AccountSerializer(serializers.ModelSerializer):
             'pwd_hash', 'type', 'cidr', 'profile', 'language',
         )
         read_only_fields = ('id', 'created', 'pwd_hash',)
+
+    def save(self, **kwargs):
+        if 'request' in kwargs:
+            instance = super().save(request=kwargs['request'])
+        else:
+            instance = super().save(**kwargs)
+        instance.save()
+        return instance
 
     def validate(self, data):
         if data.get('type', None) == Account.SERVICE:
@@ -87,12 +98,18 @@ class AccountSerializer(serializers.ModelSerializer):
 
         return super(AccountSerializer, self).validate(data)
 
+    def to_internal_value(self, data):
+        role = data.get('role')
+        res = super(AccountSerializer, self).to_internal_value(data)
+        if role:
+            res['role_id'] = role
+
+        return res
+
     def to_representation(self, instance):
         ret = super(AccountSerializer, self).to_representation(instance)
-        if instance.type == Account.USER:
+        if instance.type == Account.USER and 'pwd_hash' in ret:
             ret.pop('pwd_hash')
-
-        ret['role'] = AccountRoleSerializer(instance.role).data
 
         return ret
 
@@ -211,8 +228,9 @@ class ABACPolicyMapSerializer(serializers.Serializer):
             if policy.action.name not in result[policy.domain][policy.resource.name]:
                 result[policy.domain][policy.resource.name][policy.action.name] = []
 
-            result[policy.domain][policy.resource.name][policy.action.name] += [
-                ABACRuleSerializer(instance=rule).data for rule in policy.rules.filter(active=True)
-            ]
+            for rule in ABACRuleSerializer(instance=policy.rules, many=True).data:
+                result[policy.domain][policy.resource.name][policy.action.name].append(
+                    rule
+                )
 
         return result
