@@ -52,6 +52,11 @@ class AccountRole(BaseModel):
         (STATUS_DISABLED, _('Disabled')),
         (STATUS_DELETED, _('Deleted'))
     )
+    """
+    One role in our system
+    Role acts as a scope for permissions
+    """
+    id = models.CharField(max_length=255, primary_key=True)
     name = models.CharField(max_length=128, null=False)
     status = models.CharField(max_length=32, choices=ROLE_STATUS, default=STATUS_ACTIVE)
 
@@ -113,7 +118,7 @@ class Account(BaseModel):
     profile_data = JSONField(null=True)
     profile_id = models.IntegerField(null=True)
 
-    language = LanguageField(null=True)
+    language = LanguageField(null=True, default=settings.ACCOUNT_DEFAULT_LANGUAGE)
 
     @property
     def is_authenticated(self):
@@ -141,7 +146,12 @@ class Account(BaseModel):
         super(Account, self).save(*args, **kwargs)
         if settings.PROFILE_STORAGE == "CUSTODIAN":
             try:
-                token = Token.objects.create(account=self)
+                token = Token.objects.filter(account=self).first()
+                if not token:
+                    token = Token.objects.create(account=self)
+                elif hasattr(self, 'request'):
+                    token = self.request.auth
+
                 custodian = client.Client(settings.CUSTODIAN_LINK, f'Token {token.token}')
                 obj = settings.CUSTODIAN_PROFILE_OBJECT
 

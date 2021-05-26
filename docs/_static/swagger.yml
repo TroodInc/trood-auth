@@ -82,6 +82,10 @@ paths:
                 $ref: '#/components/schemas/Account'
           description: ''
     patch:
+      summary: Update account
+      description: >
+        If you want to change the password to another user, you have to use your current password in old_password field. <br>
+        If you updating account with new password all related Token-s will be removed automatically, forcing user to re-login with new password on all devices
       tags:
         - Account
       operationId: partial_updateAccount
@@ -117,6 +121,10 @@ paths:
                 cidr:
                   type: string
                   maxLength: 20
+                old_password:
+                  type: string
+                new_password:
+                  type: string
       responses:
         '200':
           content:
@@ -236,6 +244,7 @@ paths:
           description: ''
   /api/v1.0/resources/:
     get:
+      description: Resource is any endpoint, object or callable that can be accessed by user using and API. In common cases it used in meaning of endpoint. Resources must be unique for a single domain.
       tags:
         - ABAC Resource
       operationId: listABACResources
@@ -349,6 +358,7 @@ paths:
           description: ''
   /api/v1.0/actions/:
     get:
+      description: Actions that provided by and strongly related to the resources, it can be any type and any amount of actions. Probably - action is a general thing you are configuring access for.
       tags:
         - ABAC Action
       operationId: listABACActions
@@ -436,6 +446,7 @@ paths:
           description: ''
   /api/v1.0/attributes/:
     get:
+      description: Attribute is just an attributes you are using to build conditions that needs to be resolved while applying access rules to allow or deny any requested actions for the resource
       tags:
         - ABAC Attribute
       operationId: listABACAttributes
@@ -523,6 +534,7 @@ paths:
           description: ''
   /api/v1.0/policies/:
     get:
+      description: Policy is a set of rules that can be applied while resolving permissions on a resource for target action
       tags:
         - ABAC Policy
       operationId: listABACPolicys
@@ -610,6 +622,7 @@ paths:
           description: ''
   /api/v1.0/domains/:
     get:
+      description: Domain is a logical category for incapsulating rules and other configuration data. Usually domains are related to whole Application Service or it parts, a.e.  **MAIL**, **CUSTODIAN**, **FRONTEND**.
       tags:
         - ABAC Domain
       operationId: listABACDomains
@@ -691,6 +704,95 @@ paths:
         in: path
         required: true
         description: A unique value identifying this abac domain.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /api/v1.0/rules/:
+    get:
+      description: Rule is defined as condition that must be satisfied to return an access resolution (allow or deny). Rules can include both logical and comparison operators.
+      tags:
+        - ABAC Rules
+      operationId: listABACRules
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ABACRule'
+          description: ''
+    post:
+      tags:
+        - ABAC Rules
+      operationId: createABACRule
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ABACRule'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ABACRule'
+          description: ''
+  /api/v1.0/rules/{id}/:
+    get:
+      tags:
+        - ABAC Rules
+      operationId: retrieveABACRule
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac rule.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ABACRule'
+          description: ''
+    patch:
+      tags:
+        - ABAC Rules
+      operationId: partial_updateABACRule
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac rule.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ABACRule'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ABACRule'
+          description: ''
+    delete:
+      tags:
+        - ABAC Rules
+      operationId: destroyABACRule
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique value identifying this abac rule.
         schema:
           type: string
       responses:
@@ -904,6 +1006,7 @@ paths:
                         example: null
           description: ''
 
+        
 components:
   schemas:
     Account:
@@ -1075,6 +1178,23 @@ components:
       required:
       - domain
       - rules
+    ABACRule:
+      properties:
+        result:
+          type: string
+        rule:
+          type: object
+        mask:
+          type: array
+          items:
+            type: string
+        active:
+          type:
+            boolean
+      required:
+      - result
+      - rule
+      - mask
 
   responses:
     Authentication:

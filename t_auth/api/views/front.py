@@ -4,13 +4,16 @@ Auth Service Backend
 
 Public endpoints (login/logout, authentication, two-factor login, registration)
 """
+import facebook
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.mail import EmailMessage
 from django.db import DataError
+from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -22,6 +25,36 @@ from t_auth.api.permissions import PublicEndpoint
 from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
 from t_auth.api.utils import send_registration_mail
 from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
+
+
+class FacebookAuth(APIView):
+    permission_classes = (AllowAny,)
+
+    basename = "facebook-auth"
+
+    def post(self, request):
+        graph = facebook.GraphAPI(access_token=request.data.get("token"), version="2.12")
+        fb_user = graph.get_object(id=request.data.get("user"), fields="email")
+
+        if fb_user and "email" in fb_user:
+            account, _ = Account.objects.get_or_create(
+                login=fb_user['email'], type=Account.USER, active=True
+            )
+
+            data = LoginDataVerificationSerializer(account).data
+
+            token = Token.objects.create(account=account)
+
+            data['token'] = token.token
+            data['expire'] = token.expire.strftime('%Y-%m-%dT%H-%M')
+
+            policies = ABACPolicy.objects.filter(active=True)
+            data['abac'] = ABACPolicyMapSerializer(policies).data
+            data['profile'] = account.profile
+
+            return Response(data, status=status.HTTP_200_OK)
+
+        raise AuthenticationFailed({"error": "Facebook user needs to have an email"})
 
 
 class LoginView(APIView):

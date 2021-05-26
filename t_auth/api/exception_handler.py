@@ -8,6 +8,7 @@ def custom_exception_handler(exc, context):
 
     # Now add the HTTP status code to the response.
     if response is not None:
-        response.data['response_status'] = "FAIL"
+        if isinstance(response.data, dict):
+            response.data['response_status'] = "FAIL"
 
     return response
