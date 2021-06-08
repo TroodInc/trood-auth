@@ -20,9 +20,8 @@ from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificatio
 
 
 class VerifyTokenViewSet(ViewSet):
-    """
-    Provides external API /auth method
-    """
+    """Provides external API /auth method."""
+
     permission_classes = (IsAuthenticated,)
 
     def create(self, request):
@@ -74,7 +73,10 @@ class VerifyTokenViewSet(ViewSet):
 
                 policies = policies.filter(domain=parts[0])
 
-        response['abac'] = ABACPolicyMapSerializer(policies).data
+        try:
+            response['abac'] = ABACPolicyMapSerializer(policies).data
+        except UnboundLocalError:
+            raise exceptions.AuthenticationFailed({"error": "Incorrect request body. Token and type are missing."})
 
         if settings.CACHE_TYPE:
             redis = get_redis_connection("default")
