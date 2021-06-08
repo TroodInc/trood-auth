@@ -28,6 +28,8 @@ from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
 
 
 class FacebookAuth(APIView):
+    permission_classes = (AllowAny,)
+
     basename = "facebook-auth"
 
     def post(self, request):
