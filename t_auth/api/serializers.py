@@ -64,6 +64,9 @@ class RegisterSerializer(serializers.Serializer):
             pwd_hash=AuthenticationService.get_password_hash(self.validated_data['password'], unique_token)
         )
 
+        account.owner_id = account.id
+        account.save()
+
         return account
 
 
