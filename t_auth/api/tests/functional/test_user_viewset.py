@@ -162,3 +162,5 @@ class AccountViewSetTestCase(APITestCase):
         assert token.account == account
         assert response.status_code == status.HTTP_200_OK
         assert Token.objects.count() == 2
+        assert account.owner_id == account.id
+        assert type(account.owner_id) is int

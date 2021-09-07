@@ -145,8 +145,9 @@ class Account(BaseModel):
     def save(self, *args, **kwargs):
         super(Account, self).save(*args, **kwargs)
 
-        self.owner_id = self.pk
-        super(Account, self).save()
+        if not self.owner_id:
+            self.owner_id = self.id
+            super(Account, self).save(update_fields=["owner_id"])
 
         if settings.PROFILE_STORAGE == "CUSTODIAN":
             try:
