@@ -22,13 +22,7 @@ from t_auth.api.models import Account, AccountRole, Token, ABACResource, ABACAct
 from t_auth.api.utils import send_registration_mail
 
 
-class BaseViewSet(viewsets.ModelViewSet):
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
-
-class AccountRoleViewSet(BaseViewSet):
+class AccountRoleViewSet(viewsets.ModelViewSet):
     """
     Provides CRUD for AccountRole
     """
@@ -67,7 +61,6 @@ class AccountViewSet(viewsets.ModelViewSet):
         unique_token = hashlib.sha256(token.encode('utf-8')).hexdigest()
 
         account = serializer.save(
-            owner=self.request.user,
             unique_token=unique_token,
             pwd_hash=AuthenticationService.get_password_hash(password, unique_token)
         )
@@ -81,7 +74,7 @@ class AccountViewSet(viewsets.ModelViewSet):
         })
 
 
-class ABACResourceViewSet(BaseViewSet):
+class ABACResourceViewSet(viewsets.ModelViewSet):
     """
     Display the ABAC resource.
     """
@@ -92,7 +85,7 @@ class ABACResourceViewSet(BaseViewSet):
     filter_fields = ("domain", "name", )
 
 
-class ABACActionViewSet(BaseViewSet):
+class ABACActionViewSet(viewsets.ModelViewSet):
     """
     Display the ABAC action.
     """
@@ -103,7 +96,7 @@ class ABACActionViewSet(BaseViewSet):
     filter_fields = ("resource", )
 
 
-class ABACAttributViewSet(BaseViewSet):
+class ABACAttributViewSet(viewsets.ModelViewSet):
     """
     Display the ABAC attribute.
     """
@@ -114,7 +107,7 @@ class ABACAttributViewSet(BaseViewSet):
     filter_fields = ("resource",)
 
 
-class ABACDomainViewSet(BaseViewSet):
+class ABACDomainViewSet(viewsets.ModelViewSet):
     """
     Display the ABAC domain.
     """
@@ -122,7 +115,7 @@ class ABACDomainViewSet(BaseViewSet):
     serializer_class = ABACDomainSerializer
 
 
-class ABACPolicyViewSet(BaseViewSet):
+class ABACPolicyViewSet(viewsets.ModelViewSet):
     """
     Display the ABAC policy.
     """
@@ -133,7 +126,7 @@ class ABACPolicyViewSet(BaseViewSet):
     filterset_fields = ("resource", "domain", "action", )
 
 
-class ABACRuleViewSet(BaseViewSet):
+class ABACRuleViewSet(viewsets.ModelViewSet):
     """
     Display the ABAC rule.
     """
