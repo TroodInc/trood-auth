@@ -22,7 +22,13 @@ from t_auth.api.models import Account, AccountRole, Token, ABACResource, ABACAct
 from t_auth.api.utils import send_registration_mail
 
 
-class AccountRoleViewSet(viewsets.ModelViewSet):
+class BaseViewSet(viewsets.ModelViewSet):
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class AccountRoleViewSet(BaseViewSet):
     """
     Provides CRUD for AccountRole
     """
@@ -74,7 +80,7 @@ class AccountViewSet(viewsets.ModelViewSet):
         })
 
 
-class ABACResourceViewSet(viewsets.ModelViewSet):
+class ABACResourceViewSet(BaseViewSet):
     """
     Display the ABAC resource.
     """
@@ -85,7 +91,7 @@ class ABACResourceViewSet(viewsets.ModelViewSet):
     filter_fields = ("domain", "name", )
 
 
-class ABACActionViewSet(viewsets.ModelViewSet):
+class ABACActionViewSet(BaseViewSet):
     """
     Display the ABAC action.
     """
@@ -96,7 +102,7 @@ class ABACActionViewSet(viewsets.ModelViewSet):
     filter_fields = ("resource", )
 
 
-class ABACAttributViewSet(viewsets.ModelViewSet):
+class ABACAttributViewSet(BaseViewSet):
     """
     Display the ABAC attribute.
     """
@@ -107,7 +113,7 @@ class ABACAttributViewSet(viewsets.ModelViewSet):
     filter_fields = ("resource",)
 
 
-class ABACDomainViewSet(viewsets.ModelViewSet):
+class ABACDomainViewSet(BaseViewSet):
     """
     Display the ABAC domain.
     """
@@ -115,7 +121,7 @@ class ABACDomainViewSet(viewsets.ModelViewSet):
     serializer_class = ABACDomainSerializer
 
 
-class ABACPolicyViewSet(viewsets.ModelViewSet):
+class ABACPolicyViewSet(BaseViewSet):
     """
     Display the ABAC policy.
     """
@@ -126,7 +132,7 @@ class ABACPolicyViewSet(viewsets.ModelViewSet):
     filterset_fields = ("resource", "domain", "action", )
 
 
-class ABACRuleViewSet(viewsets.ModelViewSet):
+class ABACRuleViewSet(BaseViewSet):
     """
     Display the ABAC rule.
     """
