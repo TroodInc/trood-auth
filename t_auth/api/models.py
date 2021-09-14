@@ -145,7 +145,7 @@ class Account(BaseModel):
     def save(self, *args, **kwargs):
         super(Account, self).save(*args, **kwargs)
 
-        if not self.owner_id:
+        if self.owner_id is None:
             self.owner_id = self.id
             super(Account, self).save(update_fields=["owner_id"])
 
