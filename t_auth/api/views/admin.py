@@ -67,7 +67,6 @@ class AccountViewSet(viewsets.ModelViewSet):
         unique_token = hashlib.sha256(token.encode('utf-8')).hexdigest()
 
         account = serializer.save(
-            owner=self.request.user,
             unique_token=unique_token,
             pwd_hash=AuthenticationService.get_password_hash(password, unique_token)
         )

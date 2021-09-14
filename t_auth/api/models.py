@@ -144,6 +144,11 @@ class Account(BaseModel):
 
     def save(self, *args, **kwargs):
         super(Account, self).save(*args, **kwargs)
+
+        if self.owner_id is None:
+            self.owner_id = self.id
+            super(Account, self).save(update_fields=["owner_id"])
+
         if settings.PROFILE_STORAGE == "CUSTODIAN":
             try:
                 token = Token.objects.filter(account=self).first()
