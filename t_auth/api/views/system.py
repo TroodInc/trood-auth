@@ -1,4 +1,5 @@
 import datetime
+import facebook
 import json
 import time
 import os
@@ -14,9 +15,34 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from django.conf import settings
 from django_redis import get_redis_connection
+from rest_framework import status
 
 from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, ABACPolicy, Account, ABACRule
 from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificationSerializer
+
+
+class FacebookDataDeletion(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        token = Token.objects.first(token=request.data.token, type=Token.DELETION)
+
+        if token:
+            return Response({"detail": "Your data is deleted successfully"})
+
+        return Response({"detail": "Wrong deletion token request."}, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request):
+        data = facebook.parse_signed_request(request.data.signed_request, app_secret=settings.FACEBOOK_SECRET)
+
+        # TODO: Remove GDPR marked fields here
+
+        token = Token.objects.create(account=request.user, type=Token.DELETION)
+
+        return Response({
+            'url': settings.PROJECT_LINK + '/api/v1.0/facebook-deletion?token=' + token.token,
+            'code': token.token
+        })
 
 
 class VerifyTokenViewSet(ViewSet):
