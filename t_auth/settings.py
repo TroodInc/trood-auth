@@ -208,7 +208,7 @@ class BaseConfiguration(Configuration):
         }
 
     # Google reCAPTCHA
-    CHECK_CAPTCHA_ENABLED = True
+    CHECK_CAPTCHA_ENABLED = False
     CAPTCHA_VALIDATION_SERVER = 'https://www.google.com/recaptcha/api/siteverify'
     CAPTCHA_SECRET_KEY = os.environ.get('CAPTCHA_SECRET_KEY')
 
