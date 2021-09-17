@@ -23,7 +23,7 @@ from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
 from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
-from t_auth.api.utils import send_registration_mail
+from t_auth.api.utils import is_captcha_valid, send_registration_mail
 from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
 
 
@@ -123,6 +123,12 @@ class RegistrationViewSet(APIView):
         serializer = RegisterSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
+            if settings.CHECK_CAPTCHA_ENABLED:
+                captcha_key = request.data.get('сaptcha_key')
+
+                if not is_captcha_valid(captcha_key):
+                    return Response({'detail': "Captcha is not valid"}, status=status.HTTP_400_BAD_REQUEST)
+
             account = serializer.save()
 
             result = LoginDataVerificationSerializer(account).data
