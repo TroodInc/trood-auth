@@ -61,7 +61,7 @@ class AppleAuth(APIView):
         data = {
             'client_id': settings.APPLE_CLIENT_ID,
             'client_secret': self.make_secret(),
-            'code': request.data.code,
+            'code': request.data.get('code'),
             'grant_type': 'authorization_code',
         }
 
