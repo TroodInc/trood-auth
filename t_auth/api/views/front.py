@@ -55,6 +55,7 @@ class AppleAuth(APIView):
             headers=headers
         )
 
+
     def post(self, request):
         headers = {'content-type': "application/x-www-form-urlencoded"}
 
