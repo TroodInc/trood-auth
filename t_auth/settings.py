@@ -213,6 +213,8 @@ class BaseConfiguration(Configuration):
             'release': os.environ.get('RAVEN_CONFIG_RELEASE')
         }
 
+    FACEBOOK_SECRET = os.environ.get('FACEBOOK_SECRET')
+
 
 class Development(BaseConfiguration):
     DEBUG = True
