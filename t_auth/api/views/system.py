@@ -25,7 +25,7 @@ class FacebookDataDeletion(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        token = Token.objects.first(token=request.data.get('token'), type=Token.DELETION)
+        token = Token.objects.filter(token=request.data.get('token'), type=Token.DELETION).first()
 
         if token:
             return Response({"detail": "Your data was deleted successfully"})
