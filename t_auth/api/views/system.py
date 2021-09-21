@@ -28,7 +28,7 @@ class FacebookDataDeletion(APIView):
         token = Token.objects.first(token=request.data.token, type=Token.DELETION)
 
         if token:
-            return Response({"detail": "Your data is deleted successfully"})
+            return Response({"detail": "Your data was deleted successfully"})
 
         return Response({"detail": "Wrong deletion token request."}, status=status.HTTP_404_NOT_FOUND)
 
