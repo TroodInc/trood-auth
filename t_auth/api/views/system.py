@@ -33,7 +33,7 @@ class FacebookDataDeletion(APIView):
         return Response({"detail": "Wrong deletion token request."}, status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request):
-        data = facebook.parse_signed_request(request.data.signed_request, app_secret=settings.FACEBOOK_SECRET)
+        data = facebook.parse_signed_request(request.data.get('signed_request'), app_secret=settings.FACEBOOK_SECRET)
 
         # TODO: Remove GDPR marked fields here
 
