@@ -126,8 +126,11 @@ class RegistrationViewSet(APIView):
             if settings.CHECK_CAPTCHA_ENABLED:
                 captcha_key = request.data.get('сaptcha_key')
 
-                if not is_captcha_valid(captcha_key):
-                    return Response({'detail': "Captcha is not valid"}, status=status.HTTP_400_BAD_REQUEST)
+                if captcha_key is None or captcha_key == '':
+                    return Response({'detail': 'Captcha key is not found'}, status=status.HTTP_400_BAD_REQUEST)
+
+                if is_captcha_valid(captcha_key) is False:
+                    return Response({'detail': 'Captcha key is not valid'}, status=status.HTTP_400_BAD_REQUEST)
 
             account = serializer.save()
 
