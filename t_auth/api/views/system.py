@@ -30,7 +30,7 @@ class FacebookDataDeletion(APIView):
         if token:
             return Response({"detail": "Your data was deleted successfully"})
 
-        return Response({"detail": "Wrong deletion token request."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"detail": "Please provide valid deletion token"})
 
     def post(self, request):
         data = facebook.parse_signed_request(request.data.get('signed_request'), app_secret=settings.FACEBOOK_SECRET)
