@@ -71,7 +71,9 @@ class AppleAuth(APIView):
         id_token = response_dict.get('id_token', None)
 
         if id_token:
-            decoded = jwt.decode(id_token, '', verify=False, algorithms=["RS256"])
+            decoded = jwt.decode(
+                id_token, audience=settings.APPLE_CLIENT_ID, algorithms=['RS256'], options={"verify_signature": False}
+            )
             account, _ = Account.objects.get_or_create(
                 login=decoded['email'], type=Account.USER, active=True
             )
