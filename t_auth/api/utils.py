@@ -21,17 +21,15 @@ def send_registration_mail(data):
 
 
 def is_captcha_valid(captcha_key):
-    response = requests.post(settings.CAPTCHA_VALIDATION_SERVER, data={
-        'secret': settings.CAPTCHA_SECRET_KEY,
-        'response': captcha_key
-    })
+    try:
+        response = requests.post(settings.CAPTCHA_VALIDATION_SERVER, data={
+            'secret': settings.CAPTCHA_SECRET_KEY,
+            'response': captcha_key
+        })
 
-    if response.status_code != 200:
-        raise NotFound({'detail': 'Captcha validation server unavailable'})
-
-    success = response.json().get('success')
-
-    if success is None or not isinstance(success, bool):
-        raise ValidationError({'detail': 'Incorrect field name or data type'})
+        response.raise_for_status()
+        success = response.json()['success']
+    except (requests.exceptions.HTTPError, KeyError) as error:
+        raise ValidationError({'detail': f'Captcha validation error: {error}'})
 
     return success
