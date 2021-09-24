@@ -23,4 +23,4 @@ RUN echo $TAG > ${APPDIR}/VERSION
 
 EXPOSE 8000
 
-CMD /usr/local/bin/gunicorn -w 8 -b 0.0.0.0:8000 --reload --access-logfile - t_auth.wsgi:application
+CMD /usr/local/bin/gunicorn -w 8 -b 0.0.0.0:8000 --worker-class gevent --timeout 60 --reload --access-logfile - t_auth.wsgi:application
