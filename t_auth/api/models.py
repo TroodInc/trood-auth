@@ -194,11 +194,13 @@ class Account(BaseModel):
 
 class Token(models.Model):
     RECOVERY = 'recovery'
+    DELETION = 'deletion'
     AUTHORIZATION = 'authorization'
 
     TOKEN_TYPES = (
         (RECOVERY, _('Recovery')),
-        (AUTHORIZATION, _('Authorization'))
+        (AUTHORIZATION, _('Authorization')),
+        (DELETION, _('Deletion'))
     )
 
     token = models.CharField(max_length=64, null=False, unique=True)

@@ -199,6 +199,12 @@ class BaseConfiguration(Configuration):
         'trood.contrib.django.auth.permissions.TroodABACPermission',
     )
 
+    APPLE_ACCESS_TOKEN_URL = os.environ.get('APPLE_ACCESS_TOKEN_URL', 'https://appleid.apple.com/auth/token')
+    APPLE_KEY_ID = os.environ.get('APPLE_KEY_ID')
+    APPLE_TEAM_ID = os.environ.get('APPLE_TEAM_ID')
+    APPLE_CLIENT_ID = os.environ.get('APPLE_CLIENT_ID')
+    APPLE_PRIVATE_KEY = os.environ.get('APPLE_PRIVATE_KEY')
+
     ENABLE_RAVEN = os.environ.get('ENABLE_RAVEN', "False")
 
     if ENABLE_RAVEN == "True":
@@ -206,6 +212,8 @@ class BaseConfiguration(Configuration):
             'dsn': os.environ.get('RAVEN_CONFIG_DSN'),
             'release': os.environ.get('RAVEN_CONFIG_RELEASE')
         }
+
+    FACEBOOK_SECRET = os.environ.get('FACEBOOK_SECRET')
 
     # Google reCAPTCHA
     CHECK_CAPTCHA_ENABLED = os.environ.get('CHECK_CAPTCHA_ENABLED')

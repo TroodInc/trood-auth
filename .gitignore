@@ -15,5 +15,6 @@ htmlcov
 docs/_build
 .venv
 /venv/
+.run
 
 custom_configuration.py

@@ -4,16 +4,19 @@ Auth Service Backend
 
 Public endpoints (login/logout, authentication, two-factor login, registration)
 """
+from datetime import timedelta
+
 import facebook
+import jwt
+import requests
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.mail import EmailMessage
 from django.db import DataError
-from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -25,6 +28,60 @@ from t_auth.api.permissions import PublicEndpoint
 from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
 from t_auth.api.utils import is_captcha_valid, send_registration_mail
 from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
+
+
+class AppleAuth(APIView):
+    permission_classes = (AllowAny,)
+
+    basename = "apple-auth"
+
+    def make_secret(self):
+        headers = {
+            'kid': settings.APPLE_KEY_ID
+        }
+
+        payload = {
+            'iss': settings.APPLE_TEAM_ID,
+            'iat': timezone.now(),
+            'exp': timezone.now() + timedelta(days=180),
+            'aud': 'https://appleid.apple.com',
+            'sub': settings.APPLE_CLIENT_ID,
+        }
+
+        return jwt.encode(
+            payload,
+            settings.APPLE_PRIVATE_KEY,
+            algorithm='ES256',
+            headers=headers
+        )
+
+
+    def post(self, request):
+        headers = {'content-type': "application/x-www-form-urlencoded"}
+
+        data = {
+            'client_id': settings.APPLE_CLIENT_ID,
+            'client_secret': self.make_secret(),
+            'code': request.data.get('code'),
+            'grant_type': 'authorization_code',
+        }
+
+        res = requests.post(settings.APPLE_ACCESS_TOKEN_URL, data=data, headers=headers)
+        response_dict = res.json()
+        id_token = response_dict.get('id_token', None)
+
+        if id_token:
+            decoded = jwt.decode(
+                id_token, audience=settings.APPLE_CLIENT_ID, algorithms=['RS256'], options={"verify_signature": False}
+            )
+            account, _ = Account.objects.get_or_create(
+                login=decoded['email'], type=Account.USER, active=True
+            )
+
+            data = make_auth_response(account)
+            return Response(data, status=status.HTTP_200_OK)
+
+        raise AuthenticationFailed({"error": "Apple authentication failed"})
 
 
 class FacebookAuth(APIView):
@@ -41,16 +98,7 @@ class FacebookAuth(APIView):
                 login=fb_user['email'], type=Account.USER, active=True
             )
 
-            data = LoginDataVerificationSerializer(account).data
-
-            token = Token.objects.create(account=account)
-
-            data['token'] = token.token
-            data['expire'] = token.expire.strftime('%Y-%m-%dT%H-%M')
-
-            policies = ABACPolicy.objects.filter(active=True)
-            data['abac'] = ABACPolicyMapSerializer(policies).data
-            data['profile'] = account.profile
+            data = make_auth_response(account)
 
             return Response(data, status=status.HTTP_200_OK)
 
@@ -80,16 +128,7 @@ class LoginView(APIView):
                     account.language = lng
                     account.save(update_fields=["language"])
 
-                data = LoginDataVerificationSerializer(account).data
-
-                token = Token.objects.create(account=account)
-
-                data['token'] = token.token
-                data['expire'] = token.expire.strftime('%Y-%m-%dT%H-%M')
-
-                policies = ABACPolicy.objects.filter(active=True)
-                data['abac'] = ABACPolicyMapSerializer(policies).data
-                data['profile'] = account.profile
+                data = make_auth_response(account)
 
             else:
                 raise AuthenticationFailed({"error": f'Invalid password for user {login}'})
@@ -206,3 +245,18 @@ class RecoveryView(APIView):
                 {'detail': 'Recovery token {} not found'.format(token_str)},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+
+def make_auth_response(account):
+    data = LoginDataVerificationSerializer(account).data
+
+    token = Token.objects.create(account=account)
+
+    data['token'] = token.token
+    data['expire'] = token.expire.strftime('%Y-%m-%dT%H-%M')
+
+    policies = ABACPolicy.objects.filter(active=True)
+    data['abac'] = ABACPolicyMapSerializer(policies).data
+    data['profile'] = account.profile
+
+    return  data

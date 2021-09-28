@@ -41,6 +41,8 @@ urlpatterns = [
     url(r'^api/v1.0/login/$', api_views.front.LoginView.as_view(), name='login'),
     url(r'^api/v1.0/login/trood', register_by_access_token),
     url(r'^api/v1.0/login/facebook', api_views.front.FacebookAuth.as_view(), name='facebook-login'),
+    url(r'^api/v1.0/gdpr/facebook', api_views.system.FacebookDataDeletion.as_view(), name='gdpr-facebook'),
+    url(r'^api/v1.0/login/apple', api_views.front.AppleAuth.as_view(), name='apple-login'),
     url(r'^api/v1.0/logout', api_views.front.LogoutView.as_view(), name='logout'),
     url(r'^api/v1.0/register', api_views.RegistrationViewSet.as_view(), name='register'),
     url(r'^api/v1.0/password-recovery', t_auth.api.views.front.RecoveryView.as_view(), name='password-recovery'),
