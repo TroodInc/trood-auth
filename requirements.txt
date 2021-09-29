@@ -21,7 +21,7 @@ coreschema==0.0.4
 factory-boy==2.10.0
 Faker==0.8.12
 future==0.16.0
-gunicorn==19.7.1
+gunicorn==20.1.0
 PyHamcrest==1.9.0
 python-dateutil==2.7.0
 pytz==2017.2
@@ -37,4 +37,4 @@ trood==1.0.2
 social-auth-app-django
 django-rest-framework-social-oauth2
 facebook-sdk
-gevent
+gevent==21.8.0
