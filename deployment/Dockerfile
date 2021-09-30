@@ -16,6 +16,7 @@ RUN apk update \
 &&  apk add --no-cache gcc musl-dev && apk add --no-cache rust cargo && apk add --no-cache g++ make \
 &&  apk add --no-cache --virtual .build-deps postgresql-dev gcc python3-dev musl-dev libffi-dev git \
 &&  pip install --upgrade --force-reinstall --no-cache-dir -r $APPDIR/requirements.txt \
+&&  pip install --upgrade pip setuptools \
 &&  apk del --no-cache .build-deps \
 &&  apk --no-cache add libpq
 
