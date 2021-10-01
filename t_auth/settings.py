@@ -215,6 +215,11 @@ class BaseConfiguration(Configuration):
 
     FACEBOOK_SECRET = os.environ.get('FACEBOOK_SECRET')
 
+    # Google reCAPTCHA
+    CHECK_CAPTCHA_ENABLED = os.environ.get('CHECK_CAPTCHA_ENABLED')
+    CAPTCHA_VALIDATION_SERVER = 'https://www.google.com/recaptcha/api/siteverify'
+    CAPTCHA_SECRET_KEY = os.environ.get('CAPTCHA_SECRET_KEY')
+
 
 class Development(BaseConfiguration):
     DEBUG = True
