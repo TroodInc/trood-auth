@@ -16,7 +16,7 @@ def test_creates_account(client: Client):
     account_data = {
         'login': 'test@example.com',
         'password': 'some-password',
-        'сaptcha_key': 'some-key',
+        'captcha_key': 'some-key',
     }
     response = client.post(reverse('register'), data=account_data)
     # FIXME: Why 200???
