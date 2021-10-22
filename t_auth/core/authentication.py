@@ -146,25 +146,22 @@ class TroodTokenAuthentication(BaseAuthentication):
                 raise exceptions.AuthenticationFailed()
 
         if auth[0] == 'Service':
+            creds = force_text(auth[1]).split(':')
+
+            account = Account.objects.filter(login=creds[0]).first()
+
+            if not account:
+                raise exceptions.NotFound(detail="Account was not found")
+
+            signer = signing.Signer(settings.SERVICE_AUTH_SECRET, salt="trood.")
+
             try:
-                creds = force_text(auth[1]).split(':')
-                account = Account.objects.filter(login=creds[0]).first()
+                original = signer.unsign(auth[1])
+                if original == creds[0]:
+                    # TODO: inconsistent with Token case return types(Account and Token instances)
+                    return account, Token(token=auth[1], account=account)
 
-                if not account:
-                    raise exceptions.NotFound(detail="Account was not found")
-
-                signer = signing.Signer(account.pwd_hash, salt="trood.")
-
-                try:
-                    original = signer.unsign(auth[1])
-                    if original == creds[0]:
-                        # TODO: inconsistent with Token case return types(Account and Token instances)
-                        return account, Token(token=auth[1], account=account)
-
-                    raise exceptions.AuthenticationFailed()
-
-                except signing.BadSignature:
-                    raise exceptions.AuthenticationFailed({"error": "Incorrect (faked?) token"})
-
-            except Token.DoesNotExist:
                 raise exceptions.AuthenticationFailed()
+
+            except signing.BadSignature:
+                raise exceptions.AuthenticationFailed({"error": "Incorrect (faked?) token"})
