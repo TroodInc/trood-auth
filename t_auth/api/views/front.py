@@ -74,7 +74,7 @@ class AppleAuth(APIView):
                 id_token, audience=settings.APPLE_CLIENT_ID, algorithms=['RS256'], options={"verify_signature": False}
             )
 
-            account = Account.objects.filter(decoded['email']).first()
+            account = Account.objects.filter(login=decoded['email']).first()
             if not account:
                 account = Account.objects.create(
                     login=decoded['email'], type=Account.USER, active=True,
