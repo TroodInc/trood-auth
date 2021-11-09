@@ -77,11 +77,11 @@ class AppleAuth(APIView):
                 login=decoded['email'], type=Account.USER, active=True
             )
             if created:
-                account.profile_data.update({
+                account.save(profile={
                     "first_name": request.data.get('firstname'),
                     "last_name": request.data.get('lastname')
                 })
-                account.save()
+                account.refresh_from_db()
 
             data = make_auth_response(account)
             return Response(data, status=status.HTTP_200_OK)
