@@ -181,7 +181,10 @@ class Account(BaseModel):
 
             if self.profile_id is not None:
                 record = custodian.records.get(obj, self.profile_id, depth=settings.CUSTODIAN_PROFILE_DEPTH)
-                return record.data
+                if record:
+                    return record.data
+                else:
+                    return None
             else:
                 return None
         else:

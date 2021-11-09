@@ -73,15 +73,16 @@ class AppleAuth(APIView):
             decoded = jwt.decode(
                 id_token, audience=settings.APPLE_CLIENT_ID, algorithms=['RS256'], options={"verify_signature": False}
             )
-            account, created = Account.objects.get_or_create(
-                login=decoded['email'], type=Account.USER, active=True
-            )
-            if created:
-                account.save(profile={
-                    "first_name": request.data.get('firstname'),
-                    "last_name": request.data.get('lastname')
-                })
-                account.refresh_from_db()
+
+            account = Account.objects.filter(decoded['email']).first()
+            if not account:
+                account = Account.objects.create(
+                    login=decoded['email'], type=Account.USER, active=True,
+                    profile_data={
+                        "first_name": request.data.get('firstname'),
+                        "last_name": request.data.get('lastname')
+                    }
+                )
 
             data = make_auth_response(account)
             return Response(data, status=status.HTTP_200_OK)
@@ -264,4 +265,4 @@ def make_auth_response(account):
     data['abac'] = ABACPolicyMapSerializer(policies).data
     data['profile'] = account.profile
 
-    return  data
+    return data
