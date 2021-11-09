@@ -55,7 +55,6 @@ class AppleAuth(APIView):
             headers=headers
         )
 
-
     def post(self, request):
         headers = {'content-type': "application/x-www-form-urlencoded"}
 
@@ -75,7 +74,10 @@ class AppleAuth(APIView):
                 id_token, audience=settings.APPLE_CLIENT_ID, algorithms=['RS256'], options={"verify_signature": False}
             )
             account, _ = Account.objects.get_or_create(
-                login=decoded['email'], type=Account.USER, active=True
+                login=decoded['email'], type=Account.USER, active=True, profile={
+                    "first_name": request.data.get('firstname'),
+                    "last_name": request.data.get('lastname')
+                }
             )
 
             data = make_auth_response(account)
