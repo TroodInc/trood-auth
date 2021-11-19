@@ -15,6 +15,7 @@ from t_auth.api.views.system import ProbeViewset, VerifyTokenViewSet, Invalidate
 from t_auth.core.authentication import register_by_access_token
 
 from trood.contrib.django.apps.fixtures.views import TroodFixturesViewSet
+from trood.contrib.django.apps.meta.views import TroodMetaView
 
 router = routers.DefaultRouter()
 
@@ -37,6 +38,7 @@ if settings.DEBUG:
     router.register(r'fixtures', TroodFixturesViewSet, basename='fixtures')
 
 urlpatterns = [
+    url(r'meta', TroodMetaView.as_view(), name='meta'),
     url(r'^api/v1.0/abac', api_views.system.ABACProvisionAttributeMap.as_view(), name='abac'),
     url(r'^api/v1.0/login/$', api_views.front.LoginView.as_view(), name='login'),
     url(r'^api/v1.0/login/trood', register_by_access_token),

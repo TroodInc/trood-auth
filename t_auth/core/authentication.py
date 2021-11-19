@@ -4,12 +4,12 @@ import requests
 from django.contrib.auth.models import AnonymousUser
 from django.core import signing
 from django.conf import settings
-from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.utils.encoding import force_text
 from requests import HTTPError
 from rest_framework import exceptions, status
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
+from rest_framework.response import Response
 from social_core.backends.oauth import BaseOAuth2
 from social_core.utils import handle_http_errors, url_add_parameters
 
@@ -30,7 +30,7 @@ def register_by_access_token(request):
     )
 
     if response.status_code != 200:
-        return JsonResponse(response.json(), status=response.status_code)
+        return Response(response.json(), status=response.status_code)
 
     data = response.json()['data']
     account, _ = Account.objects.get_or_create(
@@ -39,7 +39,7 @@ def register_by_access_token(request):
 
     Token.objects.get_or_create(type=Token.AUTHORIZATION, token=access_token, account=account)
 
-    return JsonResponse({"status": "OK"}, status=status.HTTP_200_OK)
+    return Response({"status": "OK"}, status=status.HTTP_200_OK)
 
 
 class TroodOauth2Authentication(BaseOAuth2):
@@ -80,7 +80,7 @@ class TroodOauth2Authentication(BaseOAuth2):
 
         access_token = self.strategy.session_get('token')
         if access_token is None:
-            return JsonResponse({"status": "error", "data": "Token is not valid"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"status": "error", "data": "Token is not valid"}, status=status.HTTP_403_FORBIDDEN)
 
         data = {}
 
@@ -94,7 +94,7 @@ class TroodOauth2Authentication(BaseOAuth2):
 
             data = response.json()['data']
         except HTTPError as e:
-            return JsonResponse(e.response.json(), status=e.response.status_code)
+            return Response(e.response.json(), status=e.response.status_code)
 
         account, _ = Account.objects.get_or_create(
             login=data['login'], type=Account.USER, active=True
@@ -106,7 +106,7 @@ class TroodOauth2Authentication(BaseOAuth2):
         if next:
             return redirect(self.strategy.session_get('next'))
         else:
-            return JsonResponse({"status": "OK"}, status=status.HTTP_200_OK)
+            return Response({"status": "OK"}, status=status.HTTP_200_OK)
 
 
 class TroodTokenAuthentication(BaseAuthentication):
