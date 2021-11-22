@@ -24,7 +24,7 @@ from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, AB
 from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificationSerializer
 
 
-@api_view
+@api_view(http_method_names=['GET'])
 def register_by_access_token(request):
     access_token = get_authorization_header(request).decode('utf-8').replace('Token ', '')
 
