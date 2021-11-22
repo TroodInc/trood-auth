@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from rest_framework import exceptions
 from rest_framework.authentication import get_authorization_header
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,6 +25,7 @@ from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificatio
 
 
 @api_view(http_method_names=['GET'])
+@permission_classes((AllowAny,))
 def register_by_access_token(request):
     access_token = get_authorization_header(request).decode('utf-8').replace('Token ', '')
 
