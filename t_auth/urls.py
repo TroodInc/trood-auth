@@ -11,8 +11,7 @@ from t_auth.api import views as api_views
 from t_auth.api.views.admin import AccountRoleViewSet, ABACResourceViewSet, ABACActionViewSet, ABACAttributViewSet, \
     ABACPolicyViewSet, ABACDomainViewSet, ABACRuleViewSet
 
-from t_auth.api.views.system import ProbeViewset, VerifyTokenViewSet, InvalidateTokenViewSet
-from t_auth.core.authentication import register_by_access_token
+from t_auth.api.views.system import ProbeViewset, VerifyTokenViewSet, InvalidateTokenViewSet, register_by_access_token
 
 from trood.contrib.django.apps.fixtures.views import TroodFixturesViewSet
 from trood.contrib.django.apps.meta.views import TroodMetaView

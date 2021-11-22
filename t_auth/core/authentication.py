@@ -1,6 +1,5 @@
 from ipaddress import IPv4Network, IPv4Address
 
-import requests
 from django.contrib.auth.models import AnonymousUser
 from django.core import signing
 from django.conf import settings
@@ -17,29 +16,6 @@ from trood.contrib.django.auth.engine import TroodABACEngine
 
 from t_auth.api.models import Token, Account, ABACPolicy
 from t_auth.api.serializers import ABACPolicyMapSerializer
-
-
-def register_by_access_token(request):
-    access_token = get_authorization_header(request).decode('utf-8').replace('Token ', '')
-
-    response = requests.request(
-        url='{}/api/v1.0/o/token/'.format(settings.TROOD_OAUTH_URL.rstrip("/")),
-        method='POST',
-        headers={'Authorization': f'Token {access_token}'},
-        json={"token": access_token, "type": "user"}
-    )
-
-    if response.status_code != 200:
-        return Response(response.json(), status=response.status_code)
-
-    data = response.json()['data']
-    account, _ = Account.objects.get_or_create(
-        login=data['login'], type=Account.USER, active=True
-    )
-
-    Token.objects.get_or_create(type=Token.AUTHORIZATION, token=access_token, account=account)
-
-    return Response({"status": "OK"}, status=status.HTTP_200_OK)
 
 
 class TroodOauth2Authentication(BaseOAuth2):
