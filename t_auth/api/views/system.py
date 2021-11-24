@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from rest_framework import exceptions
 from rest_framework.authentication import get_authorization_header
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -24,29 +24,31 @@ from t_auth.api.models import Token, ABACResource, ABACAction, ABACAttribute, AB
 from t_auth.api.serializers import ABACPolicyMapSerializer, LoginDataVerificationSerializer
 
 
-@api_view(http_method_names=['GET'])
-@permission_classes((AllowAny,))
-def register_by_access_token(request):
-    access_token = get_authorization_header(request).decode('utf-8').replace('Token ', '')
+class AccessTokenRegistration(APIView):
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
 
-    response = requests.request(
-        url='{}/api/v1.0/o/token/'.format(settings.TROOD_OAUTH_URL.rstrip("/")),
-        method='POST',
-        headers={'Authorization': f'Token {access_token}'},
-        json={"token": access_token, "type": "user"}
-    )
+    def get(self, request):
+        access_token = get_authorization_header(request).decode('utf-8').replace('Token ', '')
 
-    if response.status_code != 200:
-        return Response(response.json(), status=response.status_code)
+        response = requests.request(
+            url='{}/api/v1.0/o/token/'.format(settings.TROOD_OAUTH_URL.rstrip("/")),
+            method='POST',
+            headers={'Authorization': f'Token {access_token}'},
+            json={"token": access_token, "type": "user"}
+        )
 
-    data = response.json()['data']
-    account, _ = Account.objects.get_or_create(
-        login=data['login'], type=Account.USER, active=True
-    )
+        if response.status_code != 200:
+            return Response(response.json(), status=response.status_code)
 
-    Token.objects.get_or_create(type=Token.AUTHORIZATION, token=access_token, account=account)
+        data = response.json()['data']
+        account, _ = Account.objects.get_or_create(
+            login=data['login'], type=Account.USER, active=True
+        )
 
-    return Response({"status": "OK"}, status=status.HTTP_200_OK)
+        Token.objects.get_or_create(type=Token.AUTHORIZATION, token=access_token, account=account)
+
+        return Response({"status": "OK"}, status=status.HTTP_200_OK)
 
 
 class FacebookDataDeletion(APIView):
