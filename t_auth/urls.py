@@ -11,7 +11,7 @@ from t_auth.api import views as api_views
 from t_auth.api.views.admin import AccountRoleViewSet, ABACResourceViewSet, ABACActionViewSet, ABACAttributViewSet, \
     ABACPolicyViewSet, ABACDomainViewSet, ABACRuleViewSet
 
-from t_auth.api.views.system import ProbeViewset, VerifyTokenViewSet, InvalidateTokenViewSet
+from t_auth.api.views.system import ProbeViewset, VerifyTokenViewSet, InvalidateTokenView
 
 from trood.contrib.django.apps.fixtures.views import TroodFixturesViewSet
 from trood.contrib.django.apps.meta.views import TroodMetaView
@@ -29,7 +29,6 @@ router.register(r'policies', ABACPolicyViewSet, basename='policies')
 router.register(r'domains', ABACDomainViewSet, basename='domains')
 
 router.register(r'verify-token', VerifyTokenViewSet, basename='verify-token')
-router.register(r'invalidate-token', InvalidateTokenViewSet, basename='invalidate-token')
 
 router.register(r'probe', ProbeViewset, basename='probe')
 
@@ -39,6 +38,7 @@ if settings.DEBUG:
 urlpatterns = [
     url(r'meta', TroodMetaView.as_view(), name='meta'),
     url(r'^api/v1.0/abac', api_views.system.ABACProvisionAttributeMap.as_view(), name='abac'),
+    url(r'^api/v1.0/invalidate-token', InvalidateTokenView.as_view(), name='invalidate-token'),
     url(r'^api/v1.0/login/$', api_views.front.LoginView.as_view(), name='login'),
     url(r'^api/v1.0/login/trood', api_views.system.AccessTokenRegistration.as_view(), name='token-registration'),
     url(r'^api/v1.0/login/facebook', api_views.front.FacebookAuth.as_view(), name='facebook-login'),

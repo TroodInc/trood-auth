@@ -141,12 +141,13 @@ class VerifyTokenViewSet(ViewSet):
         return Response(response)
 
 
-class InvalidateTokenViewSet(ViewSet):
+class InvalidateTokenView(APIView):
     """
     Provides service link for cleaning up tokens
     """
+    permission_classes = (IsAuthenticated,)
 
-    def list(self, request):
+    def get(self, request):
         if 'all' in request.data:
             count, _ = Token.objects.all().delete()
         else:
