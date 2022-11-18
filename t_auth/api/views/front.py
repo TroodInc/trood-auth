@@ -225,7 +225,29 @@ class ActivateView(APIView):
 
         except ObjectDoesNotExist:
             return Response(
-                {'detail': 'Activation token {} not found'.format(token_str)},
+                {'error': 'Activation token {} not found'.format(token_str)},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    def post(self, request):
+        login = request.data.get('login')
+
+        try:
+            account = Account.objects.get(login=login)
+            token = Token.objects.create(account=account, type=Token.ACTIVATION)
+
+            send_activation_mail({
+                'login': account.login,
+                'project': settings.PROJECT_NAME,
+                'link': settings.PROJECT_LINK,
+                'token': token.token,
+                'profile': account.profile
+            })
+
+            return Response({'detail': 'New activation email was sent'}, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response(
+                {'detail': 'User not found'.format(login)},
                 status=status.HTTP_404_NOT_FOUND
             )
 
