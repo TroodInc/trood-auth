@@ -215,13 +215,18 @@ class ActivateView(APIView):
     def get(self, request):
         token_str = request.GET.get('token')
         try:
-            token = Token.objects.get(token=token_str, type=Token.ACTIVATION)
-            token.account.active = True
-            token.account.save()
+            activation_token = Token.objects.get(token=token_str, type=Token.ACTIVATION)
+            activation_token.account.active = True
+            activation_token.account.save()
 
-            token.delete()
+            auth_token = Token.objects.create(account=activation_token.account)
 
-            return Response({'detail': 'Account activated successfully'}, status=status.HTTP_200_OK)
+            activation_token.delete()
+
+            return Response({
+                'detail': 'Account activated successfully',
+                'token': auth_token.token
+            }, status=status.HTTP_200_OK)
 
         except ObjectDoesNotExist:
             return Response(
