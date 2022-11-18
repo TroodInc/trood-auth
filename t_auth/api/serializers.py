@@ -58,6 +58,7 @@ class RegisterSerializer(serializers.Serializer):
         account = Account.objects.create(
             login=self.validated_data['login'],
             status=Account.STATUS_ACTIVE,
+            active=kwargs.get('active', True),
             profile=self.validated_data.get('profile', {}),
             unique_token=unique_token,
             role_id=self.validated_data.get('role'),
