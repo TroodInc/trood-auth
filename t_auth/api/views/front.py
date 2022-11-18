@@ -26,7 +26,7 @@ from t_auth.api.domain.services import AuthenticationService
 from t_auth.api.models import Account, Token, ABACPolicy
 from t_auth.api.permissions import PublicEndpoint
 from t_auth.api.serializers import RegisterSerializer, ABACPolicyMapSerializer, LoginDataVerificationSerializer
-from t_auth.api.utils import is_captcha_valid, send_registration_mail
+from t_auth.api.utils import is_captcha_valid, send_registration_mail, send_activation_mail
 from trood.contrib.django.mail.backends import TroodEmailMessageTemplate
 
 
@@ -174,23 +174,57 @@ class RegistrationViewSet(APIView):
                 if captcha_key is None or captcha_key == '' or is_captcha_valid(captcha_key) is False:
                     raise ValidationError({'detail': 'Incorrect captcha_key'})
 
-            account = serializer.save()
+            if settings.PROFILE_CONFIRMATION_ENABLED:
+                account = serializer.save(active=False)
 
-            result = LoginDataVerificationSerializer(account).data
-            token = Token.objects.create(account=account)
-            result['token'] = token.token
-            result['profile'] = account.profile
+                token = Token.objects.create(account=account, type=Token.ACTIVATION)
 
-            send_registration_mail({
-                'login': account.login,
-                'password': serializer.data['password'],
-                'project': settings.PROJECT_NAME,
-                'link': settings.PROJECT_LINK,
-                'profile': account.profile
-            })
+                send_activation_mail({
+                    'login': account.login,
+                    'password': serializer.data['password'],
+                    'project': settings.PROJECT_NAME,
+                    'link': settings.PROJECT_LINK,
+                    'token': token.token,
+                    'profile': account.profile
+                })
+            else:
+                account = serializer.save()
+
+                result = LoginDataVerificationSerializer(account).data
+                token = Token.objects.create(account=account)
+                result['token'] = token.token
+                result['profile'] = account.profile
+
+                send_registration_mail({
+                    'login': account.login,
+                    'password': serializer.data['password'],
+                    'project': settings.PROJECT_NAME,
+                    'link': settings.PROJECT_LINK,
+                    'profile': account.profile
+                })
 
             return Response(result)
 
+
+class ActivateView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        token_str = request.GET.get('token')
+        try:
+            token = Token.objects.get(token=token_str, type=Token.ACTIVATION)
+            token.account.active = True
+            token.account.save()
+
+            token.delete()
+
+            return Response({'detail': 'Account activated successfully'}, status=status.HTTP_200_OK)
+
+        except ObjectDoesNotExist:
+            return Response(
+                {'detail': 'Activation token {} not found'.format(token_str)},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 class RecoveryView(APIView):
     permission_classes = (AllowAny,)
@@ -241,7 +275,7 @@ class RecoveryView(APIView):
 
                 token.delete()
 
-                return Response({'detail': 'Password was changed successfuly'}, status=status.HTTP_200_OK)
+                return Response({'detail': 'Password was changed successfully'}, status=status.HTTP_200_OK)
 
             else:
                 return Response({'detail': "Passwords doesn't match"}, status=status.HTTP_400_BAD_REQUEST)

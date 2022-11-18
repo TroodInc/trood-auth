@@ -20,6 +20,20 @@ def send_registration_mail(data):
         message.send()
 
 
+def send_activation_mail(data):
+    if settings.MAILER_TYPE == 'TROOD':
+        message = TroodEmailMessageTemplate(to=[data['login']], template='ACCOUNT_ACTIVATION', data=data)
+        message.send()
+    elif settings.MAILER_TYPE == 'SMTP':
+        message_body = render_to_string('activate.html', context=data)
+        message = EmailMessage(
+            to=[data['login']],
+            subject=str(f'Activate your account at {settings.PROJECT_NAME}'),
+            body=message_body
+        )
+        message.send()
+
+
 def is_captcha_valid(captcha_key):
     try:
         response = requests.post(settings.CAPTCHA_VALIDATION_SERVER, data={

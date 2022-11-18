@@ -199,10 +199,12 @@ class Token(models.Model):
     RECOVERY = 'recovery'
     DELETION = 'deletion'
     AUTHORIZATION = 'authorization'
+    ACTIVATION = 'activation'
 
     TOKEN_TYPES = (
         (RECOVERY, _('Recovery')),
         (AUTHORIZATION, _('Authorization')),
+        (ACTIVATION, _('Activation')),
         (DELETION, _('Deletion'))
     )
 

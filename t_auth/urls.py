@@ -47,6 +47,7 @@ urlpatterns = [
     url(r'^api/v1.0/logout', api_views.front.LogoutView.as_view(), name='logout'),
     url(r'^api/v1.0/register', api_views.RegistrationViewSet.as_view(), name='register'),
     url(r'^api/v1.0/password-recovery', t_auth.api.views.front.RecoveryView.as_view(), name='password-recovery'),
+    url(r'^api/v1.0/activate', t_auth.api.views.front.ActivateView.as_view(), name='account-activation'),
     url(r'^api/v1.0/', include((router.urls, 'api'), namespace='api')),
 ]
 
