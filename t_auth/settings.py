@@ -49,7 +49,7 @@ class BaseConfiguration(Configuration):
         CUSTODIAN_PROFILE_DEPTH = os.environ.get('CUSTODIAN_PROFILE_DEPTH', 1)
         CUSTODIAN_LINK = os.environ.get('CUSTODIAN_LINK', None)
 
-    PROFILE_CONFIRMATION_ENABLED = os.environ.get('PROFILE_ACTIVATION_ENABLED') == 'True'
+    PROFILE_CONFIRMATION_ENABLED = os.environ.get('PROFILE_CONFIRMATION_ENABLED') == 'True'
 
     DATABASES = {
         'default': dj_database_url.config(

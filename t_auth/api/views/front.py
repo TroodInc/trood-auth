@@ -179,6 +179,9 @@ class RegistrationViewSet(APIView):
 
                 token = Token.objects.create(account=account, type=Token.ACTIVATION)
 
+                result = LoginDataVerificationSerializer(account).data
+                result['profile'] = account.profile
+
                 send_activation_mail({
                     'login': account.login,
                     'password': serializer.data['password'],
