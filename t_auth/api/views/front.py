@@ -274,7 +274,8 @@ class RecoveryView(APIView):
             if settings.MAILER_TYPE == 'TROOD':
                 message = TroodEmailMessageTemplate(
                     to=[account.login], template='PASSWORD_RECOVERY', data={
-                        'link': settings.RECOVERY_LINK.format(token.token)
+                        'link': settings.RECOVERY_LINK,
+                        'token': token.token
                     })
                 message.send()
             else:
