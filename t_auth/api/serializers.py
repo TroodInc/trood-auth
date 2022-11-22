@@ -85,7 +85,7 @@ class AccountSerializer(TroodDynamicSerializer):
             instance = super().save(request=kwargs['request'])
         else:
             instance = super().save(**kwargs)
-        instance.save()
+        # instance.save()
         return instance
 
     def validate(self, data):
